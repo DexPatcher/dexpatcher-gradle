@@ -102,6 +102,7 @@ class ApkLibraryPlugin implements Plugin<Project> {
         apkLibrary.with {
 
             duplicatesStrategy = DuplicatesStrategy.FAIL
+            appendix = 'apk'
             extension = 'aar'
 
             /*
