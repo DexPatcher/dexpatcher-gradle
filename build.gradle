@@ -1,0 +1,78 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.0"
+        classpath "com.netflix.nebula:gradle-extra-configurations-plugin:2.2.2"
+    }
+}
+
+apply plugin: "com.gradle.plugin-publish"
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'groovy'
+apply plugin: "nebula.provided-base"
+
+group = 'com.github.lanchon.dexpatcher'
+
+version = '0.1.0'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    provided 'com.android.tools.build:gradle:1.2.3'
+}
+
+afterEvaluate {
+    def archivesArtifacts = configurations.archives.artifacts
+    archivesArtifacts.removeAll archivesArtifacts.findAll { it.classifier }
+}
+
+pluginBundle {
+
+    website = 'http://forum.xda-developers.com/showthread.php?t=3060854'
+    vcsUrl = 'https://github.com/Lanchon/DexPatcher-gradle'
+
+    description = "DexPatcher is a toolchain to modify Android applications at source-level using Java and Android Studio."
+    tags = ['android', 'dexpatcher', 'apktool', 'dex2jar', 'patch', 'modify', 'reverse']
+
+    plugins {
+
+        basePlugin {
+            id = 'com.github.lanchon.dexpatcher.base'
+            displayName = 'DexPatcher Base'
+            description = "The DexPatcher Base plugin provides basic DexPatcher, Apktool and dex2jar tasks. " +
+                    "DexPatcher is free software. (GPLv3+)"
+        }
+
+        apkLibraryPlugin {
+            id = 'com.github.lanchon.dexpatcher.apk-library'
+            displayName = 'DexPatcher APK Library'
+            description = "The DexPatcher APK Library plugin processes an Android application (APK) file and produces " +
+                    "a DexPatcher APK library file that can be used to create modified versions of the source application. " +
+                    "The file is similar in structure to an Android Library (AAR) file. It includes the decoded Android " +
+                    "resources of the application and its Dalvik bytecode translated into Java bytecode among other things. " +
+                    "DexPatcher is free software. (GPLv3+)"
+        }
+
+        patchedAppPlugin {
+            id = 'com.github.lanchon.dexpatcher.patched-application'
+            displayName = 'DexPatcher Patched Application'
+            description = "The DexPatcher Patched Application plugin produces a modified Android application by applying " +
+                    "changes and additions to code and resources of a source application imported as a DexPatcher APK library. " +
+                    "DexPatcher is free software. (GPLv3+)"
+        }
+    }
+
+    mavenCoordinates {
+        groupId = "com.github.lanchon.dexpatcher"
+        artifactId = "dexpatcher-gradle"
+    }
+
+}
