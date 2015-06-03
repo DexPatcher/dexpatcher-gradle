@@ -63,6 +63,7 @@ class ApkLibraryPlugin implements Plugin<Project> {
             outputDir = apktoolDir
             decodeClasses = false
             //keepBrokenResources = true
+            forceOverwrite = true
         }
 
         def dex2jar = project.tasks.create(taskNameModifier('dex2jar'), Dex2jarTask)
@@ -75,6 +76,7 @@ class ApkLibraryPlugin implements Plugin<Project> {
                 tree.include '*.dex'
             }
             jarFile = dex2jarFile
+            forceOverwrite = true
         }
 
         def apkLibrary = createApkLibraryTask(project, taskNameModifier('apkLibrary'), apktoolDir, dex2jarFile)

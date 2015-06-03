@@ -38,6 +38,7 @@ class DecodeApkTask extends ApktoolBaseTask {
     @Input boolean decodeResources = true
     @Input boolean decodeClasses = true
     @Input boolean keepBrokenResources
+    @Input boolean forceOverwrite
 
     @InputFile File getApkFile() { project.file(apkFile) }
     @OutputDirectory File getOutputDir() { project.file(outputDir) }
@@ -48,7 +49,6 @@ class DecodeApkTask extends ApktoolBaseTask {
     @Override List<String> getArgs() {
         ArrayList<String> args = new ArrayList()
         args.add('decode')
-        args.add('--force')
         args.addAll(['--output', getOutputDir() as String])
         if (getFrameworkDir()) args.addAll(['--frame-path', getFrameworkDir() as String])
         def theFrameworkTag = getFrameworkTag()
@@ -58,6 +58,7 @@ class DecodeApkTask extends ApktoolBaseTask {
         if (!decodeResources) args.add('--no-res')
         if (!decodeClasses) args.add('--no-src')
         if (keepBrokenResources) args.add('--keep-broken-res')
+        if (forceOverwrite) args.add('--force')
         args.addAll(getExtraArgs())
         args.add(getApkFile() as String)
         return args;

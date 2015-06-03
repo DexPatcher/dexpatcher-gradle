@@ -21,8 +21,9 @@ import org.gradle.api.tasks.Sync
 
 // TODO: Support generation of patch libraries.
 // TODO: Package Java resources into patch libraries.
-// TODO: Automatically set dexpatcher api level
+// TODO: Automatically set dexpatcher api level.
 // TODO: Warn on incorrect defaultConfig info.
+// TODO: Change extension of apk libraries.
 
 // Parsing of 'apktool.yml' (contains defaultConfig info):
 // http://yaml.org/

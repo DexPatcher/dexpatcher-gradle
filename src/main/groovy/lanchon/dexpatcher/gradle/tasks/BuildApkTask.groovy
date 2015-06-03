@@ -25,7 +25,7 @@ class BuildApkTask extends ApktoolBaseTask {
     def apkFile
     def frameworkDir
     def aaptFile
-    @Input boolean forceRebuild = true
+    @Input boolean forceRebuild
 
     @InputDirectory File getInputDir() { project.file(inputDir) }
     @OutputFile File getApkFile() { project.file(apkFile) }

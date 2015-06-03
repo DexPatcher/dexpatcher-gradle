@@ -39,6 +39,7 @@ class Dex2jarTask extends Dex2jarBaseTask {
     @Input boolean optimizeSynchronized
     @Input boolean reuseRegisters
     @Input boolean handleExceptions
+    @Input boolean forceOverwrite
 
     Dex2jarTask() {
         setMain(MAIN_DEX2JAR)
@@ -50,7 +51,6 @@ class Dex2jarTask extends Dex2jarBaseTask {
 
     @Override List<String> getArgs() {
         ArrayList<String> args = new ArrayList()
-        args.add('--force')
         args.addAll(['--output', getJarFile() as String])
         if (getExceptionFile()) args.addAll(['--exception-file', getExceptionFile() as String])
         if (!translateCode) args.add('--no-code')
@@ -58,6 +58,7 @@ class Dex2jarTask extends Dex2jarBaseTask {
         if (optimizeSynchronized) args.add('-os')   // typo in long option: --optmize-synchronized
         if (reuseRegisters) args.add('--reuse-reg')
         if (!handleExceptions) args.add('--not-handle-exception')
+        if (forceOverwrite) args.add('--force')
         args.addAll(getExtraArgs())
         args.addAll(getDexFiles() as List<String>)
         return args;
