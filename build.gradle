@@ -29,6 +29,15 @@ dependencies {
     provided 'com.android.tools.build:gradle:1.2.3'
 }
 
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": "DexPatcher-gradle",
+                "Implementation-Version": version
+        )
+    }
+}
+
 afterEvaluate {
     def archivesArtifacts = configurations.archives.artifacts
     archivesArtifacts.removeAll archivesArtifacts.findAll { it.classifier }

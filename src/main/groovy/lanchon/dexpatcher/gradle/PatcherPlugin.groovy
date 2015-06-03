@@ -25,7 +25,6 @@ import org.gradle.api.tasks.Sync
 // TODO: Warn on incorrect defaultConfig info.
 // TODO: Add plugin version to apk libs.
 // TODO: Warn on outdated apk lib.
-// TODO: Add version to manifest.
 
 // Parsing of 'apktool.yml' (contains defaultConfig info):
 // http://yaml.org/
