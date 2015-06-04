@@ -19,17 +19,22 @@ import org.gradle.api.Task
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.Sync
 
-// TODO: Support generation of patch libraries.
-// TODO: Package Java resources into patch libraries.
-// TODO: Automatically set dexpatcher api level.
-// TODO: Warn on incorrect defaultConfig info.
 // TODO: Add plugin version to apk libs.
 // TODO: Warn on outdated apk lib.
+// TODO: Automatically set dexpatcher api level.
+// TODO: Warn on incorrect defaultConfig info.
 
 // Parsing of 'apktool.yml' (contains defaultConfig info):
 // http://yaml.org/
 // https://bitbucket.org/asomov/snakeyaml
 // https://github.com/iBotPeaches/Apktool/blob/master/brut.apktool/apktool-lib/src/main/java/brut/androlib/Androlib.java#L243
+
+// Pending plugins:
+
+// TODO: patch-library
+// TODO: apktool-application (may bring in dexptacher if java plugin is applied too)
+// TODO: maybe apktool-dexpatcher-application
+// TODO: maybe apktool-smali-application
 
 @CompileStatic
 class PatcherPlugin implements Plugin<Project> {

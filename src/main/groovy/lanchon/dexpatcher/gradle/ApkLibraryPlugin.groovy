@@ -170,7 +170,7 @@ class ApkLibraryPlugin implements Plugin<Project> {
         def cleanAll = project.tasks.create('cleanAll')
         cleanAll.with {
             description = "Cleans all projects, including the apk library project."
-            group = taskGroup
+            group = Gradle_BasePlugin.BUILD_GROUP
             dependsOn project.rootProject.getAllTasks(true)
                     .collectMany { entry -> entry.value }
                     .findAll { Task task -> task.name == Gradle_BasePlugin.CLEAN_TASK_NAME }
