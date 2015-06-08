@@ -9,7 +9,7 @@ import org.gradle.api.Task
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.CopySpec
 import org.gradle.api.file.DuplicatesStrategy
-import org.gradle.api.plugins.BasePlugin as Gradle_BasePlugin
+import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.bundling.Zip
 
@@ -25,16 +25,16 @@ class ApkLibraryPlugin implements Plugin<Project> {
     void apply(Project project) {
 
         this.project = project
-        project.plugins.apply(BasePlugin)
+        project.plugins.apply(DexpatcherBasePlugin)
         dexpatcher = project.extensions.getByType(DexpatcherExtension)
 
-        project.plugins.apply(Gradle_BasePlugin)
+        project.plugins.apply(BasePlugin)
 
-        def apkLibrary = createTaskChain(project, BasePlugin.TASK_GROUP, { it }, { it })
-        project.tasks.getByName(Gradle_BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(apkLibrary)
+        def apkLibrary = createTaskChain(project, DexpatcherBasePlugin.TASK_GROUP, { it }, { it })
+        project.tasks.getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(apkLibrary)
         project.artifacts.add(Dependency.DEFAULT_CONFIGURATION, apkLibrary)
 
-        createCleanTasks(BasePlugin.TASK_GROUP)
+        createCleanTasks(DexpatcherBasePlugin.TASK_GROUP)
 
     }
 
@@ -157,7 +157,7 @@ class ApkLibraryPlugin implements Plugin<Project> {
 
     private void createCleanTasks(String taskGroup) {
 
-        def clean = (Delete) project.tasks.getByName(Gradle_BasePlugin.CLEAN_TASK_NAME)
+        def clean = (Delete) project.tasks.getByName(BasePlugin.CLEAN_TASK_NAME)
 
         def cleanApkLibrary = project.tasks.create('cleanApkLibrary', Delete)
         cleanApkLibrary.with {
@@ -170,10 +170,10 @@ class ApkLibraryPlugin implements Plugin<Project> {
         def cleanAll = project.tasks.create('cleanAll')
         cleanAll.with {
             description = "Cleans all projects, including the apk library project."
-            group = Gradle_BasePlugin.BUILD_GROUP
+            group = BasePlugin.BUILD_GROUP
             dependsOn project.rootProject.getAllTasks(true)
                     .collectMany { entry -> entry.value }
-                    .findAll { Task task -> task.name == Gradle_BasePlugin.CLEAN_TASK_NAME }
+                    .findAll { Task task -> task.name == BasePlugin.CLEAN_TASK_NAME }
         }
 
         project.afterEvaluate {

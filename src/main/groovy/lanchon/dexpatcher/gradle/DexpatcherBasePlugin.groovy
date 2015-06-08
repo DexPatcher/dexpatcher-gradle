@@ -10,7 +10,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 @CompileStatic
-class BasePlugin implements Plugin<Project> {
+class DexpatcherBasePlugin implements Plugin<Project> {
 
     static final String EXTENSION_NAME = 'dexpatcher'
     static final String TASK_GROUP = 'DexPatcher'
@@ -47,10 +47,12 @@ class BasePlugin implements Plugin<Project> {
         }
         project.tasks.withType(DecodeApkTask) { DecodeApkTask task ->
             task.frameworkDir = { dexpatcher.getApktoolFrameworkDir() }
+            task.frameworkTag = { dexpatcher.getApktoolFrameworkTag() }
+            task.apiLevel = { dexpatcher.getApktoolApiLevel() }
         }
         project.tasks.withType(BuildApkTask) { BuildApkTask task ->
-            task.frameworkDir = { dexpatcher.getApktoolFrameworkDir() }
             task.aaptFile = { dexpatcher.getApktoolAaptFile() }
+            task.frameworkDir = { dexpatcher.getApktoolFrameworkDir() }
         }
 
         project.tasks.withType(Dex2jarBaseTask) { Dex2jarBaseTask task ->

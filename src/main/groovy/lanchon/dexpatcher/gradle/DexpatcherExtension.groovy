@@ -29,15 +29,19 @@ class DexpatcherExtension {
     def apktoolDir
     def dex2jarDir
 
-    def apktoolFrameworkDir
+    Integer dexpatcherApiLevel
+    DexpatcherVerbosity dexpatcherVerbosity
+
     def apktoolAaptFile
+    def apktoolFrameworkDir
+    String apktoolFrameworkTag
+    Integer apktoolApiLevel
+
+    // TODO: Move these properties to sub-extension objects.
 
     //boolean patchManifest = true      // TODO
     //boolean patchResources = true     // TODO
     boolean patchCode = true
-
-    Integer dexpatcherApiLevel
-    DexpatcherVerbosity dexpatcherVerbosity
 
     boolean apkLibraryDisableClean
 
@@ -55,8 +59,8 @@ class DexpatcherExtension {
     File getApktoolDir() { resolveClosures(apktoolDir) }
     File getDex2jarDir() { resolveClosures(dex2jarDir) }
 
-    File getApktoolFrameworkDir() { resolveClosures(apktoolFrameworkDir) }
     File getApktoolAaptFile() { resolveClosures(apktoolAaptFile) }
+    File getApktoolFrameworkDir() { resolveClosures(apktoolFrameworkDir) }
 
     private File resolvePath(File file, File defaultBaseDir, String defaultSubdirName) {
         file ?: (defaultBaseDir ? new File(defaultBaseDir, defaultSubdirName) : null)

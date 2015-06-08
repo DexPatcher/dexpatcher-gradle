@@ -47,7 +47,7 @@ class PatcherPlugin implements Plugin<Project> {
     void apply(Project project) {
 
         this.project = project
-        project.plugins.apply(BasePlugin)
+        project.plugins.apply(DexpatcherBasePlugin)
         dexpatcher = project.extensions.getByType(DexpatcherExtension)
 
         project.plugins.withType(AppPlugin) {
@@ -137,7 +137,7 @@ class PatcherPlugin implements Plugin<Project> {
         def mergeJavaRes = project.tasks.create("merge${variant.name.capitalize()}JavaRes", MergeAssets)
         mergeJavaRes.with {
             description = "Merge the java resource tree that will be packaged into the root of the apk."
-            group = BasePlugin.TASK_GROUP
+            group = DexpatcherBasePlugin.TASK_GROUP
             dependsOn = mergeAssets.dependsOn
             dependsOn processJavaResources
             androidBuilder = mergeAssets.androidBuilder
@@ -180,7 +180,7 @@ class PatcherPlugin implements Plugin<Project> {
         def importResources = project.tasks.create("import${variant.name.capitalize()}Resources", Sync)
         importResources.with {
             description = "Imports the resources from an apk library."
-            group = BasePlugin.TASK_GROUP
+            group = DexpatcherBasePlugin.TASK_GROUP
             dependsOn = mergeResources.dependsOn
             into mergeResources.outputDir
         }
@@ -219,7 +219,7 @@ class PatcherPlugin implements Plugin<Project> {
         def patchDex = project.tasks.create("patch${variant.name.capitalize()}Dex", DexpatcherTask)
         patchDex.with {
             description = "Patches the source dex from an apk library using the just-built patch dex."
-            group = BasePlugin.TASK_GROUP
+            group = DexpatcherBasePlugin.TASK_GROUP
             dependsOn dexCreator
             sourceFile = new File(patchDexDir, 'nonexistent-file')      // avoid null exception
             patchFiles = {
@@ -271,7 +271,7 @@ class PatcherPlugin implements Plugin<Project> {
         def importDex = project.tasks.create("import${variant.name.capitalize()}Dex", Sync)
         importDex.with {
             description = "Imports the dex file(s) from an apk library."
-            group = BasePlugin.TASK_GROUP
+            group = DexpatcherBasePlugin.TASK_GROUP
             dependsOn dexCreator
             into dexDir
         }
