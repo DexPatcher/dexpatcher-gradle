@@ -1,19 +1,9 @@
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath "com.gradle.publish:plugin-publish-plugin:0.9.0"
-        classpath "com.netflix.nebula:gradle-extra-configurations-plugin:2.2.2"
-    }
+plugins {
+    id 'groovy'
+    id 'java-gradle-plugin'
+    id "nebula.provided-base" version "2.2.2"
+    id "com.gradle.plugin-publish" version "0.9.0"
 }
-
-apply plugin: "com.gradle.plugin-publish"
-apply plugin: 'java-gradle-plugin'
-apply plugin: 'groovy'
-apply plugin: "nebula.provided-base"
 
 group = 'com.github.lanchon.dexpatcher'
 
@@ -32,8 +22,8 @@ dependencies {
 jar {
     manifest {
         attributes(
-                "Implementation-Title": "DexPatcher-gradle",
-                "Implementation-Version": version
+                'Implementation-Title': 'DexPatcher-gradle',
+                'Implementation-Version': version
         )
     }
 }
@@ -82,8 +72,8 @@ pluginBundle {
     }
 
     mavenCoordinates {
-        groupId = "com.github.lanchon.dexpatcher"
-        artifactId = "dexpatcher-gradle"
+        groupId = 'com.github.lanchon.dexpatcher'
+        artifactId = 'dexpatcher-gradle'
     }
 
 }
