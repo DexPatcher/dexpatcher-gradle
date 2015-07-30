@@ -19,7 +19,7 @@ class DexpatcherExtension {
     private static final String APKTOOL_SUBDIR = 'apktool'
     private static final String DEX2JAR_SUBDIR = 'dex2jar'
 
-    protected Project project
+    protected final Project project
 
     def dir
     def toolDir
@@ -72,15 +72,19 @@ class DexpatcherExtension {
         return jars
     }
 
-    FileCollection getLibClasspath() { getJars(resolvePath(getLibDir(), getDir(), LIB_SUBDIR)) }
-
-    private FileCollection getToolJars(File specifiedToolDir, String defaultToolSubdirName) {
-        def defaultBase = resolvePath(getToolDir(), getDir(), TOOL_SUBDIR)
-        return getJars(resolvePath(specifiedToolDir, defaultBase, defaultToolSubdirName))
+    FileCollection getLibClasspath() {
+        def resolvedLibDir = resolvePath(getLibDir(), getDir(), LIB_SUBDIR)
+        return getJars(resolvedLibDir)
     }
 
-    FileCollection getDexpatcherClasspath() { getToolJars(getDexpatcherDir(), DEXPATCHER_SUBDIR) }
-    FileCollection getApktoolClasspath() { getToolJars(getApktoolDir(), APKTOOL_SUBDIR) }
-    FileCollection getDex2jarClasspath() { getToolJars(getDex2jarDir(), DEX2JAR_SUBDIR) }
+    private FileCollection getToolClasspath(File specificToolDir, String defaultSubdirName) {
+        def resolvedToolDir = resolvePath(getToolDir(), getDir(), TOOL_SUBDIR)
+        def resolvedSpecificToolDir = resolvePath(specificToolDir, resolvedToolDir, defaultSubdirName)
+        return getJars(resolvedSpecificToolDir)
+    }
+
+    FileCollection getDexpatcherClasspath() { getToolClasspath(getDexpatcherDir(), DEXPATCHER_SUBDIR) }
+    FileCollection getApktoolClasspath() { getToolClasspath(getApktoolDir(), APKTOOL_SUBDIR) }
+    FileCollection getDex2jarClasspath() { getToolClasspath(getDex2jarDir(), DEX2JAR_SUBDIR) }
 
 }
