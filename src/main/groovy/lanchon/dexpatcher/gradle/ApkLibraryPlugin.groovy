@@ -1,11 +1,9 @@
 package lanchon.dexpatcher.gradle
 
 import groovy.transform.CompileStatic
-import lanchon.dexpatcher.gradle.extensions.DexpatcherConfigExtension
 import lanchon.dexpatcher.gradle.tasks.DecodeApkTask
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
 import org.gradle.api.Project
-import org.gradle.api.Plugin
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.CopySpec
@@ -18,16 +16,11 @@ import org.gradle.api.tasks.bundling.Zip
 // (But it might only be used by baksmali, which is bypassed.)
 
 @CompileStatic
-class ApkLibraryPlugin implements Plugin<Project> {
-
-    protected Project project
-    protected DexpatcherConfigExtension dexpatcherConfig
+class ApkLibraryPlugin extends AbstractPlugin {
 
     void apply(Project project) {
 
-        this.project = project
-        project.plugins.apply(DexpatcherBasePlugin)
-        dexpatcherConfig = project.extensions.getByType(DexpatcherConfigExtension)
+        super.apply(project)
 
         project.plugins.apply(BasePlugin)
 

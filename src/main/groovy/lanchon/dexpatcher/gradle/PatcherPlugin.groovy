@@ -11,10 +11,8 @@ import com.android.build.gradle.tasks.PreDex
 import com.android.ide.common.res2.AssetSet
 import com.android.ide.common.res2.ResourceSet
 import groovy.transform.CompileStatic
-import lanchon.dexpatcher.gradle.extensions.DexpatcherConfigExtension
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 import org.gradle.api.DomainObjectSet
-import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.logging.LogLevel
@@ -38,18 +36,14 @@ import org.gradle.api.tasks.Sync
 // TODO: maybe apktool-smali-application
 
 @CompileStatic
-class PatcherPlugin implements Plugin<Project> {
+class PatcherPlugin extends AbstractPlugin {
 
-    protected Project project
-    protected DexpatcherConfigExtension dexpatcherConfig
     protected BaseExtension android
     protected DomainObjectSet<? extends BaseVariant> variants
 
     void apply(Project project) {
 
-        this.project = project
-        project.plugins.apply(DexpatcherBasePlugin)
-        dexpatcherConfig = project.extensions.getByType(DexpatcherConfigExtension)
+        super.apply(project)
 
         project.plugins.withType(AppPlugin) {
             def androidApp = project.extensions.getByType(AppExtension)
