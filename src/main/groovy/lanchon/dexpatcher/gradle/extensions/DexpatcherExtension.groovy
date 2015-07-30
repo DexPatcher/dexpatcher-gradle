@@ -2,14 +2,15 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.DexpatcherVerbosity
-import org.gradle.api.Project
 
 @CompileStatic
 class DexpatcherExtension extends AbstractToolExtension {
 
     static final String EXTENSION_NAME = 'dexpatcher'
 
-    private static final String SUBDIR_NAME = EXTENSION_NAME
+    private static final String DIR_PROPERTY = 'dexpatcher.dexpatcher.dir'
+
+    private static final String DEFAULT_SUBDIR_NAME = EXTENSION_NAME
 
     static final def QUIET = DexpatcherVerbosity.QUIET
     static final def NORMAL = DexpatcherVerbosity.NORMAL
@@ -19,8 +20,9 @@ class DexpatcherExtension extends AbstractToolExtension {
     Integer apiLevel
     DexpatcherVerbosity verbosity
 
-    DexpatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-        super(project, dexpatcherConfig, SUBDIR_NAME)
+    DexpatcherExtension(DexpatcherConfigExtension dexpatcherConfig, Closure getProperty) {
+        super(dexpatcherConfig, DEFAULT_SUBDIR_NAME)
+        dir = getProperty(DIR_PROPERTY)
     }
 
 }

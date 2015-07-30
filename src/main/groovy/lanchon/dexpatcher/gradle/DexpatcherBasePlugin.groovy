@@ -21,17 +21,6 @@ class DexpatcherBasePlugin implements Plugin<Project> {
 
     private static final String LOCAL_PROPERTIES = 'local.properties'
 
-    private static final String BASE_DIR = 'dexpatcher.dir'
-    private static final String TOOL_DIR = 'dexpatcher.toolDir'
-    private static final String LIB_DIR = 'dexpatcher.libDir'
-
-    private static final String DEXPATCHER_DIR = 'dexpatcher.dexpatcherTool.dir'
-    private static final String APKTOOL_DIR = 'dexpatcher.apktool.dir'
-    private static final String DEX2JAR_DIR = 'dexpatcher.dex2jar.dir'
-
-    private static final String APKTOOL_FRAMEWORK_DIR = 'dexpatcher.apktool.frameworkDir'
-    private static final String APKTOOL_AAPT_FILE = 'dexpatcher.apktool.aaptFile'
-
     protected Project project
     protected DexpatcherConfigExtension dexpatcherConfig
     protected DexpatcherExtension dexpatcher
@@ -69,40 +58,14 @@ class DexpatcherBasePlugin implements Plugin<Project> {
     }
 
     private void setExtensions() {
-
         Properties localProperties = getLocalPropertiesRecursive(project)
         def getProperty = { String key -> project.properties.get(key) ?: localProperties.getProperty(key) }
-        def getFile = { String key -> Resolver.resolveNullableFile(project, getProperty(key)) }
-        def get = getFile
-
-        dexpatcherConfig = project.extensions.create(DexpatcherConfigExtension.EXTENSION_NAME, DexpatcherConfigExtension, project)
-        dexpatcherConfig.with {
-
-            dir = get(BASE_DIR)
-            toolDir = get(TOOL_DIR)
-            libDir = get(LIB_DIR)
-
-        }
-
+        def getResolvedProperty = { String key -> Resolver.resolveNullableFile(project.rootProject, getProperty(key)) }
+        dexpatcherConfig = project.extensions.create(DexpatcherConfigExtension.EXTENSION_NAME, DexpatcherConfigExtension, project, getResolvedProperty)
         def subextensions = (dexpatcherConfig as ExtensionAware).extensions
-
-        dexpatcher = subextensions.create(DexpatcherExtension.EXTENSION_NAME, DexpatcherExtension, project, dexpatcherConfig)
-        dexpatcher.with {
-            setDir(get(DEXPATCHER_DIR))
-        }
-
-        apktool = subextensions.create(ApktoolExtension.EXTENSION_NAME, ApktoolExtension, project, dexpatcherConfig)
-        apktool.with {
-            setDir(get(APKTOOL_DIR))
-            frameworkDir = get(APKTOOL_FRAMEWORK_DIR)
-            aaptFile = get(APKTOOL_AAPT_FILE)
-        }
-
-        dex2jar = subextensions.create(Dex2jarExtension.EXTENSION_NAME, Dex2jarExtension, project, dexpatcherConfig)
-        dex2jar.with {
-            setDir(get(DEX2JAR_DIR))
-        }
-
+        dexpatcher = subextensions.create(DexpatcherExtension.EXTENSION_NAME, DexpatcherExtension, dexpatcherConfig, getResolvedProperty)
+        apktool = subextensions.create(ApktoolExtension.EXTENSION_NAME, ApktoolExtension, dexpatcherConfig, getResolvedProperty)
+        dex2jar = subextensions.create(Dex2jarExtension.EXTENSION_NAME, Dex2jarExtension, dexpatcherConfig, getResolvedProperty)
     }
 
     private static Properties getLocalPropertiesRecursive(Project project) {

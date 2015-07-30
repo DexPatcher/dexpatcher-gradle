@@ -1,25 +1,23 @@
 package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
-import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 
 @CompileStatic
-abstract class AbstractToolExtension extends AbstractExtension {
+abstract class AbstractToolExtension {
 
     protected final DexpatcherConfigExtension dexpatcherConfig
-    protected final String subdirName;
+    protected final String defaultSubdirName;
 
     def dir
 
-    AbstractToolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, String subdirName) {
-        super(project)
+    AbstractToolExtension(DexpatcherConfigExtension dexpatcherConfig, String defaultSubdirName) {
         this.dexpatcherConfig = dexpatcherConfig
-        this.subdirName = subdirName
+        this.defaultSubdirName = defaultSubdirName
     }
 
-    File getDir() { resolveClosures(dir) }
+    File getDir() { dexpatcherConfig.resolveClosures(dir) }
 
-    FileCollection getClasspath() { dexpatcherConfig.getToolClasspath(getDir(), subdirName) }
+    FileCollection getClasspath() { dexpatcherConfig.getToolClasspath(getDir(), defaultSubdirName) }
 
 }
