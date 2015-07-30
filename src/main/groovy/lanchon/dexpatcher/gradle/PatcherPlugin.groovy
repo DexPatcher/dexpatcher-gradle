@@ -11,6 +11,7 @@ import com.android.build.gradle.tasks.PreDex
 import com.android.ide.common.res2.AssetSet
 import com.android.ide.common.res2.ResourceSet
 import groovy.transform.CompileStatic
+import lanchon.dexpatcher.gradle.extensions.DexpatcherConfigExtension
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Plugin
@@ -40,7 +41,7 @@ import org.gradle.api.tasks.Sync
 class PatcherPlugin implements Plugin<Project> {
 
     protected Project project
-    protected DexpatcherExtension dexpatcher
+    protected DexpatcherConfigExtension dexpatcherConfig
     protected BaseExtension android
     protected DomainObjectSet<? extends BaseVariant> variants
 
@@ -48,7 +49,7 @@ class PatcherPlugin implements Plugin<Project> {
 
         this.project = project
         project.plugins.apply(DexpatcherBasePlugin)
-        dexpatcher = project.extensions.getByType(DexpatcherExtension)
+        dexpatcherConfig = project.extensions.getByType(DexpatcherConfigExtension)
 
         project.plugins.withType(AppPlugin) {
             def androidApp = project.extensions.getByType(AppExtension)
@@ -67,7 +68,7 @@ class PatcherPlugin implements Plugin<Project> {
 
     private void applyAndroid() {
 
-        def libClasspath = project.dependencies.create(dexpatcher.getLibClasspath())
+        def libClasspath = project.dependencies.create(dexpatcherConfig.getLibClasspath())
         project.configurations.getByName('compile').dependencies.add(libClasspath)
 
         project.afterEvaluate {
@@ -81,7 +82,7 @@ class PatcherPlugin implements Plugin<Project> {
                 processJavaResources(variant)
                 //if (!dexpatcher.patchManifest) bypassManifest(variant)            // TODO
                 //if (!dexpatcher.patchResources) bypassAndroidResources(variant)   // TODO
-                if (dexpatcher.patchCode) processCode(variant)
+                if (dexpatcherConfig.patchCode) processCode(variant)
                 else bypassCode(variant)
             }
 
