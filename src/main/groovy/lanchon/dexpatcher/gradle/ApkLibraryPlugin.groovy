@@ -1,6 +1,7 @@
 package lanchon.dexpatcher.gradle
 
 import groovy.transform.CompileStatic
+import lanchon.dexpatcher.gradle.extensions.ApkLibraryExtension
 import lanchon.dexpatcher.gradle.tasks.DecodeApkTask
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
 import org.gradle.api.Project
@@ -9,18 +10,25 @@ import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.CopySpec
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.plugins.BasePlugin
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.bundling.Zip
 
+// TODO: Add plugin version to apk libs.
 // TODO: Maybe select apktool decode api level automatically.
 // (But it might only be used by baksmali, which is bypassed.)
 
 @CompileStatic
 class ApkLibraryPlugin extends AbstractPlugin {
 
+    protected ApkLibraryExtension apkLibrary
+
     void apply(Project project) {
 
         super.apply(project)
+
+        def subextensions = (dexpatcherConfig as ExtensionAware).extensions
+        apkLibrary = (ApkLibraryExtension) subextensions.create(ApkLibraryExtension.EXTENSION_NAME, ApkLibraryExtension)
 
         project.plugins.apply(BasePlugin)
 
@@ -165,13 +173,17 @@ class ApkLibraryPlugin extends AbstractPlugin {
         cleanAll.with {
             description = "Cleans all projects, including the apk library project."
             group = BasePlugin.BUILD_GROUP
-            dependsOn project.rootProject.getAllTasks(true)
-                    .collectMany { entry -> entry.value }
-                    .findAll { Task task -> task.name == BasePlugin.CLEAN_TASK_NAME }
+        }
+        project.rootProject.allprojects { Project eachProject ->
+            eachProject.tasks.all { Task task ->
+                if (task.name == BasePlugin.CLEAN_TASK_NAME) {
+                    cleanAll.dependsOn task
+                }
+            }
         }
 
         project.afterEvaluate {
-            if (dexpatcherConfig.apkLibraryDisableClean) {
+            if (apkLibrary.disableClean) {
                 clean.enabled = false
                 cleanAll.dependsOn cleanApkLibrary
             }

@@ -27,14 +27,6 @@ class DexpatcherConfigExtension {
     def toolDir
     def libDir
 
-    // TODO: Move these properties to sub-extension objects.
-
-    //boolean patchManifest = true      // TODO
-    //boolean patchResources = true     // TODO
-    boolean patchCode = true
-
-    boolean apkLibraryDisableClean
-
     DexpatcherConfigExtension(Project project, Closure getProperty) {
         this.project = project
         dir = getProperty(DIR_PROPERTY)
