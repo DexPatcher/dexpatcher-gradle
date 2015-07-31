@@ -79,7 +79,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
                 if (preDex && preDex.inputFiles) preDex.inputFiles = (preDex.inputFiles as List) - excludeFromDex
             } else {
                 // TODO: Support Jack compiler.
-                throw new RuntimeException("The Jack compiler is not supported")
+                throw new RuntimeException('The Jack compiler is not supported')
             }
         }
         createPatchDexTask(appVariant)

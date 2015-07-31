@@ -60,8 +60,14 @@ class Dex2jarTask extends Dex2jarBaseTask {
         if (!handleExceptions) args.add('--not-handle-exception')
         if (forceOverwrite) args.add('--force')
         args.addAll(getExtraArgs())
-        args.addAll(getDexFiles() as List<String>)
+        def dexFileCollection = getDexFiles()
+        if (dexFileCollection.empty) throw new RuntimeException('No input dex files specified')
+        args.addAll(dexFileCollection as List<String>)
         return args;
+    }
+
+    @Override void afterExec() {
+        if (!getJarFile().isFile()) throw new RuntimeException('No output generated')
     }
 
 }

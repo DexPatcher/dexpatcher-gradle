@@ -64,4 +64,8 @@ class DecodeApkTask extends ApktoolBaseTask {
         return args;
     }
 
+    @Override void afterExec() {
+        if (!getOutputDir().isDirectory()) throw new RuntimeException('No output generated')
+    }
+
 }

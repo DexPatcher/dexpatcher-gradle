@@ -31,8 +31,11 @@ class CustomJavaExecTask extends JavaExec {
     @Override JavaExecSpec args(Iterable<?> args) { throw new UnsupportedOperationException() }
 
     @Override void exec() {
-        super.setArgs(getArgs());
-        super.exec();
+        super.setArgs(getArgs())
+        super.exec()
+        afterExec()
     }
+
+    protected void afterExec() {}
 
 }

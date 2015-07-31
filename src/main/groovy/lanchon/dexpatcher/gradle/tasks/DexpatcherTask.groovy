@@ -59,4 +59,8 @@ class DexpatcherTask extends DexpatcherBaseTask {
         return args;
     }
 
+    @Override void afterExec() {
+        if (!getOutputFile().isFile()) throw new RuntimeException('No output generated')
+    }
+
 }
