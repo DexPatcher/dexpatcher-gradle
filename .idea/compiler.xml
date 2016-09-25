@@ -18,5 +18,9 @@
         <processorPath useClasspath="true" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="dexpatcher-gradle_main" target="1.7" />
+      <module name="dexpatcher-gradle_test" target="1.7" />
+    </bytecodeTargetLevel>
   </component>
 </project>
