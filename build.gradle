@@ -36,7 +36,7 @@ afterEvaluate {
 pluginBundle {
 
     website = 'https://dexpatcher.github.io/'
-    vcsUrl = 'https://github.com/Lanchon/DexPatcher-gradle'
+    vcsUrl = 'https://github.com/DexPatcher/DexPatcher-gradle'
 
     description = "DexPatcher is a toolchain for modifying Android APK files at source-level using Java, " +
             "graphical resource editors, and the full power of Android Studio in all major platforms."
