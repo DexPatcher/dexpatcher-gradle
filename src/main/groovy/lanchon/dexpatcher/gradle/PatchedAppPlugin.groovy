@@ -19,7 +19,7 @@ import org.gradle.api.Task
 import org.gradle.api.internal.DefaultDomainObjectSet
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.plugins.ExtensionAware
-import org.gradle.api.tasks.Sync;
+import org.gradle.api.tasks.Sync
 
 @CompileStatic
 class PatchedAppPlugin extends AbstractPatcherPlugin {
