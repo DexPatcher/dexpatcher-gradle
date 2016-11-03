@@ -74,9 +74,9 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
             def excludeFromDex = project.fileTree(new File(apkDir, 'jars'))
             def dex = appVariant.dex
             if (dex) {
-                if (dex.inputFiles) dex.inputFiles = (dex.inputFiles as List) - excludeFromDex
+                if (dex.inputFiles) dex.inputFiles = (dex.inputFiles as List<File>) - excludeFromDex
                 def preDex = (PreDex) project.tasks.findByName("preDex${appVariant.name.capitalize()}")
-                if (preDex && preDex.inputFiles) preDex.inputFiles = (preDex.inputFiles as List) - excludeFromDex
+                if (preDex && preDex.inputFiles) preDex.inputFiles = (preDex.inputFiles as List<File>) - excludeFromDex
             } else {
                 // TODO: Support Jack compiler.
                 throw new RuntimeException('The Jack compiler is not supported')
