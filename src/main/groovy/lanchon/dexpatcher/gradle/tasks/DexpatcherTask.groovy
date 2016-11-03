@@ -44,16 +44,16 @@ class DexpatcherTask extends DexpatcherBaseTask {
     def outputFile
     def outputDir
     def apiLevel
-    @Input boolean multiDex
-    @Input boolean multiDexThreaded
-    @Optional @Input Integer multiDexJobs
-    @Optional @Input Integer maxDexPoolSize
+    def multiDex
+    def multiDexThreaded
+    def multiDexJobs
+    def maxDexPoolSize
     def annotationPackage
     def compatDexTag
     def verbosity
-    boolean sourcePath
+    def sourcePath
     def sourcePathRoot
-    boolean stats
+    def stats
 
     @Input File getSource() { Resolver.resolveNullableFile(project, source) }
     @InputFiles private FileCollection getSourceFiles() {
@@ -80,10 +80,22 @@ class DexpatcherTask extends DexpatcherBaseTask {
     @Optional @OutputDirectory File getOutputDir() { Resolver.resolveNullableFile(project, outputDir) }
 
     @Optional @Input Integer getApiLevel() { Resolver.resolve(apiLevel) as Integer }
+
+    @Optional @Input Boolean getMultiDex() { Resolver.resolve(multiDex) as Boolean }
+    @Optional @Input Boolean getMultiDexThreaded() { Resolver.resolve(multiDexThreaded) as Boolean }
+    @Optional @Input Integer getMultiDexJobs() { Resolver.resolve(multiDexJobs) as Integer }
+
+    @Optional @Input Integer getMaxDexPoolSize() { Resolver.resolve(maxDexPoolSize) as Integer }
+
     @Optional @Input String getAnnotationPackage() { Resolver.resolve(annotationPackage) as String }
     @Optional @Input Boolean getCompatDexTag() { Resolver.resolve(compatDexTag) as Boolean }
+
     DexpatcherVerbosity getVerbosity() { Resolver.resolve(verbosity) as DexpatcherVerbosity }
+
+    Boolean getSourcePath() { Resolver.resolve(sourcePath) as Boolean }
     String getSourcePathRoot() { Resolver.resolve(sourcePathRoot) as String }
+
+    Boolean getStats() { Resolver.resolve(stats) as Boolean }
 
     @Override List<String> getArgs() {
 
@@ -98,11 +110,13 @@ class DexpatcherTask extends DexpatcherBaseTask {
         def api = getApiLevel()
         if (api) args.addAll(['--api-level', api as String])
 
-        if (multiDex) args.add('--multi-dex')
-        if (multiDexThreaded) args.add('--multi-dex-threaded')
-        if (multiDexJobs) args.addAll(['--multi-dex-jobs', multiDexJobs as String])
+        if (getMultiDex()) args.add('--multi-dex')
+        if (getMultiDexThreaded()) args.add('--multi-dex-threaded')
+        def jobs = getMultiDexJobs()
+        if (jobs) args.addAll(['--multi-dex-jobs', jobs as String])
 
-        if (maxDexPoolSize) args.addAll(['--max-dex-pool-size', maxDexPoolSize as String])
+        def poolSize = getMaxDexPoolSize()
+        if (poolSize) args.addAll(['--max-dex-pool-size', poolSize as String])
 
         def annotations = getAnnotationPackage()
         if (annotations) args.addAll(['--annotations', annotations])
@@ -116,11 +130,11 @@ class DexpatcherTask extends DexpatcherBaseTask {
             case null: break
         }
 
-        if (sourcePath) args.add('--path')
+        if (getSourcePath()) args.add('--path')
         def pathRoot = getSourcePathRoot()
         if (pathRoot) args.addAll(['--path-root', pathRoot])
 
-        if (stats) args.add('--stats')
+        if (getStats()) args.add('--stats')
 
         args.addAll(getExtraArgs())
 
