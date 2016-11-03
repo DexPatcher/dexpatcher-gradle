@@ -35,7 +35,16 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         project.tasks.withType(DexpatcherTask) { DexpatcherTask task ->
             task.classpath { dexpatcher.getClasspath() }
             task.apiLevel = { dexpatcher.apiLevel }
+            task.multiDex = { dexpatcher.multiDex }
+            task.multiDexThreaded = { dexpatcher.multiDexThreaded }
+            task.multiDexJobs = { dexpatcher.multiDexJobs }
+            task.maxDexPoolSize = { dexpatcher.maxDexPoolSize }
+            task.annotationPackage = { dexpatcher.annotationPackage }
+            task.compatDexTag = { dexpatcher.compatDexTag }
             task.verbosity = { dexpatcher.verbosity }
+            task.sourcePath = { dexpatcher.sourcePath }
+            task.sourcePathRoot = { dexpatcher.sourcePathRoot }
+            task.stats = { dexpatcher.stats }
         }
 
         project.tasks.withType(ApktoolBaseTask) { ApktoolBaseTask task ->

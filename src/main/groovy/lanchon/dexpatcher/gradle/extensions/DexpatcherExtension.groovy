@@ -18,7 +18,16 @@ class DexpatcherExtension extends AbstractToolExtension {
     static final def DEBUG = DexpatcherVerbosity.DEBUG
 
     Integer apiLevel
+    Boolean multiDex
+    Boolean multiDexThreaded
+    Integer multiDexJobs
+    Integer maxDexPoolSize
+    String annotationPackage
+    Boolean compatDexTag
     DexpatcherVerbosity verbosity
+    Boolean sourcePath
+    String sourcePathRoot
+    Boolean stats
 
     DexpatcherExtension(DexpatcherConfigExtension dexpatcherConfig, Closure getProperty) {
         super(dexpatcherConfig, DEFAULT_SUBDIR_NAME)
