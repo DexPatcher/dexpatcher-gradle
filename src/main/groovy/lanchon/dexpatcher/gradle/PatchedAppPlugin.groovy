@@ -104,8 +104,8 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
             description = "Patches the source dex from an apk library using the just-built patch dex."
             group = DexpatcherBasePlugin.TASK_GROUP
             dependsOn dexCreator
-            sourceFile = new File(patchDexDir, 'nonexistent-file')      // avoid null exception
-            patchFiles = {
+            source = new File(patchDexDir, 'nonexistent-file')      // avoid null exception
+            patches = {
                 def patchDexFiles = project.fileTree(patchDexDir)
                 switch (patchDexFiles.files.size()) {
                     case 0: //throw new RuntimeException('No patch dex file found')     // avoid null exception
@@ -123,7 +123,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
                 case 1: break
                 default: throw new RuntimeException('Cannot patch the code of MultiDex applications')
             }
-            patchDex.sourceFile = apkDexFiles.singleFile
+            patchDex.source = apkDexFiles.singleFile
         }
         variant.outputs.each {
             if (it instanceof ApkVariantOutput) {

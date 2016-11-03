@@ -3,49 +3,112 @@ package lanchon.dexpatcher.gradle.tasks
 import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.DexpatcherVerbosity
 import lanchon.dexpatcher.gradle.Resolver
+import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
 
 /*
-usage: dexpatcher [<option> ...] [--output <patched-dex>]
-                  <source-dex-or-apk> [<patch-dex-or-apk> ...]
- -?,--help                   print this help message and exit
- -a,--api-level <n>          api level of dex files (defaults to 14)
-                             (needed for android 3 and earlier dex files)
-    --debug                  output debugging information
- -o,--output <patched-dex>   name of patched dex file to write
- -q,--quiet                  do not output warnings
- -v,--verbose                output extra information
-    --version                print version information and exit
+DexPatcher Version 1.2.0 by Lanchon
+           https://dexpatcher.github.io/
+usage: dexpatcher [<option> ...] [--output <patched-dex-or-dir>]
+                  <source-dex-apk-or-dir> [<patch-dex-apk-or-dir> ...]
+ -?,--help                    print this help message and exit
+ -a,--api-level <n>           android api level (default: auto-detect)
+    --annotations <package>   package name of DexPatcher annotations
+                              (default: 'lanchon.dexpatcher.annotation')
+    --compat-dextag           enable support for the deprecated DexTag
+    --debug                   output debugging information
+    --dry-run                 do not write output files (much faster)
+ -J,--multi-dex-jobs <n>      multi-dex thread count (implies: -m -M)
+                              (default: available processors up to 4)
+ -M,--multi-dex-threaded      multi-threaded multi-dex (implies: -m)
+ -m,--multi-dex               enable multi-dex support
+    --max-dex-pool-size <n>   maximum size of dex pools (default: 65536)
+ -o,--output <dex-or-dir>     name of output file or directory
+ -p,--path                    output relative paths of source code files
+    --path-root <root>        output absolute paths of source code files
+ -q,--quiet                   do not output warnings
+    --stats                   output timing statistics
+ -v,--verbose                 output extra information
+    --version                 print version information and exit
 */
 
 @CompileStatic
 class DexpatcherTask extends DexpatcherBaseTask {
 
-    def sourceFile
-    def patchFiles
+    def source
+    def patches
     def outputFile
+    def outputDir
     def apiLevel
+    @Input boolean multiDex
+    @Input boolean multiDexThreaded
+    @Optional @Input Integer multiDexJobs
+    @Optional @Input Integer maxDexPoolSize
+    def annotationPackage
+    def compatDexTag
     def verbosity
+    boolean sourcePath
+    def sourcePathRoot
+    boolean stats
 
-    @InputFile File getSourceFile() { project.file(sourceFile) }
-    @InputFiles List<File> getPatchFiles() {
-        Resolver.resolve(patchFiles) {
+    @Input File getSource() { project.file(source) }
+    @InputFiles private FileCollection getSourceFiles() {
+        def file = getSource()
+        FileCollection files = project.files()
+        files = file.isDirectory() ? (files + project.fileTree(file)) : (files + project.files(file))
+        return files
+    }
+
+    @Input List<File> getPatches() {
+        Resolver.resolve(patches) {
             it instanceof Iterable ? it.collect { each -> project.file(each) } : [project.file(it)]
         }
     }
-    @OutputFile File getOutputFile() { project.file(outputFile) }
+    @InputFiles private FileCollection getPatchFiles() {
+        def fileList = getPatches()
+        FileCollection files = project.files()
+        for (def file : fileList) {
+            files = file.isDirectory() ? (files + project.fileTree(file)) : (files + project.files(file))
+        }
+        return files
+    }
+
+    @Optional @OutputFile File getOutputFile() { Resolver.resolveNullableFile(project, outputFile) }
+    @Optional @OutputDirectory File getOutputDir() { Resolver.resolveNullableFile(project, outputDir) }
+
     @Optional @Input Integer getApiLevel() { Resolver.resolve(apiLevel) as Integer }
+    @Optional @Input String getAnnotationPackage() { Resolver.resolve(annotationPackage) as String }
+    @Optional @Input Boolean getCompatDexTag() { Resolver.resolve(compatDexTag) as Boolean }
     DexpatcherVerbosity getVerbosity() { Resolver.resolve(verbosity) as DexpatcherVerbosity }
+    String getSourcePathRoot() { Resolver.resolve(sourcePathRoot) as String }
 
     @Override List<String> getArgs() {
+
         ArrayList<String> args = new ArrayList()
-        args.addAll(['--output', getOutputFile() as String])
-        def theApiLevel = getApiLevel()
-        if (theApiLevel) args.addAll(['--api-level', theApiLevel as String])
+
+        def outFile = getOutputFile()
+        def outDir = getOutputDir()
+        if (!outFile && !outDir) throw new RuntimeException("No output file or directory specified")
+        if (outFile && outDir) throw new RuntimeException("Output file and directory must not both be specified")
+        args.addAll(['--output', (outFile ? outFile : outDir) as String])
+
+        def api = getApiLevel()
+        if (api) args.addAll(['--api-level', api as String])
+
+        if (multiDex) args.add('--multi-dex')
+        if (multiDexThreaded) args.add('--multi-dex-threaded')
+        if (multiDexJobs) args.addAll(['--multi-dex-jobs', multiDexJobs as String])
+
+        if (maxDexPoolSize) args.addAll(['--max-dex-pool-size', maxDexPoolSize as String])
+
+        def annotations = getAnnotationPackage()
+        if (annotations) args.addAll(['--annotations', annotations])
+        if (getCompatDexTag()) args.add('--compat-dextag')
+
         switch (getVerbosity()) {
             case DexpatcherVerbosity.QUIET: args.add('--quiet'); break
             case DexpatcherVerbosity.NORMAL: break
@@ -53,14 +116,25 @@ class DexpatcherTask extends DexpatcherBaseTask {
             case DexpatcherVerbosity.DEBUG: args.add('--debug'); break
             case null: break
         }
+
+        if (sourcePath) args.add('--path')
+        def pathRoot = getSourcePathRoot()
+        if (pathRoot) args.addAll(['--path-root', pathRoot])
+
+        if (stats) args.add('--stats')
+
         args.addAll(getExtraArgs())
-        args.add(getSourceFile() as String)
-        getPatchFiles().each { args.add(it as String) }
+
+        args.add(getSource() as String)
+        getPatches().each { args.add(it as String) }
+
         return args;
+
     }
 
     @Override void afterExec() {
-        if (!getOutputFile().isFile()) throw new RuntimeException('No output generated')
+        def outFile = getOutputFile()
+        if (outFile && !outFile.isFile()) throw new RuntimeException('No output generated')
     }
 
 }
