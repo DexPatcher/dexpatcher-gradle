@@ -57,8 +57,8 @@ class DexpatcherTask extends DexpatcherBaseTask {
 
     @Input File getSource() { Resolver.resolveNullableFile(project, source) }
     @InputFiles private FileCollection getSourceFiles() {
-        def file = getSource()
         FileCollection files = project.files()
+        def file = getSource()
         if (file) files = file.directory ? (files + project.fileTree(file)) : (files + project.files(file))
         return files
     }
@@ -69,10 +69,9 @@ class DexpatcherTask extends DexpatcherBaseTask {
         }
     }
     @InputFiles private FileCollection getPatchFiles() {
-        def fileList = getPatches()
         FileCollection files = project.files()
-        for (def file : fileList) {
-            files = file.isDirectory() ? (files + project.fileTree(file)) : (files + project.files(file))
+        for (def file : getPatches()) {
+            files = file.directory ? (files + project.fileTree(file)) : (files + project.files(file))
         }
         return files
     }
@@ -92,8 +91,8 @@ class DexpatcherTask extends DexpatcherBaseTask {
 
         def outFile = getOutputFile()
         def outDir = getOutputDir()
-        if (!outFile && !outDir) throw new RuntimeException("No output file or directory specified")
-        if (outFile && outDir) throw new RuntimeException("Output file and directory must not both be specified")
+        if (!outFile && !outDir) throw new RuntimeException('No output file or directory specified')
+        if (outFile && outDir) throw new RuntimeException('Output file and directory must not both be specified')
         args.addAll(['--output', (outFile ? outFile : outDir) as String])
 
         def api = getApiLevel()
@@ -134,7 +133,7 @@ class DexpatcherTask extends DexpatcherBaseTask {
 
     @Override void afterExec() {
         def outFile = getOutputFile()
-        if (outFile && !outFile.isFile()) throw new RuntimeException('No output generated')
+        if (outFile && !outFile.file) throw new RuntimeException('No output generated')
     }
 
 }
