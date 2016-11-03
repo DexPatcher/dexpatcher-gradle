@@ -32,10 +32,12 @@ class CustomJavaExecTask extends JavaExec {
 
     @Override void exec() {
         super.setArgs(getArgs())
+        beforeExec()
         super.exec()
         afterExec()
     }
 
+    protected void beforeExec() {}
     protected void afterExec() {}
 
 }
