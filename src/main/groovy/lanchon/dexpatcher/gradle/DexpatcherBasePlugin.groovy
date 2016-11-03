@@ -43,7 +43,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
             task.compatDexTag = { dexpatcher.compatDexTag }
             task.verbosity = { dexpatcher.verbosity }
             task.logSourcePath = { dexpatcher.logSourcePath }
-            task.logSourcePathRoot = { dexpatcher.logSourcePathRoot }
+            task.logSourcePathRoot = { dexpatcher.getLogSourcePathRoot() }
             task.logStats = { dexpatcher.logStats }
         }
 

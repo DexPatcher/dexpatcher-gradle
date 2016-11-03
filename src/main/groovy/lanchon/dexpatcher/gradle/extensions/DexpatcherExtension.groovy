@@ -2,6 +2,7 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.DexpatcherVerbosity
+import lanchon.dexpatcher.gradle.Resolver
 
 @CompileStatic
 class DexpatcherExtension extends AbstractToolExtension {
@@ -26,12 +27,14 @@ class DexpatcherExtension extends AbstractToolExtension {
     Boolean compatDexTag
     DexpatcherVerbosity verbosity
     Boolean logSourcePath
-    String logSourcePathRoot
+    def logSourcePathRoot
     Boolean logStats
 
     DexpatcherExtension(DexpatcherConfigExtension dexpatcherConfig, Closure getProperty) {
         super(dexpatcherConfig, DEFAULT_SUBDIR_NAME)
         dir = getProperty(DIR_PROPERTY)
     }
+
+    String getLogSourcePathRoot() { Resolver.resolve(logSourcePathRoot) as String }
 
 }
