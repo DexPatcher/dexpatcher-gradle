@@ -55,11 +55,11 @@ class DexpatcherTask extends DexpatcherBaseTask {
     def sourcePathRoot
     boolean stats
 
-    @Input File getSource() { project.file(source) }
+    @Input File getSource() { Resolver.resolveNullableFile(project, source) }
     @InputFiles private FileCollection getSourceFiles() {
         def file = getSource()
         FileCollection files = project.files()
-        files = file.isDirectory() ? (files + project.fileTree(file)) : (files + project.files(file))
+        if (file) files = file.directory ? (files + project.fileTree(file)) : (files + project.files(file))
         return files
     }
 
