@@ -25,9 +25,9 @@ class DexpatcherExtension extends AbstractToolExtension {
     String annotationPackage
     Boolean compatDexTag
     DexpatcherVerbosity verbosity
-    Boolean sourcePath
-    String sourcePathRoot
-    Boolean stats
+    Boolean logSourcePath
+    String logSourcePathRoot
+    Boolean logStats
 
     DexpatcherExtension(DexpatcherConfigExtension dexpatcherConfig, Closure getProperty) {
         super(dexpatcherConfig, DEFAULT_SUBDIR_NAME)

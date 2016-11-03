@@ -51,9 +51,9 @@ class DexpatcherTask extends DexpatcherBaseTask {
     def annotationPackage
     def compatDexTag
     def verbosity
-    def sourcePath
-    def sourcePathRoot
-    def stats
+    def logSourcePath
+    def logSourcePathRoot
+    def logStats
 
     @Input File getSource() { Resolver.resolveNullableFile(project, source) }
     @InputFiles private FileCollection getSourceFiles() {
@@ -92,10 +92,10 @@ class DexpatcherTask extends DexpatcherBaseTask {
 
     DexpatcherVerbosity getVerbosity() { Resolver.resolve(verbosity) as DexpatcherVerbosity }
 
-    Boolean getSourcePath() { Resolver.resolve(sourcePath) as Boolean }
-    String getSourcePathRoot() { Resolver.resolve(sourcePathRoot) as String }
+    Boolean getLogSourcePath() { Resolver.resolve(logSourcePath) as Boolean }
+    String getLogSourcePathRoot() { Resolver.resolve(logSourcePathRoot) as String }
 
-    Boolean getStats() { Resolver.resolve(stats) as Boolean }
+    Boolean getLogStats() { Resolver.resolve(logStats) as Boolean }
 
     @Override List<String> getArgs() {
 
@@ -130,11 +130,11 @@ class DexpatcherTask extends DexpatcherBaseTask {
             case null: break
         }
 
-        if (getSourcePath()) args.add('--path')
-        def pathRoot = getSourcePathRoot()
+        if (getLogSourcePath()) args.add('--path')
+        def pathRoot = getLogSourcePathRoot()
         if (pathRoot != null) args.addAll(['--path-root', pathRoot])
 
-        if (getStats()) args.add('--stats')
+        if (getLogStats()) args.add('--stats')
 
         args.addAll(getExtraArgs())
 

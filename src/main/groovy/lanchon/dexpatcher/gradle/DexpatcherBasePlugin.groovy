@@ -42,9 +42,9 @@ class DexpatcherBasePlugin implements Plugin<Project> {
             task.annotationPackage = { dexpatcher.annotationPackage }
             task.compatDexTag = { dexpatcher.compatDexTag }
             task.verbosity = { dexpatcher.verbosity }
-            task.sourcePath = { dexpatcher.sourcePath }
-            task.sourcePathRoot = { dexpatcher.sourcePathRoot }
-            task.stats = { dexpatcher.stats }
+            task.logSourcePath = { dexpatcher.logSourcePath }
+            task.logSourcePathRoot = { dexpatcher.logSourcePathRoot }
+            task.logStats = { dexpatcher.logStats }
         }
 
         project.tasks.withType(ApktoolBaseTask) { ApktoolBaseTask task ->
