@@ -6,6 +6,7 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
 
 /*
@@ -32,7 +33,8 @@ options:
 class Dex2jarTask extends Dex2jarBaseTask {
 
     def dexFiles
-    def jarFile
+    def outputFile
+    def outputDir
     def exceptionFile
     @Input boolean translateCode = true
     @Input boolean translateDebugInfo
@@ -46,28 +48,51 @@ class Dex2jarTask extends Dex2jarBaseTask {
     }
 
     @InputFiles FileCollection getDexFiles() { project.files(dexFiles) }
-    @OutputFile File getJarFile() { project.file(jarFile) }
+
+    @Optional @OutputFile File getOutputFile() { Resolver.resolveNullableFile(project, outputFile) }
+    @Optional @OutputDirectory File getOutputDir() { Resolver.resolveNullableFile(project, outputDir) }
+
     @Optional @OutputFile File getExceptionFile() { Resolver.resolveNullableFile(project, exceptionFile) }
 
     @Override List<String> getArgs() {
+
         ArrayList<String> args = new ArrayList()
-        args.addAll(['--output', getJarFile() as String])
-        if (getExceptionFile()) args.addAll(['--exception-file', getExceptionFile() as String])
+
+        def outFile = getOutputFile()
+        def outDir = getOutputDir()
+        if (!outFile && !outDir) throw new RuntimeException('No output file or directory specified')
+        if (outFile && outDir) throw new RuntimeException('Output file and directory must not both be specified')
+        if (outFile) args.addAll(['--output', outFile as String])
+        else workingDir = outDir
+
+        def theExceptionFile = getExceptionFile()
+        if (theExceptionFile) args.addAll(['--exception-file', theExceptionFile as String])
+
         if (!translateCode) args.add('--no-code')
         if (translateDebugInfo) args.add('--debug-info')
         if (optimizeSynchronized) args.add('-os')   // typo in long option: --optmize-synchronized
         if (reuseRegisters) args.add('--reuse-reg')
         if (!handleExceptions) args.add('--not-handle-exception')
         if (forceOverwrite) args.add('--force')
+
         args.addAll(getExtraArgs())
+
         def dexFileCollection = getDexFiles()
         if (dexFileCollection.empty) throw new RuntimeException('No input dex files specified')
         args.addAll(dexFileCollection as List<String>)
+
         return args;
+
+    }
+
+    @Override void beforeExec() {
+        def outDir = getOutputDir()
+        if (outDir && forceOverwrite) project.delete(project.fileTree(outDir))
     }
 
     @Override void afterExec() {
-        if (!getJarFile().isFile()) throw new RuntimeException('No output generated')
+        def outFile = getOutputFile()
+        if (outFile && !outFile.file) throw new RuntimeException('No output generated')
     }
 
 }

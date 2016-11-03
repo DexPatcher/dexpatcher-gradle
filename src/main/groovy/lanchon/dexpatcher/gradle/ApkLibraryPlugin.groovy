@@ -47,7 +47,8 @@ class ApkLibraryPlugin extends AbstractPlugin {
         def modOutputDir = dirModifier(new File(project.buildDir, 'outputs'))
 
         def apktoolDir = new File(modIntermediateDir, 'apktool')
-        def dex2jarFile = new File(modIntermediateDir, 'dex2jar/classes.jar')
+        def dex2jarDir = new File(modIntermediateDir, 'dex2jar')
+        def dex2jarUnifiedDir = new File(modIntermediateDir, 'dex2jar-unified')
         def libraryDir = new File(modOutputDir, 'aar')
 
         def decodeApk = project.tasks.create(taskNameModifier('decodeApk'), DecodeApkTask)
@@ -77,28 +78,56 @@ class ApkLibraryPlugin extends AbstractPlugin {
                 def tree = project.fileTree(apktoolDir)
                 tree.include '*.dex'
             }
-            jarFile = dex2jarFile
+            outputDir = dex2jarDir
             forceOverwrite = true
         }
 
-        def apkLibrary = createApkLibraryTask(project, taskNameModifier('apkLibrary'), apktoolDir, dex2jarFile)
+        def dex2jarUnify = createDex2jarUnifyTask(project, taskNameModifier('dex2jarUnify'), dex2jarDir)
+        dex2jarUnify.with {
+            description = "Pack translated Java bytecode into a unified jar"
+            group = taskGroup
+            dependsOn dex2jar
+            destinationDir = dex2jarUnifiedDir
+        }
+
+        def apkLibrary = createApkLibraryTask(project, taskNameModifier('apkLibrary'), apktoolDir, dex2jarUnifiedDir)
         apkLibrary.with {
             description = "Packs the decoded and translated application into an apk library."
             group = taskGroup
-            dependsOn dex2jar
+            dependsOn dex2jarUnify
             destinationDir = libraryDir
             baseName = project.name
         }
 
         apkLibrary.extensions.add 'decodeApkTask', decodeApk
         apkLibrary.extensions.add 'dex2jarTask', dex2jar
+        apkLibrary.extensions.add 'dex2jarUnifyTask', dex2jarUnify
         apkLibrary.extensions.add 'apkLibraryTask', apkLibrary
 
         return apkLibrary
 
     }
 
-    static Zip createApkLibraryTask(Project project, String name, File apktoolDir, File dex2jarFile) {
+    static Zip createDex2jarUnifyTask(Project project, String name, File dex2jarDir) {
+
+        def dex2jarUnify = project.tasks.create(name, Zip)
+        dex2jarUnify.with {
+            duplicatesStrategy = DuplicatesStrategy.FAIL
+            archiveName = 'classes.jar'
+            inputs.sourceDir(dex2jarDir)
+        }
+
+        dex2jarUnify.doFirst {
+            for (File jar in (project.fileTree(dex2jarDir) as List<File>)) {
+                dex2jarUnify.from(project.zipTree(jar))
+            }
+        }
+
+        return dex2jarUnify
+
+    }
+
+    static Zip createApkLibraryTask(Project project, String name, File apktoolDir, File dex2jarUnifiedDir) {
 
         def apkLibrary = project.tasks.create(name, Zip)
         apkLibrary.with {
@@ -150,7 +179,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
                     into 'dexpatcher/apktool'
                 }
             }
-            from(dex2jarFile)
+            from(dex2jarUnifiedDir)
 
         }
         return apkLibrary
