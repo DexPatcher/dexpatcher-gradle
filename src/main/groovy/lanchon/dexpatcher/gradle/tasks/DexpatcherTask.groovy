@@ -132,17 +132,6 @@ class DexpatcherTask extends DexpatcherBaseTask {
 
     }
 
-    /*
-    // Gradle automatically creates output directories.
-    @Override protected void beforeExec() {
-        def outDir = getOutputDir()
-        if (outDir) {
-            outDir.mkdirs()
-            if (!outDir.directory) throw new RuntimeException("Could not create directory '$outDir'")
-        }
-    }
-    */
-
     @Override void afterExec() {
         def outFile = getOutputFile()
         if (outFile && !outFile.isFile()) throw new RuntimeException('No output generated')
