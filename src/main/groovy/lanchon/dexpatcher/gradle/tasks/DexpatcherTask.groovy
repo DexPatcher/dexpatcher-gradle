@@ -132,7 +132,7 @@ class DexpatcherTask extends DexpatcherBaseTask {
 
         if (getSourcePath()) args.add('--path')
         def pathRoot = getSourcePathRoot()
-        if (pathRoot) args.addAll(['--path-root', pathRoot])
+        if (pathRoot != null) args.addAll(['--path-root', pathRoot])
 
         if (getStats()) args.add('--stats')
 
