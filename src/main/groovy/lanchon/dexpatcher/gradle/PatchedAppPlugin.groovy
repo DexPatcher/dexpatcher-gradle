@@ -87,7 +87,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
 
     @Override
     protected void bypassCode(BaseVariant variant) {
-        super.processCode(variant)
+        super.bypassCode(variant)
         def appVariant = (ApplicationVariant) variant
         project.tasks.findByName("preDex${appVariant.name.capitalize()}")?.setEnabled(false)
         appVariant.dex?.setEnabled(false)
