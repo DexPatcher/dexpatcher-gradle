@@ -108,18 +108,18 @@ class DexpatcherTask extends DexpatcherBaseTask {
         args.addAll(['--output', (outFile ? outFile : outDir) as String])
 
         def api = getApiLevel()
-        if (api) args.addAll(['--api-level', api as String])
+        if (api != null) args.addAll(['--api-level', api as String])
 
         if (getMultiDex()) args.add('--multi-dex')
         if (getMultiDexThreaded()) args.add('--multi-dex-threaded')
         def jobs = getMultiDexJobs()
-        if (jobs) args.addAll(['--multi-dex-jobs', jobs as String])
+        if (jobs != null) args.addAll(['--multi-dex-jobs', jobs as String])
 
         def poolSize = getMaxDexPoolSize()
-        if (poolSize) args.addAll(['--max-dex-pool-size', poolSize as String])
+        if (poolSize != null) args.addAll(['--max-dex-pool-size', poolSize as String])
 
         def annotations = getAnnotationPackage()
-        if (annotations) args.addAll(['--annotations', annotations])
+        if (annotations != null) args.addAll(['--annotations', annotations])
         if (getCompatDexTag()) args.add('--compat-dextag')
 
         switch (getVerbosity()) {
