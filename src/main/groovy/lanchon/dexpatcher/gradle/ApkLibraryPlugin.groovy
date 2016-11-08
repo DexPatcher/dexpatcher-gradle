@@ -189,33 +189,30 @@ class ApkLibraryPlugin extends AbstractPlugin {
     private void createCleanTasks(String taskGroup) {
 
         def clean = (Delete) project.tasks.getByName(BasePlugin.CLEAN_TASK_NAME)
+        clean.actions.clear()
 
         def cleanApkLibrary = project.tasks.create('cleanApkLibrary', Delete)
         cleanApkLibrary.with {
             description = "Deletes the build directory of an apk library project."
             group = taskGroup
-            dependsOn { clean.dependsOn }
+            dependsOn { clean.dependsOn - cleanApkLibrary }
             delete { clean.delete }
         }
+
+        clean.mustRunAfter cleanApkLibrary
 
         def cleanAll = project.tasks.create('cleanAll')
         cleanAll.with {
             description = "Cleans all projects, including the apk library project."
             group = BasePlugin.BUILD_GROUP
-        }
-        project.rootProject.allprojects { Project eachProject ->
-            eachProject.tasks.all { Task task ->
-                if (task.name == BasePlugin.CLEAN_TASK_NAME) {
-                    cleanAll.dependsOn task
-                }
+            dependsOn {
+                project.rootProject.allprojects.findResults { it.tasks.findByName(BasePlugin.CLEAN_TASK_NAME) }
             }
+            dependsOn cleanApkLibrary
         }
 
         project.afterEvaluate {
-            if (apkLibrary.disableClean) {
-                clean.enabled = false
-                cleanAll.dependsOn cleanApkLibrary
-            }
+            if (!apkLibrary.disableClean) clean.dependsOn cleanApkLibrary
         }
 
     }
