@@ -92,7 +92,8 @@ class Dex2jarTask extends Dex2jarBaseTask {
 
     @Override void afterExec() {
         def outFile = getOutputFile()
-        if (outFile && !outFile.file) throw new RuntimeException('No output generated')
+        def outDir = getOutputDir()
+        if (outFile ? !outFile.file : project.fileTree(outDir).empty) throw new RuntimeException('No output generated')
     }
 
 }
