@@ -44,8 +44,12 @@ class BuildApkTask extends ApktoolBaseTask {
         return args;
     }
 
+    @Override void beforeExec() {
+        deleteOutputFile getApkFile()
+    }
+
     @Override void afterExec() {
-        if (!getApkFile().isFile()) throw new RuntimeException('No output generated')
+        checkOutputFile getApkFile()
     }
 
 }

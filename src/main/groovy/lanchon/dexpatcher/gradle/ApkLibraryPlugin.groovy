@@ -66,7 +66,6 @@ class ApkLibraryPlugin extends AbstractPlugin {
             outputDir = apktoolDir
             decodeClasses = false
             //keepBrokenResources = true
-            forceOverwrite = true
         }
 
         def dex2jar = project.tasks.create(taskNameModifier('dex2jar'), Dex2jarTask)
@@ -79,7 +78,6 @@ class ApkLibraryPlugin extends AbstractPlugin {
                 tree.include '*.dex'
             }
             outputDir = dex2jarDir
-            forceOverwrite = true
         }
 
         def dex2jarUnify = createDex2jarUnifyTask(project, taskNameModifier('dex2jarUnify'), dex2jarDir)

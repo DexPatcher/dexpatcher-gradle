@@ -150,10 +150,14 @@ class DexpatcherTask extends DexpatcherBaseTask {
 
     }
 
+    @Override void beforeExec() {
+        deleteOutputFile getOutputFile()
+        deleteOutputDir getOutputDir()
+    }
+
     @Override void afterExec() {
-        def outFile = getOutputFile()
-        def outDir = getOutputDir()
-        if (outFile ? !outFile.file : project.fileTree(outDir).empty) throw new RuntimeException('No output generated')
+        checkOutputFile getOutputFile()
+        checkOutputDir getOutputDir()
     }
 
 }

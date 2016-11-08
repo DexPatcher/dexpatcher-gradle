@@ -8,6 +8,8 @@ import org.gradle.process.JavaExecSpec
 @CompileStatic
 class CustomJavaExecTask extends JavaExec {
 
+    @Input boolean deleteOutputs = true
+
     @Input List<Object> extraArgs = new ArrayList()
 
     List<String> getExtraArgs() {
@@ -39,5 +41,21 @@ class CustomJavaExecTask extends JavaExec {
 
     protected void beforeExec() {}
     protected void afterExec() {}
+
+    protected void deleteOutputFile(File file) {
+        if (deleteOutputs && file) project.delete project.files(file)
+    }
+
+    protected void deleteOutputDir(File dir) {
+        if (deleteOutputs && dir) project.delete project.fileTree(dir)
+    }
+
+    protected void checkOutputFile(File file) {
+        if (file && !file.file) throw new RuntimeException('No output generated')
+    }
+
+    protected void checkOutputDir(File dir) {
+        if (dir && project.fileTree(dir).empty) throw new RuntimeException('No output generated')
+    }
 
 }
