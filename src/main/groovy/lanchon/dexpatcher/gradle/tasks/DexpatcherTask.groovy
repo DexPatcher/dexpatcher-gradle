@@ -59,19 +59,24 @@ class DexpatcherTask extends DexpatcherBaseTask {
     @InputFiles private FileCollection getSourceFiles() {
         FileCollection files = project.files()
         def file = getSource()
-        if (file) files = file.directory ? (files + project.fileTree(file)) : (files + project.files(file))
+        if (file) {
+            files = file.directory ? (files + project.fileTree(file)) : (files + project.files(file))
+        }
         return files
     }
 
     @Input List<File> getPatches() {
-        Resolver.resolve(patches) {
-            it instanceof Iterable ? it.collect { each -> project.file(each) } : [project.file(it)]
+        Resolver.resolveNullable(patches) {
+            it instanceof Iterable ? it.collect { each -> project.file(each) } : [ project.file(it) ]
         }
     }
     @InputFiles private FileCollection getPatchFiles() {
         FileCollection files = project.files()
-        for (def file : getPatches()) {
-            files = file.directory ? (files + project.fileTree(file)) : (files + project.files(file))
+        def patches = getPatches()
+        if (patches) {
+            for (def file : patches) {
+                files = file.directory ? (files + project.fileTree(file)) : (files + project.files(file))
+            }
         }
         return files
     }
