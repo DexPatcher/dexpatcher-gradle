@@ -52,7 +52,15 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
 
         project.afterEvaluate {
             appVariants.all { ApplicationVariant variant ->
-                createPatchDexTask(variant)
+                def patchDexTask = createPatchDexTask(variant)
+                if (variant.buildType.debuggable) {
+                    if (patchedAppExtension.multiDexThreadedForAllDebugBuilds) {
+                        patchDexTask.multiDex = true
+                        patchDexTask.multiDexThreaded = true
+                    } else if (patchedAppExtension.multiDexThreadedForMultiDexDebugBuilds) {
+                        patchDexTask.multiDexThreaded = true
+                    }
+                }
             }
         }
 

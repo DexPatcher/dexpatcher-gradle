@@ -7,4 +7,7 @@ class PatchedAppExtension extends AbstractPatcherExtension {
 
     static final String EXTENSION_NAME = 'patchedApplication'
 
+    boolean multiDexThreadedForMultiDexDebugBuilds = true
+    boolean multiDexThreadedForAllDebugBuilds
+
 }
