@@ -130,10 +130,8 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
     }
 
     protected void afterPrepareApkLibrary(Closure closure) {
-        def libTasks = project.tasks.withType(PrepareLibraryTask)
-        project.gradle.taskGraph.afterTask {
-            if (libTasks.contains(it)) {
-                PrepareLibraryTask task = (PrepareLibraryTask) it
+        project.gradle.taskGraph.afterTask { task ->
+            if (task instanceof PrepareLibraryTask && task.project.is(project)) {
                 if (isPrepareApkLibraryTask(task)) {
                     closure.maximumNumberOfParameters ? closure(task) : closure()
                 }
