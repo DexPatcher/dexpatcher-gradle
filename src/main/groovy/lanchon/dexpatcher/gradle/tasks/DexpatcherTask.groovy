@@ -115,10 +115,15 @@ class DexpatcherTask extends DexpatcherBaseTask {
         def api = getApiLevel()
         if (api != null) args.addAll(['--api-level', api as String])
 
-        if (getMultiDex()) args.add('--multi-dex')
-        if (getMultiDexThreaded()) args.add('--multi-dex-threaded')
-        def jobs = getMultiDexJobs()
-        if (jobs != null) args.addAll(['--multi-dex-jobs', jobs as String])
+        if (getMultiDex()) {
+            if (!getMultiDexThreaded()) {
+                args.add('--multi-dex')
+            } else {
+                args.add('--multi-dex-threaded')
+                def jobs = getMultiDexJobs()
+                if (jobs != null) args.addAll(['--multi-dex-jobs', jobs as String])
+            }
+        }
 
         def poolSize = getMaxDexPoolSize()
         if (poolSize != null) args.addAll(['--max-dex-pool-size', poolSize as String])
