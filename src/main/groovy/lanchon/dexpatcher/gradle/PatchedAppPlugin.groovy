@@ -6,15 +6,16 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.tasks.PackageApplication
 
 import com.google.common.collect.ImmutableSet
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
 import lanchon.dexpatcher.gradle.extensions.PatchedAppExtension
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.plugins.ExtensionAware
 
 @CompileStatic
@@ -74,15 +75,18 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
         variant.outputs.each {
             if (it instanceof ApkVariantOutput) {
 
-                def output = (ApkVariantOutput) it
-                def packageApp = output.packageApplication
+                //def output = (ApkVariantOutput) it
+                //def packageApp = output.packageApplication
+                def packageApp = getPackageTask(it);
 
                 patchDex.mustRunAfter { packageApp.dependsOn - patchDex }
                 packageApp.dependsOn patchDex
 
                 beforeTask(patchDex) {
 
-                    def dexFolders = packageApp.dexFolders
+                    //def dexFolders = packageApp.dexFolders
+                    def dexFolders = getPackageTaskDexFolders(packageApp)
+
                     if (dexFolders == null) throw new RuntimeException(
                             "Output of variant '${variant.name}' has null dex folders")
                     if (dexFolders.empty) throw new RuntimeException(
@@ -100,9 +104,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
                     patchDex.patches = dexFolder
 
                     //packageApp.dexFolders = outDexFolders
-                    def dexFoldersField = PackageApplication.class.getDeclaredField('dexFolders')
-                    dexFoldersField.accessible = true
-                    dexFoldersField.set(packageApp, patchedDexFolders)
+                    setPackageTaskDexFolders(packageApp, patchedDexFolders)
 
                 }
 
@@ -112,6 +114,40 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
         variant.assemble.extensions.add 'patchDex', patchDex
         return patchDex
 
+    }
+
+    @CompileDynamic
+    private static Task getPackageTask(def apkVariantOutput) {
+        // The type of 'apkVariantOutput.packageApplication' is:
+        //  -> 'PackageApplication' in Android plugin up to v2.1.3.
+        //  -> 'PackageAndroidArtifact' in Android plugin v2.2.0 and higher.
+        return apkVariantOutput.packageApplication
+    }
+
+    @CompileDynamic
+    private static Set<File> getPackageTaskDexFolders(def packageTask) {
+        return packageTask.dexFolders
+    }
+
+    //@CompileDynamic
+    private static void setPackageTaskDexFolders(def packageTask, Set<File> dexFolders) {
+        // 'packageApp.dexFolders' is not writable in Android plugin v2.1.3 and earlier.
+        //packageTask.dexFolders = dexFolders
+        // The class of 'packageTask' is subclassed by some presumably run-time mechanism.
+        //def dexFoldersField = packageApp.getClass().getDeclaredField('dexFolders')
+        def dexFoldersField
+        def theClass = packageTask.getClass()
+        for (;;) {
+            try {
+                dexFoldersField = theClass.getDeclaredField('dexFolders')
+                break
+            } catch (NoSuchFieldException e) {
+                theClass = theClass.superclass
+                if (!theClass) throw e
+            }
+        }
+        dexFoldersField.accessible = true
+        dexFoldersField.set(packageTask, dexFolders)
     }
 
     /*
