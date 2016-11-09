@@ -6,27 +6,23 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.tasks.MergeAssets
-import com.android.build.gradle.tasks.PreDex
-import com.android.ide.common.res2.AssetSet
+import com.android.build.gradle.tasks.PackageApplication
+
+import com.google.common.collect.ImmutableSet
 import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
 import lanchon.dexpatcher.gradle.extensions.PatchedAppExtension
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.internal.DefaultDomainObjectSet
-import org.gradle.api.logging.LogLevel
 import org.gradle.api.plugins.ExtensionAware
-import org.gradle.api.tasks.Sync
 
 @CompileStatic
 class PatchedAppPlugin extends AbstractPatcherPlugin {
 
     protected PatchedAppExtension patchedAppExtension
     protected AppExtension appExtension
-    protected DefaultDomainObjectSet<ApplicationVariant> appVariants
+    protected DomainObjectSet<ApplicationVariant> appVariants
 
     @Override protected AbstractPatcherExtension getPatcherExtension() { patchedAppExtension }
     @Override protected BaseExtension getAndroidExtension() { appExtension }
@@ -44,25 +40,82 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
         appExtension = project.extensions.getByType(AppExtension)
         appVariants = appExtension.applicationVariants
 
-        applyAndroid()
+        applyAfterAndroid()
 
     }
 
     @Override
-    protected void applyAndroid() {
+    protected void applyAfterAndroid() {
 
-        super.applyAndroid()
-
-        def libClasspath = project.dependencies.create(dexpatcherConfig.getLibClasspath())
-        project.configurations.getByName('compile').dependencies.add(libClasspath)
+        super.applyAfterAndroid()
 
         project.afterEvaluate {
             appVariants.all { ApplicationVariant variant ->
-                processJavaResources(variant)
+                createPatchDexTask(variant)
             }
         }
 
     }
+
+    private DexpatcherTask createPatchDexTask(ApplicationVariant variant) {
+
+        def patchDex = project.tasks.create("patch${variant.name.capitalize()}Dex", DexpatcherTask)
+        File patchedDexDir = new File(dexpatcherDir, "patched-dex/${variant.dirName}")
+        patchDex.with {
+            description = "Patches the source dex from an apk library using the just-built patch dex."
+            group = DexpatcherBasePlugin.TASK_GROUP
+            outputDir = patchedDexDir
+        }
+        afterPrepareApkLibrary {
+            patchDex.source = apkLibrary.dexDir
+        }
+
+        def Set<File> patchedDexFolders = ImmutableSet.of(patchedDexDir)
+        variant.outputs.each {
+            if (it instanceof ApkVariantOutput) {
+
+                def output = (ApkVariantOutput) it
+                def packageApp = output.packageApplication
+
+                patchDex.mustRunAfter { packageApp.dependsOn - patchDex }
+                packageApp.dependsOn patchDex
+
+                beforeTask(patchDex) {
+
+                    def dexFolders = packageApp.dexFolders
+                    if (dexFolders == null) throw new RuntimeException(
+                            "Output of variant '${variant.name}' has null dex folders")
+                    if (dexFolders.empty) throw new RuntimeException(
+                            "Output of variant '${variant.name}' has no dex folders")
+                    if (dexFolders.size() > 1) throw new RuntimeException(
+                            "Output of variant '${variant.name}' has multiple dex folders")
+
+                    def dexFolder = dexFolders[0]
+                    if (dexFolder == null) throw new RuntimeException(
+                            "Output of variant '${variant.name}' has null dex folder")
+                    dexFolder = project.file(dexFolder)
+                    def patches = patchDex.getPatches()
+                    if (patches != null && !patches.contains(dexFolder)) throw new RuntimeException(
+                            "Outputs of variant '${variant.name}' do not share dex folders")
+                    patchDex.patches = dexFolder
+
+                    //packageApp.dexFolders = outDexFolders
+                    def dexFoldersField = PackageApplication.class.getDeclaredField('dexFolders')
+                    dexFoldersField.accessible = true
+                    dexFoldersField.set(packageApp, patchedDexFolders)
+
+                }
+
+            }
+        }
+
+        variant.assemble.extensions.add 'patchDex', patchDex
+        return patchDex
+
+    }
+
+    /*
+    // BYPASS PROCESSING
 
     // Code
 
@@ -70,18 +123,6 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
     protected void processCode(BaseVariant variant) {
         super.processCode(variant)
         def appVariant = (ApplicationVariant) variant
-        afterPrepareDependencies(appVariant) { File apkDir ->
-            def excludeFromDex = project.fileTree(new File(apkDir, 'jars'))
-            def dex = appVariant.dex
-            if (dex) {
-                if (dex.inputFiles) dex.inputFiles = (dex.inputFiles as List<File>) - excludeFromDex
-                def preDex = (PreDex) project.tasks.findByName("preDex${appVariant.name.capitalize()}")
-                if (preDex && preDex.inputFiles) preDex.inputFiles = (preDex.inputFiles as List<File>) - excludeFromDex
-            } else {
-                // TODO: Support Jack compiler.
-                throw new RuntimeException('The Jack compiler is not supported')
-            }
-        }
         createPatchDexTask(appVariant)
     }
 
@@ -94,34 +135,6 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
         createImportDexTask(appVariant)
     }
 
-    private DexpatcherTask createPatchDexTask(ApplicationVariant variant) {
-        Task dexCreator = variant.dex ?: variant.javaCompiler
-        File dexDir = variant.dex ? variant.dex.outputFolder : variant.javaCompiler.destinationDir
-        File patchDexDir = new File(project.buildDir, "intermediates/patch-dex/${variant.dirName}")
-        variant.dex ? (variant.dex.outputFolder = patchDexDir) : (variant.javaCompiler.destinationDir = patchDexDir)
-        def patchDex = project.tasks.create("patch${variant.name.capitalize()}Dex", DexpatcherTask)
-        patchDex.with {
-            description = "Patches the source dex from an apk library using the just-built patch dex."
-            group = DexpatcherBasePlugin.TASK_GROUP
-            dependsOn dexCreator
-            patches = project.files(patchDexDir)
-            outputDir = dexDir
-        }
-        afterPrepareDependencies(variant) { File apkDir ->
-            patchDex.source = new File(apkDir, 'dexpatcher/dex')
-        }
-        variant.outputs.each {
-            if (it instanceof ApkVariantOutput) {
-                it.packageApplication.with {
-                    dependsOn patchDex
-                    dexFolder = dexDir
-                }
-            }
-        }
-        variant.assemble.extensions.add 'patchDex', patchDex
-        return patchDex
-    }
-
     private Sync createImportDexTask(ApplicationVariant variant) {
         Task dexCreator = variant.dex ?: variant.javaCompiler
         File dexDir = variant.dex ? variant.dex.outputFolder : variant.javaCompiler.destinationDir
@@ -132,8 +145,8 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
             dependsOn dexCreator
             into dexDir
         }
-        afterPrepareDependencies(variant) { File apkDir ->
-            importDex.from new File(apkDir, 'dexpatcher/dex')
+        afterPrepareDependencies(variant) { File libDir ->
+            importDex.from new File(libDir, 'dexpatcher/dex')
         }
         variant.outputs.each {
             if (it instanceof ApkVariantOutput) {
@@ -143,55 +156,6 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
         variant.assemble.extensions.add 'importDex', importDex
         return importDex
     }
-
-    // Java Resources
-
-    private void processJavaResources(ApplicationVariant variant) {
-        def mergeJavaRes = createMergeJavaResTask(variant)
-        variant.outputs.each {
-            if (it instanceof ApkVariantOutput) {
-                it.packageApplication.javaResourceDir = mergeJavaRes.outputDir
-            }
-        }
-    }
-
-    private MergeAssets createMergeJavaResTask(BaseVariant variant) {
-        def mergeAssets = variant.mergeAssets
-        def processJavaResources = variant.processJavaResources
-        def mergeJavaRes = project.tasks.create("merge${variant.name.capitalize()}JavaRes", MergeAssets)
-        mergeJavaRes.with {
-            description = "Merge the java resource tree that will be packaged into the root of the apk."
-            group = DexpatcherBasePlugin.TASK_GROUP
-            dependsOn = mergeAssets.dependsOn
-            dependsOn processJavaResources
-            androidBuilder = mergeAssets.androidBuilder
-            incrementalFolder = new File(project.buildDir, "intermediates/incremental/mergeJavaRes/${variant.dirName}")
-            outputDir = new File(project.buildDir, "intermediates/merged-java-resources/${variant.dirName}")
-            onlyIf {
-                // WARNING: Abusing onlyIf to configure task.
-                def explodedAarPath = new File(project.buildDir, 'intermediates/exploded-aar').canonicalPath
-                def javaResSets = new ArrayList<AssetSet>()
-                mergeAssets.inputAssetSets.each { assetSet ->
-                    def javaResSet = new AssetSet(assetSet.configName)
-                    assetSet.sourceFiles.each {
-                        def assetDir = (File) it
-                        if (assetDir.canonicalPath.startsWith(explodedAarPath)) {
-                            if (assetDir.name == 'assets') javaResSet.addSource new File(assetDir.parentFile, 'resources')
-                            else logger.log LogLevel.WARN, "Could not derive library resource directory from library asset directory '$assetDir'"
-                        }
-                    }
-                    if (!javaResSet.sourceFiles.empty) javaResSets.add(javaResSet)
-                }
-                def javaResSet = new AssetSet(processJavaResources.name)
-                javaResSet.addSource processJavaResources.destinationDir
-                javaResSets.add(javaResSet)
-                mergeJavaRes.inputAssetSets = javaResSets
-                return true
-            }
-        }
-        mergeAssets.dependsOn mergeJavaRes
-        variant.assemble.extensions.add 'mergeJavaResources', mergeJavaRes
-        return mergeJavaRes
-    }
+    */
 
 }

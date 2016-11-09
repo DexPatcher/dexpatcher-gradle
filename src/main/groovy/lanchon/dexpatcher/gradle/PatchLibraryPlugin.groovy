@@ -5,7 +5,6 @@ import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.LibraryVariant
-import com.android.build.gradle.api.LibraryVariantOutput
 import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
 import lanchon.dexpatcher.gradle.extensions.PatchLibraryExtension
@@ -37,33 +36,19 @@ class PatchLibraryPlugin extends AbstractPatcherPlugin {
         libraryExtension = project.extensions.getByType(LibraryExtension)
         libraryVariants = libraryExtension.libraryVariants
 
-        applyAndroid()
+        applyAfterAndroid()
     }
 
     @Override
-    protected void applyAndroid() {
+    protected void applyAfterAndroid() {
 
-        super.applyAndroid()
+        super.applyAfterAndroid()
 
-        def libClasspath = project.dependencies.create(dexpatcherConfig.getLibClasspath())
-        project.configurations.getByName('provided').dependencies.add(libClasspath)
+        //project.afterEvaluate {
+        //    libraryVariants.all { LibraryVariant variant ->
+        //    }
+        //}
 
-        project.afterEvaluate {
-            libraryVariants.all { LibraryVariant variant ->
-                processJavaResources(variant)
-            }
-        }
-
-    }
-
-    // Java Resources
-
-    private void processJavaResources(LibraryVariant variant) {
-        variant.outputs.each {
-            if (it instanceof LibraryVariantOutput) {
-                // TODO: Support bundling of java resources.
-            }
-        }
     }
 
 }

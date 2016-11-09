@@ -7,6 +7,6 @@ class AbstractPatcherExtension {
 
     //boolean patchManifest = true      // TODO
     //boolean patchResources = true     // TODO
-    boolean patchCode = true
+    //boolean patchCode = true          // TODO
 
 }
