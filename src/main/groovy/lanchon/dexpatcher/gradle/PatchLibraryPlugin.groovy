@@ -51,4 +51,11 @@ class PatchLibraryPlugin extends AbstractPatcherPlugin {
 
     }
 
+    @Override
+    protected void addDependencies(File rootDir) {
+        super.addDependencies rootDir
+        def pluginDir = new File(rootDir, 'patch-library')
+        super.addDependencies pluginDir
+    }
+
 }

@@ -66,6 +66,14 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
 
     }
 
+    @Override
+    protected void addDependencies(File rootDir) {
+        super.addDependencies rootDir
+        def pluginDir = new File(rootDir, 'patched-application')
+        super.addDependencies pluginDir
+        addDependencies pluginDir, 'apk'
+    }
+
     private DexpatcherTask createPatchDexTask(ApplicationVariant variant) {
 
         def patchDex = project.tasks.create("patch${variant.name.capitalize()}Dex", DexpatcherTask)
