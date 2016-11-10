@@ -67,7 +67,7 @@ class DexpatcherTask extends DexpatcherBaseTask {
 
     @Input List<File> getPatches() {
         Resolver.resolveNullable(patches) {
-            it instanceof Iterable ? it.collect { each -> project.file(each) } : [ project.file(it) ]
+            it instanceof Iterable ? it.collect { each -> project.file(each) } : [project.file(it)]
         }
     }
     @InputFiles private FileCollection getPatchFiles() {
