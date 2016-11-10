@@ -7,6 +7,7 @@ class ApktoolBaseTask extends CustomJavaExecTask {
 
     ApktoolBaseTask() {
         main = 'brut.apktool.Main'
+        blankLines = true
     }
 
 }

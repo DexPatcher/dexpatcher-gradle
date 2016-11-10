@@ -69,7 +69,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
             //keepBrokenResources = true
         }
         decodeApk << {
-            printApkInfo(apktoolDir)
+            printApkInfo decodeApk
         }
 
         def dex2jar = project.tasks.create(taskNameModifier('dex2jar'), Dex2jarTask)
@@ -120,16 +120,15 @@ class ApkLibraryPlugin extends AbstractPlugin {
 
     }
 
-    private static void printApkInfo(File apktoolDir) {
-        def apktoolYmlFile = new File(apktoolDir, 'apktool.yml')
+    private static void printApkInfo(DecodeApkTask task) {
+        def apktoolYmlFile = new File(task.getOutputDir(), 'apktool.yml')
         if (apktoolYmlFile.file) {
             def pattern = ~/^\s*(minSdkVersion|targetSdkVersion|versionCode|versionName):/
-            println()
             println 'APK information:'
             apktoolYmlFile.eachLine { line ->
                 if (pattern.matcher(line).find()) println line
             }
-            println()
+            if (task.blankLines) println()
         }
     }
 

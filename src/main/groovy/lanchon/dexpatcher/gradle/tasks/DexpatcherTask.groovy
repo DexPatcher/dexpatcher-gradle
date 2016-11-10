@@ -57,6 +57,7 @@ class DexpatcherTask extends CustomJavaExecTask {
 
     DexpatcherTask() {
         main = 'lanchon.dexpatcher.Main'
+        blankLines = true
     }
 
     @Input File getSource() { Resolver.resolveNullableFile(project, source) }

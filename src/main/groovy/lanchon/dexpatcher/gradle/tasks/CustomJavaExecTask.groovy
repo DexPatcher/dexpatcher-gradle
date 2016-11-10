@@ -8,6 +8,8 @@ import org.gradle.process.JavaExecSpec
 @CompileStatic
 class CustomJavaExecTask extends JavaExec {
 
+    public boolean blankLines
+
     @Input boolean deleteOutputs = true
 
     @Input List<Object> extraArgs = new ArrayList()
@@ -34,9 +36,11 @@ class CustomJavaExecTask extends JavaExec {
 
     @Override void exec() {
         super.setArgs(getArgs())
+        if (blankLines) println()
         beforeExec()
         super.exec()
         afterExec()
+        if (blankLines) println()
     }
 
     protected void beforeExec() {}
