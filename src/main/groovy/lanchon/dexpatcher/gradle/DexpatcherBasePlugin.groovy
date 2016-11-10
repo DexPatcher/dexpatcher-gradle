@@ -33,7 +33,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         setExtensions()
 
         project.tasks.withType(DexpatcherTask) { DexpatcherTask task ->
-            task.classpath { dexpatcher.getClasspath() }
+            task.classpath { dexpatcher.classpath }
             task.apiLevel = { dexpatcher.apiLevel }
             task.multiDex = { dexpatcher.multiDex }
             task.multiDexThreaded = { dexpatcher.multiDexThreaded }
@@ -48,7 +48,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         }
 
         project.tasks.withType(ApktoolBaseTask) { ApktoolBaseTask task ->
-            task.classpath { apktool.getClasspath() }
+            task.classpath { apktool.classpath }
         }
         project.tasks.withType(DecodeApkTask) { DecodeApkTask task ->
             task.frameworkDir = { apktool.getFrameworkDir() }
@@ -61,7 +61,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         }
 
         project.tasks.withType(Dex2jarBaseTask) { Dex2jarBaseTask task ->
-            task.classpath { dex2jar.getClasspath() }
+            task.classpath { dex2jar.classpath }
         }
 
     }

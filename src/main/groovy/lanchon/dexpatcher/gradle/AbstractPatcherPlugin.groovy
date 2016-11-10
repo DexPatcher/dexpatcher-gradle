@@ -65,8 +65,8 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
         dexpatcherDir = new File(project.buildDir, 'intermediates/dexpatcher')
 
         // The 'compile' scope could also be used for patched apps (but not for patch libs).
-        def libClasspath = project.dependencies.create(dexpatcherConfig.getLibClasspath())
-        project.configurations.getByName('provided').dependencies.add(libClasspath)
+        def libJars = Resolver.getJars(project, dexpatcherConfig.resolvedLibDir)
+        project.configurations.getByName('provided').dependencies.add(project.dependencies.create(libJars))
 
         // Setup 'apkLibrary' property.
         project.afterEvaluate {

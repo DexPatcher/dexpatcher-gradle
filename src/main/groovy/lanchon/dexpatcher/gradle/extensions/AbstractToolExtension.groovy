@@ -1,6 +1,7 @@
 package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
+import lanchon.dexpatcher.gradle.Resolver
 import org.gradle.api.file.FileCollection
 
 @CompileStatic
@@ -17,7 +18,8 @@ abstract class AbstractToolExtension {
     }
 
     File getDir() { dexpatcherConfig.resolveClosures(dir) }
+    File getResolvedDir() { dexpatcherConfig.getResolvedToolDir(getDir(), defaultSubdirName) }
 
-    FileCollection getClasspath() { dexpatcherConfig.getToolClasspath(getDir(), defaultSubdirName) }
+    FileCollection getClasspath() { Resolver.getJars(dexpatcherConfig.project, getResolvedDir()) }
 
 }

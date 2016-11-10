@@ -2,6 +2,7 @@ package lanchon.dexpatcher.gradle
 
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
+import org.gradle.api.file.FileCollection
 
 @CompileStatic
 abstract class Resolver {
@@ -24,6 +25,12 @@ abstract class Resolver {
 
     static File resolveNullableFile(Project project, Object object) {
         resolveNullable(object) { project.file(it) }
+    }
+
+    static FileCollection getJars(Project project, File rootDirOrFile) {
+        def jars = project.fileTree(rootDirOrFile)
+        jars.include '**/*.jar'
+        return jars
     }
 
 }
