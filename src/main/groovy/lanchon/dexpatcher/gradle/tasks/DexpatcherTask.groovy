@@ -37,7 +37,7 @@ usage: dexpatcher [<option> ...] [--output <patched-dex-or-dir>]
 */
 
 @CompileStatic
-class DexpatcherTask extends DexpatcherBaseTask {
+class DexpatcherTask extends CustomJavaExecTask {
 
     def source
     def patches
@@ -54,6 +54,10 @@ class DexpatcherTask extends DexpatcherBaseTask {
     def logSourcePath
     def logSourcePathRoot
     def logStats
+
+    DexpatcherTask() {
+        main = 'lanchon.dexpatcher.Main'
+    }
 
     @Input File getSource() { Resolver.resolveNullableFile(project, source) }
     @InputFiles private FileCollection getSourceFiles() {

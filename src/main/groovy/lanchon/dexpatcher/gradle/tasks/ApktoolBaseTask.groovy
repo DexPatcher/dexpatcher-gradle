@@ -6,7 +6,7 @@ import groovy.transform.CompileStatic
 class ApktoolBaseTask extends CustomJavaExecTask {
 
     ApktoolBaseTask() {
-        setMain('brut.apktool.Main')
+        main = 'brut.apktool.Main'
     }
 
 }

@@ -44,7 +44,7 @@ class Dex2jarTask extends Dex2jarBaseTask {
     @Input boolean forceOverwrite
 
     Dex2jarTask() {
-        setMain(MAIN_DEX2JAR)
+        main = MAIN_DEX2JAR
     }
 
     @InputFiles FileCollection getDexFiles() { project.files(dexFiles) }
