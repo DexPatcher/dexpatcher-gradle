@@ -64,9 +64,7 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
 
         dexpatcherDir = new File(project.buildDir, 'intermediates/dexpatcher')
 
-        // The 'compile' scope could also be used for patched apps (but not for patch libs).
-        def libJars = Resolver.getJars(project, dexpatcherConfig.resolvedLibDir)
-        project.configurations.getByName('provided').dependencies.add(project.dependencies.create(libJars))
+        addDependencies dexpatcherConfig.resolvedLibDir
 
         // Setup 'apkLibrary' property.
         project.afterEvaluate {
@@ -79,6 +77,16 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
         addDedexedClassesToProvidedScope()
         workaroundForPublicXmlMergeBug()
 
+    }
+
+    protected void addDependencies(File rootDir) {
+        addDependencies rootDir, 'compile'
+        addDependencies rootDir, 'provided'
+    }
+
+    protected void addDependencies(File rootDir, String scope) {
+        def jars = Resolver.getJars(project, new File(rootDir, scope))
+        project.configurations.getByName(scope).dependencies.add(project.dependencies.create(jars))
     }
 
     private void addDedexedClassesToProvidedScope() {
