@@ -81,7 +81,7 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
 
     }
 
-    private addDedexedClassesToProvidedScope() {
+    private void addDedexedClassesToProvidedScope() {
         // Add a non-existent jar file to the 'provided' scope.
         def dedexFile = new File(dexpatcherDir, 'dedex/classes.jar')
         def dedexDependency = project.dependencies.create(project.files(dedexFile))
