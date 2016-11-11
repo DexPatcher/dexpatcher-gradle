@@ -156,7 +156,9 @@ class ApkLibraryPlugin extends AbstractPlugin {
         }
 
         dex2jarUnify.doFirst {
-            project.fileTree(dex2jarDir).each {
+            def tree = project.fileTree(dex2jarDir)
+            tree.include '*.jar'
+            tree.each {
                 dex2jarUnify.from(project.zipTree(it))
             }
         }
