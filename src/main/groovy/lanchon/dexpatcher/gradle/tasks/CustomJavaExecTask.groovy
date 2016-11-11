@@ -11,18 +11,14 @@ class CustomJavaExecTask extends JavaExec {
 
     def blankLines
     def deleteOutputs = true
-    private List<Object> extraArgs = new ArrayList()
+    def extraArgs
 
-    boolean getBlankLines() { Resolver.resolve(blankLines) as Boolean }
-
-    @Input boolean getDeleteOutputs() { Resolver.resolve(deleteOutputs) as Boolean }
-
-    @Input List<String> getExtraArgs() { extraArgs as List<String> }
-    void setExtraArgs(Iterable<?> extraArgs) { this.extraArgs = new ArrayList(Arrays.asList(extraArgs)) }
-    void extraArgs(Object... extraArgs) { this.extraArgs.addAll(extraArgs) }
+    boolean getBlankLines() { Resolver.resolve(blankLines) as boolean }
+    @Input boolean getDeleteOutputs() { Resolver.resolve(deleteOutputs) as boolean }
+    @Input List<String> getExtraArgs() { Resolver.resolve(extraArgs).collect() { it as String } }
 
     @Override List<String> getArgs() {
-        return new ArrayList<String>(getExtraArgs());
+        return getExtraArgs();
     }
 
     @Override JavaExec setArgs(Iterable<?> args) { throw new UnsupportedOperationException() }
