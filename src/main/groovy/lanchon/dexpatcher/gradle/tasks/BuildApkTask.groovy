@@ -24,24 +24,29 @@ class BuildApkTask extends AbstractApktoolTask {
 
     def inputDir
     def apkFile
-    def frameworkDir
     def aaptFile
-    @Input boolean forceRebuild
+    def copyOriginal
+    def forceDebuggableBuild
+    def forceCleanBuild
 
     BuildApkTask() {
         super('build')
     }
 
-    @InputDirectory File getInputDir() { project.file(inputDir) }
-    @OutputFile File getApkFile() { project.file(apkFile) }
-    @Optional @InputDirectory File getFrameworkDir() { Resolver.resolveNullableFile(project, frameworkDir) }
+    @InputDirectory File getInputDir() { Resolver.resolveNullableFile(project, inputDir) }
+    @OutputFile File getApkFile() { Resolver.resolveNullableFile(project, apkFile) }
     @Optional @InputFile File getAaptFile() { Resolver.resolveNullableFile(project, aaptFile) }
+    @Optional @Input Boolean getCopyOriginal() { Resolver.resolve(copyOriginal) as Boolean }
+    @Optional @Input Boolean getForceDebuggableBuild() { Resolver.resolve(forceDebuggableBuild) as Boolean }
+    @Optional @Input Boolean getForceCleanBuild() { Resolver.resolve(forceCleanBuild) as Boolean }
 
     @Override List<String> getArgs() {
         def args = super.getArgs()
         args.addAll(['--output', getApkFile() as String])
         if (getAaptFile()) args.addAll(['--aapt', getAaptFile() as String])
-        if (forceRebuild) args.add('--force-all')
+        if (getCopyOriginal()) args.add('--copy-original')
+        if (getForceDebuggableBuild()) args.add('--debug')
+        if (getForceCleanBuild()) args.add('--force-all')
         args.addAll(getExtraArgs())
         args.add(getInputDir() as String)
         return args;
