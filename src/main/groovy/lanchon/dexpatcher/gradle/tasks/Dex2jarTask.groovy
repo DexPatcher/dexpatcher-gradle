@@ -85,7 +85,10 @@ class Dex2jarTask extends AbstractDex2jarTask {
         def outDir = getOutputDir()
         if (!outFile && !outDir) throw new RuntimeException('No output file or directory specified')
         if (outFile && outDir) throw new RuntimeException('Output file and directory must not both be specified')
-        if (outFile) args.addAll(['--output', outFile as String])
+        if (outFile) {
+            args.addAll(['--output', outFile as String])
+            workingDir = outFile.parentFile
+        }
         else workingDir = outDir
 
         def exceptionFile = getExceptionFile()
