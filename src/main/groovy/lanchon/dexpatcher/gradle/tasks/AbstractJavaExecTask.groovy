@@ -10,13 +10,13 @@ import org.gradle.process.JavaExecSpec
 @CompileStatic
 abstract class AbstractJavaExecTask extends JavaExec {
 
+    def extraArgs
     def addBlankLines
     def deleteOutputs = true
-    def extraArgs
 
+    @Input List<String> getExtraArgs() { Resolver.resolve(extraArgs).collect() { it as String } }
     Boolean getAddBlankLines() { Resolver.resolve(addBlankLines) as Boolean }
     @Optional @Input Boolean getDeleteOutputs() { Resolver.resolve(deleteOutputs) as Boolean }
-    @Input List<String> getExtraArgs() { Resolver.resolve(extraArgs).collect() { it as String } }
 
     @Override abstract List<String> getArgs()
 

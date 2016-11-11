@@ -11,9 +11,9 @@ abstract class AbstractToolExtension {
     protected final String defaultSubdirName;
 
     def dir
+    def extraArgs
     //boolean addBlankLines
     //boolean deleteOutputs = true
-    def extraArgs
 
     AbstractToolExtension(DexpatcherConfigExtension dexpatcherConfig, String defaultSubdirName) {
         this.dexpatcherConfig = dexpatcherConfig
