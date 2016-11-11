@@ -9,10 +9,11 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 
 /*
+Apktool v2.2.1 - a tool for reengineering Android apk files
 usage: apktool [-q|--quiet OR -v|--verbose] b[uild] [options] <app_path>
  -a,--aapt <loc>         Loads aapt from specified location.
  -c,--copy-original      Copies original AndroidManifest.xml and META-INF. See project page for more info.
- -d,--debug              Builds in debug mode. Check project page for more info.
+ -d,--debug              Sets android:debuggable to "true" in the APK's compiled manifest
  -f,--force-all          Skip changes detection and build all files.
  -o,--output <dir>       The name of apk that gets written. Default is dist/name.apk
  -p,--frame-path <dir>   Uses framework files located in <dir>.

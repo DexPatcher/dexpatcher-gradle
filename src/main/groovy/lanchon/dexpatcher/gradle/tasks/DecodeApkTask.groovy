@@ -9,22 +9,21 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 
 /*
+Apktool v2.2.1 - a tool for reengineering Android apk files
 usage: apktool [-q|--quiet OR -v|--verbose] d[ecode] [options] <file_apk>
-    --api <API>                    The numeric api-level of the file to generate, e.g. 14 for ICS.
- -b,--no-debug-info                don't write out debug info (.local, .param, .line, etc.)
- -d,--debug                        Decode in debug mode. Check project page for more info.
-    --debug-line-prefix <prefix>   Smali line prefix when decoding in debug mode. Default is "a=0;// ".
- -f,--force                        Force delete destination directory.
- -k,--keep-broken-res              Use if there was an error and some resources were dropped, e.g.
-                                   "Invalid config flags detected. Dropping resources", but you
-                                   want to decode them anyway, even with errors. You will have to
-                                   fix them manually before building.
- -m,--match-original               Keeps files to closest to original as possible. Prevents rebuild.
- -o,--output <dir>                 The name of folder that gets written. Default is apk.out
- -p,--frame-path <dir>             Uses framework files located in <dir>.
- -r,--no-res                       Do not decode resources.
- -s,--no-src                       Do not decode sources.
- -t,--frame-tag <tag>              Uses framework files tagged by <tag>.
+    --api <API>          The numeric api-level of the file to generate, e.g. 14 for ICS.
+ -b,--no-debug-info      don't write out debug info (.local, .param, .line, etc.)
+ -f,--force              Force delete destination directory.
+ -k,--keep-broken-res    Use if there was an error and some resources were dropped, e.g.
+                         "Invalid config flags detected. Dropping resources", but you
+                         want to decode them anyway, even with errors. You will have to
+                         fix them manually before building.
+ -m,--match-original     Keeps files to closest to original as possible. Prevents rebuild.
+ -o,--output <dir>       The name of folder that gets written. Default is apk.out
+ -p,--frame-path <dir>   Uses framework files located in <dir>.
+ -r,--no-res             Do not decode resources.
+ -s,--no-src             Do not decode sources.
+ -t,--frame-tag <tag>    Uses framework files tagged by <tag>.
 */
 
 @CompileStatic
