@@ -59,6 +59,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
         def modOutputDir = dirModifier(new File(project.buildDir, 'outputs'))
 
         def apktoolDir = new File(modIntermediateDir, 'apktool')
+        def apktoolFrameworkDir = new File(modIntermediateDir, 'apktool-framework')
         def dex2jarDir = new File(modIntermediateDir, 'dex2jar')
         def dex2jarUnifiedDir = new File(modIntermediateDir, 'dex2jar-unified')
         def resourcesDir = new File(modIntermediateDir, 'resources')
@@ -77,6 +78,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
                 return files[0]
             }
             outputDir = apktoolDir
+            setFrameworkDirAsOutput apktoolFrameworkDir
             decodeClasses = false
             //keepBrokenResources = true
         }
