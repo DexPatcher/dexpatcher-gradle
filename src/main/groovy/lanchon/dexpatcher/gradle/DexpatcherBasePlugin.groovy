@@ -51,6 +51,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
 
         project.tasks.withType(AbstractApktoolTask) { AbstractApktoolTask task ->
             setupToolTask task, apktool
+            task.verbosity = { apktool.verbosity }
         }
         project.tasks.withType(DecodeApkTask) { DecodeApkTask task ->
             task.frameworkDir = { apktool.getFrameworkDir() }

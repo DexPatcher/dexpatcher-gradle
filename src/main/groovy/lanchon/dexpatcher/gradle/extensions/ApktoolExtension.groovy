@@ -1,6 +1,7 @@
 package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
+import lanchon.dexpatcher.gradle.tasks.AbstractApktoolTask.Verbosity
 
 @CompileStatic
 class ApktoolExtension extends AbstractToolExtension {
@@ -12,6 +13,12 @@ class ApktoolExtension extends AbstractToolExtension {
     private static final String AAPT_FILE_PROPERTY = 'dexpatcher.apktool.aaptFile'
 
     private static final String DEFAULT_SUBDIR_NAME = EXTENSION_NAME
+
+    static final def QUIET = Verbosity.QUIET
+    static final def NORMAL = Verbosity.NORMAL
+    static final def VERBOSE = Verbosity.VERBOSE
+
+    Verbosity verbosity
 
     def aaptFile
     def frameworkDir
