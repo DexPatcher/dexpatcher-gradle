@@ -83,9 +83,9 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         def getResolvedProperty = { String key -> Resolver.resolveNullableFile(project.rootProject, getProperty(key)) }
         dexpatcherConfig = project.extensions.create(DexpatcherConfigExtension.EXTENSION_NAME, DexpatcherConfigExtension, project, getResolvedProperty)
         def subextensions = (dexpatcherConfig as ExtensionAware).extensions
-        dexpatcher = subextensions.create(DexpatcherExtension.EXTENSION_NAME, DexpatcherExtension, dexpatcherConfig, getResolvedProperty)
-        apktool = subextensions.create(ApktoolExtension.EXTENSION_NAME, ApktoolExtension, dexpatcherConfig, getResolvedProperty)
-        dex2jar = subextensions.create(Dex2jarExtension.EXTENSION_NAME, Dex2jarExtension, dexpatcherConfig, getResolvedProperty)
+        dexpatcher = subextensions.create(DexpatcherExtension.EXTENSION_NAME, DexpatcherExtension, project, dexpatcherConfig, getResolvedProperty)
+        apktool = subextensions.create(ApktoolExtension.EXTENSION_NAME, ApktoolExtension, project, dexpatcherConfig, getResolvedProperty)
+        dex2jar = subextensions.create(Dex2jarExtension.EXTENSION_NAME, Dex2jarExtension, project, dexpatcherConfig, getResolvedProperty)
     }
 
     private static Properties getLocalPropertiesRecursive(Project project) {

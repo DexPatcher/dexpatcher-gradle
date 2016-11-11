@@ -20,7 +20,7 @@ class DexpatcherConfigExtension {
         file ?: (defaultBaseDir ? new File(defaultBaseDir, defaultSubdirName) : null)
     }
 
-    final Project project
+    protected final Project project
 
     def dir
     def toolDir

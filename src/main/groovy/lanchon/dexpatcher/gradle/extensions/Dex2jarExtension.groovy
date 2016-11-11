@@ -1,6 +1,7 @@
 package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
+import org.gradle.api.Project
 
 @CompileStatic
 class Dex2jarExtension extends AbstractToolExtension {
@@ -11,8 +12,8 @@ class Dex2jarExtension extends AbstractToolExtension {
 
     private static final String DEFAULT_SUBDIR_NAME = EXTENSION_NAME
 
-    Dex2jarExtension(DexpatcherConfigExtension dexpatcherConfig, Closure getProperty) {
-        super(dexpatcherConfig, DEFAULT_SUBDIR_NAME)
+    Dex2jarExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Closure getProperty) {
+        super(project, dexpatcherConfig, DEFAULT_SUBDIR_NAME)
         dir = getProperty(DIR_PROPERTY)
     }
 

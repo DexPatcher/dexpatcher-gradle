@@ -3,6 +3,7 @@ package lanchon.dexpatcher.gradle.extensions
 import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.Resolver
 import lanchon.dexpatcher.gradle.tasks.AbstractApktoolTask.Verbosity
+import org.gradle.api.Project
 
 @CompileStatic
 class ApktoolExtension extends AbstractToolExtension {
@@ -31,18 +32,18 @@ class ApktoolExtension extends AbstractToolExtension {
     // Build
     def aaptFile
 
-    ApktoolExtension(DexpatcherConfigExtension dexpatcherConfig, Closure getProperty) {
-        super(dexpatcherConfig, DEFAULT_SUBDIR_NAME)
+    ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Closure getProperty) {
+        super(project, dexpatcherConfig, DEFAULT_SUBDIR_NAME)
         dir = getProperty(DIR_PROPERTY)
         frameworkDir = getProperty(FRAMEWORK_DIR_PROPERTY)
         aaptFile = getProperty(AAPT_FILE_PROPERTY)
     }
 
-    File getFrameworkDir() { Resolver.resolveNullableFile(dexpatcherConfig.project, frameworkDir) }
-    File getFrameworkDirAsInput() { Resolver.resolveNullableFile(dexpatcherConfig.project, frameworkDirAsInput) }
-    File getFrameworkDirAsOutput() { Resolver.resolveNullableFile(dexpatcherConfig.project, frameworkDirAsOutput) }
+    File getFrameworkDir() { Resolver.resolveNullableFile(project, frameworkDir) }
+    File getFrameworkDirAsInput() { Resolver.resolveNullableFile(project, frameworkDirAsInput) }
+    File getFrameworkDirAsOutput() { Resolver.resolveNullableFile(project, frameworkDirAsOutput) }
     String getFrameworkTag() { Resolver.resolve(frameworkTag) as String }
 
-    File getAaptFile() { Resolver.resolveNullableFile(dexpatcherConfig.project, aaptFile) }
+    File getAaptFile() { Resolver.resolveNullableFile(project, aaptFile) }
 
 }
