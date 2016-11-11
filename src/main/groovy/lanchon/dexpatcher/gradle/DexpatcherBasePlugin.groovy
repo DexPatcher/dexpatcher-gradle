@@ -68,6 +68,9 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         }
         project.tasks.withType(BuildApkTask) { BuildApkTask task ->
             task.aaptFile = { apktool.getAaptFile() }
+            task.copyOriginal = { apktool.copyOriginal }
+            task.forceDebuggableBuild = { apktool.forceDebuggableBuild }
+            task.forceCleanBuild = { apktool.forceCleanBuild }
         }
 
         project.tasks.withType(AbstractDex2jarTask) { AbstractDex2jarTask task ->

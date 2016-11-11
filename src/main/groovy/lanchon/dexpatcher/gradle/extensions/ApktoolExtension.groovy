@@ -20,6 +20,7 @@ class ApktoolExtension extends AbstractToolExtension {
     static final def NORMAL = Verbosity.NORMAL
     static final def VERBOSE = Verbosity.VERBOSE
 
+    // Base
     Verbosity verbosity
     def frameworkDir
     def frameworkDirAsInput
@@ -36,6 +37,9 @@ class ApktoolExtension extends AbstractToolExtension {
 
     // Build
     def aaptFile
+    Boolean copyOriginal
+    Boolean forceDebuggableBuild
+    Boolean forceCleanBuild
 
     ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Closure getProperty) {
         super(project, dexpatcherConfig, DEFAULT_SUBDIR_NAME)
@@ -44,11 +48,13 @@ class ApktoolExtension extends AbstractToolExtension {
         aaptFile = getProperty(AAPT_FILE_PROPERTY)
     }
 
+    // Base
     File getFrameworkDir() { Resolver.resolveNullableFile(project, frameworkDir) }
     File getFrameworkDirAsInput() { Resolver.resolveNullableFile(project, frameworkDirAsInput) }
     File getFrameworkDirAsOutput() { Resolver.resolveNullableFile(project, frameworkDirAsOutput) }
     String getFrameworkTag() { Resolver.resolve(frameworkTag) as String }
 
+    // Build
     File getAaptFile() { Resolver.resolveNullableFile(project, aaptFile) }
 
 }
