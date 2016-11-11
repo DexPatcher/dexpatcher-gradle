@@ -60,7 +60,7 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
 
     AbstractApktoolTask() {
         main = 'brut.apktool.Main'
-        blankLines = {
+        addBlankLines = {
             switch (getVerbosity()) {
                 case Verbosity.QUIET:
                     return false

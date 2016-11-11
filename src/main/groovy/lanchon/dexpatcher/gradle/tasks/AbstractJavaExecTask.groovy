@@ -9,11 +9,11 @@ import org.gradle.process.JavaExecSpec
 @CompileStatic
 abstract class AbstractJavaExecTask extends JavaExec {
 
-    def blankLines
+    def addBlankLines
     def deleteOutputs = true
     def extraArgs
 
-    boolean getBlankLines() { Resolver.resolve(blankLines) as boolean }
+    boolean getAddBlankLines() { Resolver.resolve(addBlankLines) as boolean }
     @Input boolean getDeleteOutputs() { Resolver.resolve(deleteOutputs) as boolean }
     @Input List<String> getExtraArgs() { Resolver.resolve(extraArgs).collect() { it as String } }
 
@@ -24,7 +24,7 @@ abstract class AbstractJavaExecTask extends JavaExec {
     @Override JavaExecSpec args(Iterable<?> args) { throw new UnsupportedOperationException() }
 
     @Override void exec() {
-        def blankLines = getBlankLines()
+        def blankLines = getAddBlankLines()
         if (blankLines) println()
         super.setArgs(getArgs())
         beforeExec()

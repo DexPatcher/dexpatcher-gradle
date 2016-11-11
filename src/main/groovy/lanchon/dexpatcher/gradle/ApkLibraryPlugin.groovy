@@ -128,7 +128,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
             apktoolYmlFile.eachLine { line ->
                 if (pattern.matcher(line).find()) println line
             }
-            if (task.getBlankLines()) println()
+            if (task.getAddBlankLines()) println()
         }
     }
 

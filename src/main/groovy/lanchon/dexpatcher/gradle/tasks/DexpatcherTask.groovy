@@ -63,7 +63,7 @@ class DexpatcherTask extends AbstractJavaExecTask {
 
     DexpatcherTask() {
         main = 'lanchon.dexpatcher.Main'
-        blankLines = {
+        addBlankLines = {
             switch (getVerbosity()) {
                 case Verbosity.QUIET:
                 case Verbosity.NORMAL:
