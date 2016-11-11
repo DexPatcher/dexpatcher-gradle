@@ -38,6 +38,10 @@ abstract class Resolver {
         resolveNullable(object) { project.file(it) }
     }
 
+    static FileCollection resolveNullableFiles(Project project, Object object) {
+        resolveNullable(object) { project.files(it) }
+    }
+
     static FileCollection getJars(Project project, File rootDirOrFile) {
         def jars = project.fileTree(rootDirOrFile)
         jars.include '**/*.jar'

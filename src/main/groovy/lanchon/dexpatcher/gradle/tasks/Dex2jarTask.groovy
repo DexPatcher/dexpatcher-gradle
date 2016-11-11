@@ -22,6 +22,7 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
 
 /*
+d2j-dex2jar -- convert dex to jar
 usage: d2j-dex2jar [options] <file0> [file1 ... fileN]
 options:
  -d,--debug-info              translate debug info
@@ -39,6 +40,7 @@ options:
  -s                           same with --topological-sort/-ts
  -ts,--topological-sort       sort block by topological, that will generate more
                                readable code, default enabled
+version: reader-2.1-SNAPSHOT, translator-2.1-SNAPSHOT, ir-2.1-SNAPSHOT
 */
 
 @CompileStatic
@@ -52,14 +54,15 @@ class Dex2jarTask extends AbstractDex2jarTask {
     @Input boolean translateDebugInfo
     @Input boolean optimizeSynchronized
     @Input boolean reuseRegisters
-    @Input boolean handleExceptions
+    @Input boolean topologicalSort
+    @Input boolean handleExceptions = true
     @Input boolean forceOverwrite
 
     Dex2jarTask() {
         main = MAIN_DEX2JAR
     }
 
-    @InputFiles FileCollection getDexFiles() { project.files(dexFiles) }
+    @InputFiles FileCollection getDexFiles() { Resolver.resolveNullableFiles(project, dexFiles) }
 
     @Optional @OutputFile File getOutputFile() { Resolver.resolveNullableFile(project, outputFile) }
     @Optional @OutputDirectory File getOutputDir() { Resolver.resolveNullableFile(project, outputDir) }
@@ -82,16 +85,17 @@ class Dex2jarTask extends AbstractDex2jarTask {
 
         if (!translateCode) args.add('--no-code')
         if (translateDebugInfo) args.add('--debug-info')
-        if (optimizeSynchronized) args.add('-os')   // typo in long option: --optmize-synchronized
+        if (optimizeSynchronized) args.add('-os')   // typo in long option '--optmize-synchronized'
         if (reuseRegisters) args.add('--reuse-reg')
+        if (topologicalSort) args.add('--topological-sort')
         if (!handleExceptions) args.add('--not-handle-exception')
         if (forceOverwrite) args.add('--force')
 
         args.addAll(getExtraArgs())
 
-        def dexFileCollection = getDexFiles()
-        if (dexFileCollection.empty) throw new RuntimeException('No input dex files specified')
-        args.addAll(dexFileCollection as List<String>)
+        def dexFiles = getDexFiles()
+        if (!dexFiles || dexFiles.empty) throw new RuntimeException('No input dex files specified')
+        args.addAll(dexFiles as List<String>)
 
         return args;
 
