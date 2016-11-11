@@ -34,30 +34,41 @@ class DecodeApkTask extends AbstractApktoolTask {
     def frameworkDir
     def frameworkTag
     def apiLevel
-    @Input boolean decodeResources = true
-    @Input boolean decodeClasses = true
-    @Input boolean keepBrokenResources
-    @Input boolean forceOverwrite
+    def decodeResources = true
+    def decodeClasses = true
+    def keepBrokenResources
+    def stripDebugInfo
+    def matchOriginal
+    def forceOverwrite
 
     @InputFile File getApkFile() { project.file(apkFile) }
     @OutputDirectory File getOutputDir() { project.file(outputDir) }
     @Optional @InputDirectory File getFrameworkDir() { Resolver.resolveNullableFile(project, frameworkDir) }
     @Optional @Input String getFrameworkTag() { Resolver.resolve(frameworkTag) as String }
     @Optional @Input Integer getApiLevel() { Resolver.resolve(apiLevel) as Integer }
+    @Optional @Input Boolean getDecodeResources() { Resolver.resolve(decodeResources) as Boolean }
+    @Optional @Input Boolean getDecodeClasses() { Resolver.resolve(decodeClasses) as Boolean }
+    @Optional @Input Boolean getKeepBrokenResources() { Resolver.resolve(keepBrokenResources) as Boolean }
+    @Optional @Input Boolean getStripDebugInfo() { Resolver.resolve(stripDebugInfo) as Boolean }
+    @Optional @Input Boolean getMatchOriginal() { Resolver.resolve(matchOriginal) as Boolean }
+    @Optional @Input Boolean getForceOverwrite() { Resolver.resolve(forceOverwrite) as Boolean }
 
     @Override List<String> getArgs() {
         def args = super.getArgs()
         args.add('decode')
         args.addAll(['--output', getOutputDir() as String])
-        if (getFrameworkDir()) args.addAll(['--frame-path', getFrameworkDir() as String])
-        def theFrameworkTag = getFrameworkTag()
-        if (theFrameworkTag) args.addAll(['--frame-tag', theFrameworkTag])
-        def theApiLevel = getApiLevel()
-        if (theApiLevel) args.addAll(['--api', theApiLevel as String])
-        if (!decodeResources) args.add('--no-res')
-        if (!decodeClasses) args.add('--no-src')
-        if (keepBrokenResources) args.add('--keep-broken-res')
-        if (forceOverwrite) args.add('--force')
+        def frameworkDir = getFrameworkDir()
+        if (frameworkDir) args.addAll(['--frame-path', frameworkDir as String])
+        def frameworkTag = getFrameworkTag()
+        if (frameworkTag) args.addAll(['--frame-tag', frameworkTag])
+        def apiLevel = getApiLevel()
+        if (apiLevel) args.addAll(['--api', apiLevel as String])
+        if (!getDecodeResources()) args.add('--no-res')
+        if (!getDecodeClasses()) args.add('--no-src')
+        if (getKeepBrokenResources()) args.add('--keep-broken-res')
+        if (getStripDebugInfo()) args.add('--no-debug-info')
+        if (getMatchOriginal()) args.add('--match-original')
+        if (getForceOverwrite()) args.add('--force')
         args.addAll(getExtraArgs())
         args.add(getApkFile() as String)
         return args;
