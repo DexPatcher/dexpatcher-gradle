@@ -32,6 +32,8 @@ class DecodeApkTask extends AbstractApktoolTask {
     def apkFile
     def outputDir
     def frameworkDir
+    def frameworkDirAsInput
+    def frameworkDirAsOutput
     def frameworkTag
     def apiLevel
     def decodeResources = true
@@ -43,7 +45,19 @@ class DecodeApkTask extends AbstractApktoolTask {
 
     @InputFile File getApkFile() { project.file(apkFile) }
     @OutputDirectory File getOutputDir() { project.file(outputDir) }
-    @Optional @InputDirectory File getFrameworkDir() { Resolver.resolveNullableFile(project, frameworkDir) }
+
+    @Optional @Input File getFrameworkDir() {
+        def dir = Resolver.resolveNullableFile(project, frameworkDir)
+        if (dir) return dir
+        def dirAsInput = getFrameworkDirAsInput()
+        def dirAsOutput = getFrameworkDirAsOutput()
+        if (dirAsInput && dirAsOutput && dirAsInput != dirAsOutput) throw new RuntimeException(
+                'Ambiguous framework directory')
+        return dirAsInput ?: dirAsOutput
+    }
+
+    @Optional @InputDirectory File getFrameworkDirAsInput() { Resolver.resolveNullableFile(project, frameworkDirAsInput) }
+    @Optional @OutputDirectory File getFrameworkDirAsOutput() { Resolver.resolveNullableFile(project, frameworkDirAsOutput) }
     @Optional @Input String getFrameworkTag() { Resolver.resolve(frameworkTag) as String }
     @Optional @Input Integer getApiLevel() { Resolver.resolve(apiLevel) as Integer }
     @Optional @Input Boolean getDecodeResources() { Resolver.resolve(decodeResources) as Boolean }
