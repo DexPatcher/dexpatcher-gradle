@@ -1,6 +1,7 @@
 package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
+import lanchon.dexpatcher.gradle.Resolver
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.JavaExec
 import org.gradle.process.JavaExecSpec
@@ -8,23 +9,17 @@ import org.gradle.process.JavaExecSpec
 @CompileStatic
 class CustomJavaExecTask extends JavaExec {
 
-    public boolean blankLines
+    def blankLines
+    def deleteOutputs = true
+    private List<Object> extraArgs = new ArrayList()
 
-    @Input boolean deleteOutputs = true
+    boolean getBlankLines() { Resolver.resolve(blankLines) as Boolean }
 
-    @Input List<Object> extraArgs = new ArrayList()
+    @Input boolean getDeleteOutputs() { Resolver.resolve(deleteOutputs) as Boolean }
 
-    List<String> getExtraArgs() {
-        extraArgs as List<String>
-    }
-
-    void setExtraArgs(Iterable<?> extraArgs) {
-        this.extraArgs = new ArrayList(Arrays.asList(extraArgs))
-    }
-
-    void extraArgs(Object... extraArgs) {
-        this.extraArgs.addAll(extraArgs)
-    }
+    @Input List<String> getExtraArgs() { extraArgs as List<String> }
+    void setExtraArgs(Iterable<?> extraArgs) { this.extraArgs = new ArrayList(Arrays.asList(extraArgs)) }
+    void extraArgs(Object... extraArgs) { this.extraArgs.addAll(extraArgs) }
 
     @Override List<String> getArgs() {
         return new ArrayList<String>(getExtraArgs());
@@ -35,8 +30,9 @@ class CustomJavaExecTask extends JavaExec {
     @Override JavaExecSpec args(Iterable<?> args) { throw new UnsupportedOperationException() }
 
     @Override void exec() {
-        super.setArgs(getArgs())
+        def blankLines = getBlankLines()
         if (blankLines) println()
+        super.setArgs(getArgs())
         beforeExec()
         super.exec()
         afterExec()
