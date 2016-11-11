@@ -2,6 +2,10 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.Resolver
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
 
 @CompileStatic
 abstract class AbstractApktoolTask extends AbstractJavaExecTask {
@@ -56,9 +60,16 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
         VERBOSE
     }
 
-    def verbosity
+    protected final String command
 
-    AbstractApktoolTask() {
+    def verbosity
+    def frameworkDir
+    def frameworkDirAsInput
+    def frameworkDirAsOutput
+    def frameworkTag
+
+    AbstractApktoolTask(String command) {
+        this.command = command
         main = 'brut.apktool.Main'
         addBlankLines = {
             switch (getVerbosity()) {
@@ -78,6 +89,21 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
 
     Verbosity getVerbosity() { Resolver.resolve(verbosity) as Verbosity }
 
+    @Optional @Input File getFrameworkDir() {
+        def dir = Resolver.resolveNullableFile(project, frameworkDir)
+        if (dir) return dir
+        def dirAsInput = getFrameworkDirAsInput()
+        def dirAsOutput = getFrameworkDirAsOutput()
+        if (dirAsInput && dirAsOutput && dirAsInput != dirAsOutput) throw new RuntimeException(
+                'Ambiguous framework directory')
+        return dirAsInput ?: dirAsOutput
+    }
+
+    @Optional @InputDirectory File getFrameworkDirAsInput() { Resolver.resolveNullableFile(project, frameworkDirAsInput) }
+    @Optional @OutputDirectory File getFrameworkDirAsOutput() { Resolver.resolveNullableFile(project, frameworkDirAsOutput) }
+
+    @Optional @Input String getFrameworkTag() { Resolver.resolve(frameworkTag) as String }
+
     @Override List<String> getArgs() {
         ArrayList<String> args = new ArrayList()
         switch (getVerbosity()) {
@@ -93,6 +119,11 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
             default:
                 throw new AssertionError('Unexpected verbosity', null)
         }
+        args.add(command)
+        def frameworkDir = getFrameworkDir()
+        if (frameworkDir) args.addAll(['--frame-path', frameworkDir as String])
+        def frameworkTag = getFrameworkTag()
+        if (frameworkTag) args.addAll(['--frame-tag', frameworkTag])
         return args;
     }
 

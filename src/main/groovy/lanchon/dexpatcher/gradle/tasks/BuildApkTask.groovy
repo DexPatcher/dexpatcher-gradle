@@ -28,6 +28,10 @@ class BuildApkTask extends AbstractApktoolTask {
     def aaptFile
     @Input boolean forceRebuild
 
+    BuildApkTask() {
+        super('build')
+    }
+
     @InputDirectory File getInputDir() { project.file(inputDir) }
     @OutputFile File getApkFile() { project.file(apkFile) }
     @Optional @InputDirectory File getFrameworkDir() { Resolver.resolveNullableFile(project, frameworkDir) }
@@ -35,9 +39,7 @@ class BuildApkTask extends AbstractApktoolTask {
 
     @Override List<String> getArgs() {
         def args = super.getArgs()
-        args.add('build')
         args.addAll(['--output', getApkFile() as String])
-        if (getFrameworkDir()) args.addAll(['--frame-path', getFrameworkDir() as String])
         if (getAaptFile()) args.addAll(['--aapt', getAaptFile() as String])
         if (forceRebuild) args.add('--force-all')
         args.addAll(getExtraArgs())

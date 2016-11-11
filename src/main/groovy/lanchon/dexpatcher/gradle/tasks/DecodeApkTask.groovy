@@ -3,7 +3,6 @@ package lanchon.dexpatcher.gradle.tasks
 import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.Resolver
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
@@ -31,10 +30,6 @@ class DecodeApkTask extends AbstractApktoolTask {
 
     def apkFile
     def outputDir
-    def frameworkDir
-    def frameworkDirAsInput
-    def frameworkDirAsOutput
-    def frameworkTag
     def apiLevel
     def decodeResources = true
     def decodeClasses = true
@@ -43,22 +38,12 @@ class DecodeApkTask extends AbstractApktoolTask {
     def matchOriginal
     def forceOverwrite
 
-    @InputFile File getApkFile() { project.file(apkFile) }
-    @OutputDirectory File getOutputDir() { project.file(outputDir) }
-
-    @Optional @Input File getFrameworkDir() {
-        def dir = Resolver.resolveNullableFile(project, frameworkDir)
-        if (dir) return dir
-        def dirAsInput = getFrameworkDirAsInput()
-        def dirAsOutput = getFrameworkDirAsOutput()
-        if (dirAsInput && dirAsOutput && dirAsInput != dirAsOutput) throw new RuntimeException(
-                'Ambiguous framework directory')
-        return dirAsInput ?: dirAsOutput
+    DecodeApkTask() {
+        super('decode')
     }
 
-    @Optional @InputDirectory File getFrameworkDirAsInput() { Resolver.resolveNullableFile(project, frameworkDirAsInput) }
-    @Optional @OutputDirectory File getFrameworkDirAsOutput() { Resolver.resolveNullableFile(project, frameworkDirAsOutput) }
-    @Optional @Input String getFrameworkTag() { Resolver.resolve(frameworkTag) as String }
+    @InputFile File getApkFile() { project.file(apkFile) }
+    @OutputDirectory File getOutputDir() { project.file(outputDir) }
     @Optional @Input Integer getApiLevel() { Resolver.resolve(apiLevel) as Integer }
     @Optional @Input Boolean getDecodeResources() { Resolver.resolve(decodeResources) as Boolean }
     @Optional @Input Boolean getDecodeClasses() { Resolver.resolve(decodeClasses) as Boolean }
@@ -69,12 +54,7 @@ class DecodeApkTask extends AbstractApktoolTask {
 
     @Override List<String> getArgs() {
         def args = super.getArgs()
-        args.add('decode')
         args.addAll(['--output', getOutputDir() as String])
-        def frameworkDir = getFrameworkDir()
-        if (frameworkDir) args.addAll(['--frame-path', frameworkDir as String])
-        def frameworkTag = getFrameworkTag()
-        if (frameworkTag) args.addAll(['--frame-tag', frameworkTag])
         def apiLevel = getApiLevel()
         if (apiLevel) args.addAll(['--api', apiLevel as String])
         if (!getDecodeResources()) args.add('--no-res')
