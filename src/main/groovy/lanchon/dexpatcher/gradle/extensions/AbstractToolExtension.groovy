@@ -12,6 +12,10 @@ abstract class AbstractToolExtension {
 
     def dir
 
+    boolean addBlankLines
+    boolean deleteOutputs = true
+    def extraArgs
+
     AbstractToolExtension(DexpatcherConfigExtension dexpatcherConfig, String defaultSubdirName) {
         this.dexpatcherConfig = dexpatcherConfig
         this.defaultSubdirName = defaultSubdirName
@@ -21,5 +25,7 @@ abstract class AbstractToolExtension {
     File getResolvedDir() { dexpatcherConfig.getResolvedToolDir(getDir(), defaultSubdirName) }
 
     FileCollection getClasspath() { Resolver.getJars(dexpatcherConfig.project, getResolvedDir()) }
+
+    List<String> getExtraArgs() { Resolver.resolve(extraArgs).collect() { it as String } }
 
 }

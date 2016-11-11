@@ -4,6 +4,7 @@ import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.Resolver
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.JavaExec
+import org.gradle.api.tasks.Optional
 import org.gradle.process.JavaExecSpec
 
 @CompileStatic
@@ -13,8 +14,8 @@ abstract class AbstractJavaExecTask extends JavaExec {
     def deleteOutputs = true
     def extraArgs
 
-    boolean getAddBlankLines() { Resolver.resolve(addBlankLines) as boolean }
-    @Input boolean getDeleteOutputs() { Resolver.resolve(deleteOutputs) as boolean }
+    Boolean getAddBlankLines() { Resolver.resolve(addBlankLines) as Boolean }
+    @Optional @Input Boolean getDeleteOutputs() { Resolver.resolve(deleteOutputs) as Boolean }
     @Input List<String> getExtraArgs() { Resolver.resolve(extraArgs).collect() { it as String } }
 
     @Override abstract List<String> getArgs()

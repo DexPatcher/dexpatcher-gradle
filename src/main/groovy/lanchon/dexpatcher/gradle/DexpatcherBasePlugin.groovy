@@ -1,11 +1,13 @@
 package lanchon.dexpatcher.gradle
 
 import groovy.transform.CompileStatic
+import lanchon.dexpatcher.gradle.extensions.AbstractToolExtension
 import lanchon.dexpatcher.gradle.extensions.ApktoolExtension
 import lanchon.dexpatcher.gradle.extensions.Dex2jarExtension
 import lanchon.dexpatcher.gradle.extensions.DexpatcherConfigExtension
 import lanchon.dexpatcher.gradle.extensions.DexpatcherExtension
 import lanchon.dexpatcher.gradle.tasks.AbstractApktoolTask
+import lanchon.dexpatcher.gradle.tasks.AbstractJavaExecTask
 import lanchon.dexpatcher.gradle.tasks.BuildApkTask
 import lanchon.dexpatcher.gradle.tasks.DecodeApkTask
 import lanchon.dexpatcher.gradle.tasks.AbstractDex2jarTask
@@ -33,7 +35,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         setExtensions()
 
         project.tasks.withType(DexpatcherTask) { DexpatcherTask task ->
-            task.classpath { dexpatcher.classpath }
+            setupToolTask task, dexpatcher
             task.apiLevel = { dexpatcher.apiLevel }
             task.multiDex = { dexpatcher.multiDex }
             task.multiDexThreaded = { dexpatcher.multiDexThreaded }
@@ -48,7 +50,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         }
 
         project.tasks.withType(AbstractApktoolTask) { AbstractApktoolTask task ->
-            task.classpath { apktool.classpath }
+            setupToolTask task, apktool
         }
         project.tasks.withType(DecodeApkTask) { DecodeApkTask task ->
             task.frameworkDir = { apktool.getFrameworkDir() }
@@ -61,9 +63,16 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         }
 
         project.tasks.withType(AbstractDex2jarTask) { AbstractDex2jarTask task ->
-            task.classpath { dex2jar.classpath }
+            setupToolTask task, dex2jar
         }
 
+    }
+
+    private void setupToolTask(AbstractJavaExecTask task, AbstractToolExtension extension) {
+        task.classpath { extension.getClasspath() }
+        task.addBlankLines = { extension.addBlankLines }
+        task.deleteOutputs = { extension.deleteOutputs }
+        task.extraArgs = { extension.getExtraArgs() }
     }
 
     private void setExtensions() {
