@@ -71,8 +71,8 @@ class DexpatcherBasePlugin implements Plugin<Project> {
 
     private void setupToolTask(AbstractJavaExecTask task, AbstractToolExtension extension) {
         task.classpath { extension.getClasspath() }
-        task.addBlankLines = { extension.addBlankLines }
-        task.deleteOutputs = { extension.deleteOutputs }
+        //task.addBlankLines = { extension.addBlankLines }
+        //task.deleteOutputs = { extension.deleteOutputs }
         task.extraArgs = { extension.getExtraArgs() }
     }
 
