@@ -61,6 +61,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
         def apktoolDir = new File(modIntermediateDir, 'apktool')
         def apktoolFrameworkDir = new File(modIntermediateDir, 'apktool-framework')
         def dex2jarDir = new File(modIntermediateDir, 'dex2jar')
+        def dex2jarExceptionFile = new File(modIntermediateDir, 'dex2jar-error/dex2jar-error.zip')
         def dex2jarUnifiedDir = new File(modIntermediateDir, 'dex2jar-unified')
         def resourcesDir = new File(modIntermediateDir, 'resources')
         def libraryDir = new File(modOutputDir, 'aar')
@@ -93,6 +94,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
             dependsOn decodeApk
             dexFiles = project.fileTree(apktoolDir).include('*.dex')
             outputDir = dex2jarDir
+            exceptionFile = dex2jarExceptionFile
         }
 
         def dex2jarUnify = createDex2jarUnifyTask(project, taskNameModifier('dex2jarUnify'), dex2jarDir)
