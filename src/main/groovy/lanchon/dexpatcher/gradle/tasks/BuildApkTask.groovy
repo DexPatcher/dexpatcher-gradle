@@ -33,7 +33,7 @@ class BuildApkTask extends AbstractApktoolTask {
     @Optional @InputFile File getAaptFile() { Resolver.resolveNullableFile(project, aaptFile) }
 
     @Override List<String> getArgs() {
-        ArrayList<String> args = new ArrayList()
+        def args = super.getArgs()
         args.add('build')
         args.addAll(['--output', getApkFile() as String])
         if (getFrameworkDir()) args.addAll(['--frame-path', getFrameworkDir() as String])

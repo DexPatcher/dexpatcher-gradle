@@ -47,7 +47,7 @@ class DecodeApkTask extends AbstractApktoolTask {
     @Optional @Input Integer getApiLevel() { Resolver.resolve(apiLevel) as Integer }
 
     @Override List<String> getArgs() {
-        ArrayList<String> args = new ArrayList()
+        def args = super.getArgs()
         args.add('decode')
         args.addAll(['--output', getOutputDir() as String])
         if (getFrameworkDir()) args.addAll(['--frame-path', getFrameworkDir() as String])
