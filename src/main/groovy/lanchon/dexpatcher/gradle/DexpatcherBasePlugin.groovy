@@ -59,6 +59,12 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         }
         project.tasks.withType(DecodeApkTask) { DecodeApkTask task ->
             task.apiLevel = { apktool.apiLevel }
+            task.decodeResources = { apktool.decodeResources }
+            task.decodeClasses = { apktool.decodeClasses }
+            task.keepBrokenResources = { apktool.keepBrokenResources }
+            task.stripDebugInfo = { apktool.stripDebugInfo }
+            task.matchOriginal = { apktool.matchOriginal }
+            task.apiLevel = { apktool.apiLevel }
         }
         project.tasks.withType(BuildApkTask) { BuildApkTask task ->
             task.aaptFile = { apktool.getAaptFile() }

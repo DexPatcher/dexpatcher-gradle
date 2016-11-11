@@ -28,6 +28,11 @@ class ApktoolExtension extends AbstractToolExtension {
 
     // Decode
     Integer apiLevel
+    Boolean decodeResources = true
+    Boolean decodeClasses = true
+    Boolean keepBrokenResources
+    Boolean stripDebugInfo
+    Boolean matchOriginal
 
     // Build
     def aaptFile
