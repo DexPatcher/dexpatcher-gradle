@@ -33,13 +33,9 @@ class DexpatcherConfigExtension {
         libDir = getProperty(LIB_DIR_PROPERTY)
     }
 
-    File resolveClosures(def dir) {
-        Resolver.resolveNullableFile(project, dir)
-    }
-
-    File getDir() { resolveClosures(dir) }
-    File getToolDir() { resolveClosures(toolDir) }
-    File getLibDir() { resolveClosures(libDir) }
+    File getDir() { Resolver.resolveNullableFile(project, dir) }
+    File getToolDir() { Resolver.resolveNullableFile(project, toolDir) }
+    File getLibDir() { Resolver.resolveNullableFile(project, libDir) }
 
     File getResolvedToolDir() { resolvePath(getToolDir(), getDir(), DEFAULT_TOOL_SUBDIR_NAME) }
     File getResolvedLibDir() { resolvePath(getLibDir(), getDir(), DEFAULT_LIB_SUBDIR_NAME) }

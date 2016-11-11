@@ -1,6 +1,7 @@
 package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
+import lanchon.dexpatcher.gradle.Resolver
 import lanchon.dexpatcher.gradle.tasks.AbstractApktoolTask.Verbosity
 
 @CompileStatic
@@ -32,7 +33,7 @@ class ApktoolExtension extends AbstractToolExtension {
         aaptFile = getProperty(AAPT_FILE_PROPERTY)
     }
 
-    File getAaptFile() { dexpatcherConfig.resolveClosures(aaptFile) }
-    File getFrameworkDir() { dexpatcherConfig.resolveClosures(frameworkDir) }
+    File getAaptFile() { Resolver.resolveNullableFile(dexpatcherConfig.project, aaptFile) }
+    File getFrameworkDir() { Resolver.resolveNullableFile(dexpatcherConfig.project, frameworkDir) }
 
 }

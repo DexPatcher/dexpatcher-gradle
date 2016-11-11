@@ -20,7 +20,7 @@ abstract class AbstractToolExtension {
         this.defaultSubdirName = defaultSubdirName
     }
 
-    File getDir() { dexpatcherConfig.resolveClosures(dir) }
+    File getDir() { Resolver.resolveNullableFile(dexpatcherConfig.project, dir) }
     File getResolvedDir() { dexpatcherConfig.getResolvedToolDir(getDir(), defaultSubdirName) }
 
     FileCollection getClasspath() { Resolver.getJars(dexpatcherConfig.project, getResolvedDir()) }
