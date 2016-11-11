@@ -1,7 +1,6 @@
 package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
-import lanchon.dexpatcher.gradle.DexpatcherVerbosity
 import lanchon.dexpatcher.gradle.Resolver
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.Input
@@ -39,6 +38,13 @@ usage: dexpatcher [<option> ...] [--output <patched-dex-or-dir>]
 @CompileStatic
 class DexpatcherTask extends CustomJavaExecTask {
 
+    enum Verbosity {
+        QUIET,
+        NORMAL,
+        VERBOSE,
+        DEBUG
+    }
+
     def source
     def patches
     def outputFile
@@ -57,7 +63,21 @@ class DexpatcherTask extends CustomJavaExecTask {
 
     DexpatcherTask() {
         main = 'lanchon.dexpatcher.Main'
-        blankLines = true
+        blankLines = {
+            switch (getVerbosity()) {
+                case Verbosity.QUIET:
+                case Verbosity.NORMAL:
+                case null:
+                    return false
+                    break
+                case Verbosity.VERBOSE:
+                case Verbosity.DEBUG:
+                    return true
+                    break
+                default:
+                    throw new AssertionError('Unexpected verbosity', null)
+            }
+        }
     }
 
     @Input File getSource() { Resolver.resolveNullableFile(project, source) }
@@ -100,7 +120,7 @@ class DexpatcherTask extends CustomJavaExecTask {
     @Optional @Input String getAnnotationPackage() { Resolver.resolve(annotationPackage) as String }
     @Optional @Input Boolean getCompatDexTag() { Resolver.resolve(compatDexTag) as Boolean }
 
-    DexpatcherVerbosity getVerbosity() { Resolver.resolve(verbosity) as DexpatcherVerbosity }
+    Verbosity getVerbosity() { Resolver.resolve(verbosity) as Verbosity }
 
     Boolean getLogSourcePath() { Resolver.resolve(logSourcePath) as Boolean }
     String getLogSourcePathRoot() { Resolver.resolve(logSourcePathRoot) as String }
@@ -138,11 +158,20 @@ class DexpatcherTask extends CustomJavaExecTask {
         if (getCompatDexTag()) args.add('--compat-dextag')
 
         switch (getVerbosity()) {
-            case DexpatcherVerbosity.QUIET: args.add('--quiet'); break
-            case DexpatcherVerbosity.NORMAL: break
-            case DexpatcherVerbosity.VERBOSE: args.add('--verbose'); break
-            case DexpatcherVerbosity.DEBUG: args.add('--debug'); break
-            case null: break
+            case Verbosity.QUIET:
+                args.add('--quiet')
+                break
+            case Verbosity.NORMAL:
+            case null:
+                break
+            case Verbosity.VERBOSE:
+                args.add('--verbose')
+                break
+            case Verbosity.DEBUG:
+                args.add('--debug')
+                break
+            default:
+                throw new AssertionError('Unexpected verbosity', null)
         }
 
         if (getLogSourcePath()) args.add('--path')

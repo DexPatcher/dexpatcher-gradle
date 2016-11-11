@@ -1,8 +1,8 @@
 package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
-import lanchon.dexpatcher.gradle.DexpatcherVerbosity
 import lanchon.dexpatcher.gradle.Resolver
+import lanchon.dexpatcher.gradle.tasks.DexpatcherTask.Verbosity
 
 @CompileStatic
 class DexpatcherExtension extends AbstractToolExtension {
@@ -13,10 +13,10 @@ class DexpatcherExtension extends AbstractToolExtension {
 
     private static final String DEFAULT_SUBDIR_NAME = EXTENSION_NAME
 
-    static final def QUIET = DexpatcherVerbosity.QUIET
-    static final def NORMAL = DexpatcherVerbosity.NORMAL
-    static final def VERBOSE = DexpatcherVerbosity.VERBOSE
-    static final def DEBUG = DexpatcherVerbosity.DEBUG
+    static final def QUIET = Verbosity.QUIET
+    static final def NORMAL = Verbosity.NORMAL
+    static final def VERBOSE = Verbosity.VERBOSE
+    static final def DEBUG = Verbosity.DEBUG
 
     Integer apiLevel
     Boolean multiDex
@@ -25,7 +25,7 @@ class DexpatcherExtension extends AbstractToolExtension {
     Integer maxDexPoolSize
     String annotationPackage
     Boolean compatDexTag
-    DexpatcherVerbosity verbosity
+    Verbosity verbosity
     Boolean logSourcePath
     def logSourcePathRoot
     Boolean logStats
