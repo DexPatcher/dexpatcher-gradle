@@ -36,7 +36,7 @@ usage: dexpatcher [<option> ...] [--output <patched-dex-or-dir>]
 */
 
 @CompileStatic
-class DexpatcherTask extends CustomJavaExecTask {
+class DexpatcherTask extends AbstractJavaExecTask {
 
     enum Verbosity {
         QUIET,

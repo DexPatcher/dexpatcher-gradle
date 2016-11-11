@@ -19,7 +19,7 @@ usage: apktool [-q|--quiet OR -v|--verbose] b[uild] [options] <app_path>
 */
 
 @CompileStatic
-class BuildApkTask extends ApktoolBaseTask {
+class BuildApkTask extends AbstractApktoolTask {
 
     def inputDir
     def apkFile

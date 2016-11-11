@@ -3,7 +3,7 @@ package lanchon.dexpatcher.gradle.tasks
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class Dex2jarBaseTask extends CustomJavaExecTask {
+abstract class AbstractDex2jarTask extends AbstractJavaExecTask {
 
     static final String MAIN_DEX2JAR                 = 'com.googlecode.dex2jar.tools.Dex2jarCmd'
     static final String MAIN_JAR2DEX                 = 'com.googlecode.dex2jar.tools.Jar2Dex'

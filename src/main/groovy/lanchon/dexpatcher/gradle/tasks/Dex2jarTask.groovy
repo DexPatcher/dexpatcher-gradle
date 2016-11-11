@@ -30,7 +30,7 @@ options:
 */
 
 @CompileStatic
-class Dex2jarTask extends Dex2jarBaseTask {
+class Dex2jarTask extends AbstractDex2jarTask {
 
     def dexFiles
     def outputFile

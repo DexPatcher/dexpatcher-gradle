@@ -7,7 +7,7 @@ import org.gradle.api.tasks.JavaExec
 import org.gradle.process.JavaExecSpec
 
 @CompileStatic
-class CustomJavaExecTask extends JavaExec {
+abstract class AbstractJavaExecTask extends JavaExec {
 
     def blankLines
     def deleteOutputs = true
@@ -17,9 +17,7 @@ class CustomJavaExecTask extends JavaExec {
     @Input boolean getDeleteOutputs() { Resolver.resolve(deleteOutputs) as boolean }
     @Input List<String> getExtraArgs() { Resolver.resolve(extraArgs).collect() { it as String } }
 
-    @Override List<String> getArgs() {
-        return getExtraArgs();
-    }
+    @Override abstract List<String> getArgs()
 
     @Override JavaExec setArgs(Iterable<?> args) { throw new UnsupportedOperationException() }
     @Override JavaExec args(Object... args) { throw new UnsupportedOperationException() }
@@ -35,8 +33,8 @@ class CustomJavaExecTask extends JavaExec {
         if (blankLines) println()
     }
 
-    protected void beforeExec() {}
-    protected void afterExec() {}
+    protected abstract void beforeExec()
+    protected abstract void afterExec()
 
     protected void deleteOutputFile(File file) {
         if (deleteOutputs && file) project.delete project.files(file)

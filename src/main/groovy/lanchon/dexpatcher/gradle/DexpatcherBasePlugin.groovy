@@ -5,10 +5,10 @@ import lanchon.dexpatcher.gradle.extensions.ApktoolExtension
 import lanchon.dexpatcher.gradle.extensions.Dex2jarExtension
 import lanchon.dexpatcher.gradle.extensions.DexpatcherConfigExtension
 import lanchon.dexpatcher.gradle.extensions.DexpatcherExtension
-import lanchon.dexpatcher.gradle.tasks.ApktoolBaseTask
+import lanchon.dexpatcher.gradle.tasks.AbstractApktoolTask
 import lanchon.dexpatcher.gradle.tasks.BuildApkTask
 import lanchon.dexpatcher.gradle.tasks.DecodeApkTask
-import lanchon.dexpatcher.gradle.tasks.Dex2jarBaseTask
+import lanchon.dexpatcher.gradle.tasks.AbstractDex2jarTask
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -47,7 +47,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
             task.logStats = { dexpatcher.logStats }
         }
 
-        project.tasks.withType(ApktoolBaseTask) { ApktoolBaseTask task ->
+        project.tasks.withType(AbstractApktoolTask) { AbstractApktoolTask task ->
             task.classpath { apktool.classpath }
         }
         project.tasks.withType(DecodeApkTask) { DecodeApkTask task ->
@@ -60,7 +60,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
             task.frameworkDir = { apktool.getFrameworkDir() }
         }
 
-        project.tasks.withType(Dex2jarBaseTask) { Dex2jarBaseTask task ->
+        project.tasks.withType(AbstractDex2jarTask) { AbstractDex2jarTask task ->
             task.classpath { dex2jar.classpath }
         }
 

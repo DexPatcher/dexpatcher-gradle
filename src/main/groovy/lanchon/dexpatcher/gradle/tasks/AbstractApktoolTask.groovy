@@ -3,9 +3,9 @@ package lanchon.dexpatcher.gradle.tasks
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class ApktoolBaseTask extends CustomJavaExecTask {
+abstract class AbstractApktoolTask extends AbstractJavaExecTask {
 
-    ApktoolBaseTask() {
+    AbstractApktoolTask() {
         main = 'brut.apktool.Main'
         blankLines = true
     }

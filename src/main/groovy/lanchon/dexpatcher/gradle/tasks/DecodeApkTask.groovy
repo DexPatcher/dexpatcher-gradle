@@ -28,7 +28,7 @@ usage: apktool [-q|--quiet OR -v|--verbose] d[ecode] [options] <file_apk>
 */
 
 @CompileStatic
-class DecodeApkTask extends ApktoolBaseTask {
+class DecodeApkTask extends AbstractApktoolTask {
 
     def apkFile
     def outputDir
