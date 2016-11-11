@@ -23,6 +23,13 @@ class Dex2jarExtension extends AbstractToolExtension {
 
     private static final String DEFAULT_SUBDIR_NAME = EXTENSION_NAME
 
+    Boolean translateCode = true
+    Boolean translateDebugInfo
+    Boolean optimizeSynchronized
+    Boolean reuseRegisters
+    Boolean topologicalSort
+    Boolean handleExceptions
+
     Dex2jarExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Closure getProperty) {
         super(project, dexpatcherConfig, DEFAULT_SUBDIR_NAME)
         dir = getProperty(DIR_PROPERTY)

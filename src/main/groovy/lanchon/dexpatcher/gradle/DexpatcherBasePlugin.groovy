@@ -22,6 +22,7 @@ import lanchon.dexpatcher.gradle.tasks.AbstractDex2jarTask
 import lanchon.dexpatcher.gradle.tasks.AbstractJavaExecTask
 import lanchon.dexpatcher.gradle.tasks.BuildApkTask
 import lanchon.dexpatcher.gradle.tasks.DecodeApkTask
+import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 
 import org.gradle.api.Plugin
@@ -87,6 +88,14 @@ class DexpatcherBasePlugin implements Plugin<Project> {
 
         project.tasks.withType(AbstractDex2jarTask) { AbstractDex2jarTask task ->
             setupToolTask task, dex2jar
+        }
+        project.tasks.withType(Dex2jarTask) { Dex2jarTask task ->
+            task.translateCode = { dex2jar.translateCode }
+            task.translateDebugInfo = { dex2jar.translateDebugInfo }
+            task.optimizeSynchronized = { dex2jar.optimizeSynchronized }
+            task.reuseRegisters = { dex2jar.reuseRegisters }
+            task.topologicalSort = { dex2jar.topologicalSort }
+            task.handleExceptions = { dex2jar.handleExceptions }
         }
 
     }

@@ -55,7 +55,7 @@ class Dex2jarTask extends AbstractDex2jarTask {
     def optimizeSynchronized
     def reuseRegisters
     def topologicalSort
-    def handleExceptions = true
+    def handleExceptions
     def forceOverwrite
 
     Dex2jarTask() {
