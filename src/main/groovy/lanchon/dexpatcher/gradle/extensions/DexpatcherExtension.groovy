@@ -11,8 +11,10 @@
 package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
+
 import lanchon.dexpatcher.gradle.Resolver
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask.Verbosity
+
 import org.gradle.api.Project
 
 @CompileStatic

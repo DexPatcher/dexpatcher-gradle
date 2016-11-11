@@ -10,16 +10,17 @@
 
 package lanchon.dexpatcher.gradle
 
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import groovy.transform.CompileStatic
+
+import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
+
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.PrepareLibraryTask
-import groovy.transform.CompileStatic
-import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Task
-
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
 
 // TODO: Locate apk lib based on bundle extension at afterEvaluate time.
 

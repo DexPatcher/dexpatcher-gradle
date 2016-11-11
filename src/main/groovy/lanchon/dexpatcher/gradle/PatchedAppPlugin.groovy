@@ -10,19 +10,20 @@
 
 package lanchon.dexpatcher.gradle
 
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
+
+import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
+import lanchon.dexpatcher.gradle.extensions.PatchedAppExtension
+import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
+
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.BaseVariant
-
 import com.google.common.collect.ImmutableSet
-import groovy.transform.CompileDynamic
-import groovy.transform.CompileStatic
-import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
-import lanchon.dexpatcher.gradle.extensions.PatchedAppExtension
-import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task

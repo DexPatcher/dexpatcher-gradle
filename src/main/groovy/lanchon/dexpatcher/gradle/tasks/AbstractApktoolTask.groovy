@@ -11,7 +11,9 @@
 package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
+
 import lanchon.dexpatcher.gradle.Resolver
+
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Optional

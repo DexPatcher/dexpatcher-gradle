@@ -11,17 +11,19 @@
 package lanchon.dexpatcher.gradle
 
 import groovy.transform.CompileStatic
+
 import lanchon.dexpatcher.gradle.extensions.AbstractToolExtension
 import lanchon.dexpatcher.gradle.extensions.ApktoolExtension
 import lanchon.dexpatcher.gradle.extensions.Dex2jarExtension
 import lanchon.dexpatcher.gradle.extensions.DexpatcherConfigExtension
 import lanchon.dexpatcher.gradle.extensions.DexpatcherExtension
 import lanchon.dexpatcher.gradle.tasks.AbstractApktoolTask
+import lanchon.dexpatcher.gradle.tasks.AbstractDex2jarTask
 import lanchon.dexpatcher.gradle.tasks.AbstractJavaExecTask
 import lanchon.dexpatcher.gradle.tasks.BuildApkTask
 import lanchon.dexpatcher.gradle.tasks.DecodeApkTask
-import lanchon.dexpatcher.gradle.tasks.AbstractDex2jarTask
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware

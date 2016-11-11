@@ -11,7 +11,9 @@
 package lanchon.dexpatcher.gradle
 
 import groovy.transform.CompileStatic
+
 import lanchon.dexpatcher.gradle.extensions.DexpatcherConfigExtension
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
