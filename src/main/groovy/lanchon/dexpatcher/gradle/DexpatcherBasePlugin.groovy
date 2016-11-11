@@ -53,10 +53,12 @@ class DexpatcherBasePlugin implements Plugin<Project> {
             setupToolTask task, apktool
             task.verbosity = { apktool.verbosity }
             task.frameworkDir = { apktool.getFrameworkDir() }
+            task.frameworkDirAsInput = { apktool.getFrameworkDirAsInput() }
+            task.frameworkDirAsOutput = { apktool.getFrameworkDirAsOutput() }
             task.frameworkTag = { apktool.getFrameworkTag() }
         }
         project.tasks.withType(DecodeApkTask) { DecodeApkTask task ->
-            task.apiLevel = { apktool.getApiLevel() }
+            task.apiLevel = { apktool.apiLevel }
         }
         project.tasks.withType(BuildApkTask) { BuildApkTask task ->
             task.aaptFile = { apktool.getAaptFile() }
