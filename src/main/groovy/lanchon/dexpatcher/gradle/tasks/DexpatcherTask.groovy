@@ -93,30 +93,9 @@ class DexpatcherTask extends AbstractJavaExecTask {
     }
 
     @Input File getSource() { Resolver.resolveNullableFile(project, source) }
-    @InputFiles private FileCollection getSourceFiles() {
-        FileCollection files = project.files()
-        def file = getSource()
-        if (file) {
-            files = file.directory ? (files + project.fileTree(file)) : (files + project.files(file))
-        }
-        return files
-    }
+    @Optional @InputFiles private FileCollection getSourceFiles() { Resolver.resolveNullableFiles(project, source) }
 
-    @Input List<File> getPatches() {
-        Resolver.resolveNullable(patches) {
-            it instanceof Iterable ? it.collect { each -> project.file(each) } : [project.file(it)]
-        }
-    }
-    @InputFiles private FileCollection getPatchFiles() {
-        FileCollection files = project.files()
-        def patches = getPatches()
-        if (patches) {
-            for (def file : patches) {
-                files = file.directory ? (files + project.fileTree(file)) : (files + project.files(file))
-            }
-        }
-        return files
-    }
+    @Optional @InputFiles FileCollection getPatches() { Resolver.resolveNullableFiles(project, patches) }
 
     @Optional @OutputFile File getOutputFile() { Resolver.resolveNullableFile(project, outputFile) }
     @Optional @OutputDirectory File getOutputDir() { Resolver.resolveNullableFile(project, outputDir) }
@@ -195,7 +174,8 @@ class DexpatcherTask extends AbstractJavaExecTask {
         args.addAll(getExtraArgs())
 
         args.add(getSource() as String)
-        getPatches().each { args.add(it as String) }
+        def patches = getPatches()
+        if (patches) args.addAll(patches as List<String>)
 
         return args;
 

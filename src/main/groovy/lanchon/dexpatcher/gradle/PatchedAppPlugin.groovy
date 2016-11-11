@@ -124,11 +124,11 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
                     def dexFolder = dexFolders[0]
                     if (dexFolder == null) throw new RuntimeException(
                             "Output of variant '${variant.name}' has null dex folder")
-                    dexFolder = project.file(dexFolder)
+
                     def patches = patchDex.getPatches()
-                    if (patches != null && !patches.contains(dexFolder)) throw new RuntimeException(
+                    patchDex.patches = project.file(dexFolder)
+                    if (patches != null && patches != patchDex.getPatches()) throw new RuntimeException(
                             "Outputs of variant '${variant.name}' do not share dex folders")
-                    patchDex.patches = dexFolder
 
                     //packageApp.dexFolders = outDexFolders
                     setPackageTaskDexFolders(packageApp, patchedDexFolders)
