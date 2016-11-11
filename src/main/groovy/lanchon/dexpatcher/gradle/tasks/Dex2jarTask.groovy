@@ -50,13 +50,13 @@ class Dex2jarTask extends AbstractDex2jarTask {
     def outputFile
     def outputDir
     def exceptionFile
-    @Input boolean translateCode = true
-    @Input boolean translateDebugInfo
-    @Input boolean optimizeSynchronized
-    @Input boolean reuseRegisters
-    @Input boolean topologicalSort
-    @Input boolean handleExceptions = true
-    @Input boolean forceOverwrite
+    def translateCode = true
+    def translateDebugInfo
+    def optimizeSynchronized
+    def reuseRegisters
+    def topologicalSort
+    def handleExceptions = true
+    def forceOverwrite
 
     Dex2jarTask() {
         main = MAIN_DEX2JAR
@@ -69,6 +69,14 @@ class Dex2jarTask extends AbstractDex2jarTask {
 
     @Optional @OutputFile File getExceptionFile() { Resolver.resolveNullableFile(project, exceptionFile) }
 
+    @Optional @Input Boolean getTranslateCode() { Resolver.resolve(translateCode) as Boolean }
+    @Optional @Input Boolean getTranslateDebugInfo() { Resolver.resolve(translateDebugInfo) as Boolean }
+    @Optional @Input Boolean getOptimizeSynchronized() { Resolver.resolve(optimizeSynchronized) as Boolean }
+    @Optional @Input Boolean getReuseRegisters() { Resolver.resolve(reuseRegisters) as Boolean }
+    @Optional @Input Boolean getTopologicalSort() { Resolver.resolve(topologicalSort) as Boolean }
+    @Optional @Input Boolean getHandleExceptions() { Resolver.resolve(handleExceptions) as Boolean }
+    @Optional @Input Boolean getForceOverwrite() { Resolver.resolve(forceOverwrite) as Boolean }
+
     @Override List<String> getArgs() {
 
         ArrayList<String> args = new ArrayList()
@@ -80,16 +88,16 @@ class Dex2jarTask extends AbstractDex2jarTask {
         if (outFile) args.addAll(['--output', outFile as String])
         else workingDir = outDir
 
-        def theExceptionFile = getExceptionFile()
-        if (theExceptionFile) args.addAll(['--exception-file', theExceptionFile as String])
+        def exceptionFile = getExceptionFile()
+        if (exceptionFile) args.addAll(['--exception-file', exceptionFile as String])
 
-        if (!translateCode) args.add('--no-code')
-        if (translateDebugInfo) args.add('--debug-info')
-        if (optimizeSynchronized) args.add('-os')   // typo in long option '--optmize-synchronized'
-        if (reuseRegisters) args.add('--reuse-reg')
-        if (topologicalSort) args.add('--topological-sort')
-        if (!handleExceptions) args.add('--not-handle-exception')
-        if (forceOverwrite) args.add('--force')
+        if (!getTranslateCode()) args.add('--no-code')
+        if (getTranslateDebugInfo()) args.add('--debug-info')
+        if (getOptimizeSynchronized()) args.add('-os')   // typo in long option '--optmize-synchronized'
+        if (getReuseRegisters()) args.add('--reuse-reg')
+        if (getTopologicalSort()) args.add('--topological-sort')
+        if (!getHandleExceptions()) args.add('--not-handle-exception')
+        if (getForceOverwrite()) args.add('--force')
 
         args.addAll(getExtraArgs())
 
