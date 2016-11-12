@@ -37,9 +37,9 @@ class ApktoolExtension extends AbstractToolExtension {
     def frameworkDir
     def frameworkDirAsInput
     def frameworkDirAsOutput
-    def frameworkTag
 
     // Decode
+    def frameworkTag
     Integer apiLevel
     Boolean decodeResources = true
     Boolean decodeClasses = true
@@ -64,6 +64,8 @@ class ApktoolExtension extends AbstractToolExtension {
     File getFrameworkDir() { Resolver.resolveNullableFile(project, frameworkDir) }
     File getFrameworkDirAsInput() { Resolver.resolveNullableFile(project, frameworkDirAsInput) }
     File getFrameworkDirAsOutput() { Resolver.resolveNullableFile(project, frameworkDirAsOutput) }
+
+    // Decode
     String getFrameworkTag() { Resolver.resolve(frameworkTag) as String }
 
     // Build

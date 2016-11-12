@@ -68,9 +68,9 @@ class DexpatcherBasePlugin implements Plugin<Project> {
             task.frameworkDir = { apktool.getFrameworkDir() }
             task.frameworkDirAsInput = { apktool.getFrameworkDirAsInput() }
             task.frameworkDirAsOutput = { apktool.getFrameworkDirAsOutput() }
-            task.frameworkTag = { apktool.getFrameworkTag() }
         }
         project.tasks.withType(DecodeApkTask) { DecodeApkTask task ->
+            task.frameworkTag = { apktool.getFrameworkTag() }
             task.apiLevel = { apktool.apiLevel }
             task.decodeResources = { apktool.decodeResources }
             task.decodeClasses = { apktool.decodeClasses }

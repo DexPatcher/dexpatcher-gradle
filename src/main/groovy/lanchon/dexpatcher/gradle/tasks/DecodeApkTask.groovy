@@ -42,6 +42,7 @@ class DecodeApkTask extends AbstractApktoolTask {
 
     def apkFile
     def outputDir
+    def frameworkTag
     def apiLevel
     def decodeResources = true
     def decodeClasses = true
@@ -56,6 +57,7 @@ class DecodeApkTask extends AbstractApktoolTask {
 
     @InputFile File getApkFile() { project.file(apkFile) }
     @OutputDirectory File getOutputDir() { project.file(outputDir) }
+    @Optional @Input String getFrameworkTag() { Resolver.resolve(frameworkTag) as String }
     @Optional @Input Integer getApiLevel() { Resolver.resolve(apiLevel) as Integer }
     @Optional @Input Boolean getDecodeResources() { Resolver.resolve(decodeResources) as Boolean }
     @Optional @Input Boolean getDecodeClasses() { Resolver.resolve(decodeClasses) as Boolean }
@@ -67,6 +69,8 @@ class DecodeApkTask extends AbstractApktoolTask {
     @Override List<String> getArgs() {
         def args = super.getArgs()
         args.addAll(['--output', getOutputDir() as String])
+        def frameworkTag = getFrameworkTag()
+        if (frameworkTag) args.addAll(['--frame-tag', frameworkTag])
         def apiLevel = getApiLevel()
         if (apiLevel) args.addAll(['--api', apiLevel as String])
         if (!getDecodeResources()) args.add('--no-res')

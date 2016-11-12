@@ -78,7 +78,6 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
     def frameworkDir
     def frameworkDirAsInput
     def frameworkDirAsOutput
-    def frameworkTag
 
     AbstractApktoolTask(String command) {
         this.command = command
@@ -114,8 +113,6 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
     @Optional @InputDirectory File getFrameworkDirAsInput() { Resolver.resolveNullableFile(project, frameworkDirAsInput) }
     @Optional @OutputDirectory File getFrameworkDirAsOutput() { Resolver.resolveNullableFile(project, frameworkDirAsOutput) }
 
-    @Optional @Input String getFrameworkTag() { Resolver.resolve(frameworkTag) as String }
-
     @Override List<String> getArgs() {
         ArrayList<String> args = new ArrayList()
         switch (getVerbosity()) {
@@ -134,8 +131,6 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
         args.add(command)
         def frameworkDir = getFrameworkDir()
         if (frameworkDir) args.addAll(['--frame-path', frameworkDir as String])
-        def frameworkTag = getFrameworkTag()
-        if (frameworkTag) args.addAll(['--frame-tag', frameworkTag])
         return args;
     }
 
