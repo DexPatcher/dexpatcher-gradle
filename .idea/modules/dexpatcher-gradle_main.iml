@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id="dexpatcher-gradle:main" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="com.github.lanchon.dexpatcher" external.system.module.type="sourceSet" external.system.module.version="0.4.2" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
-    <output url="file://$MODULE_DIR$/../../build/classes/main" />
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7">
+    <output url="file://$MODULE_DIR$/../../out/production/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/groovy" isTestSource="false" />
@@ -10,17 +10,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/lib/gradle-installation-beacon-2.14.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/installation-beacon" />
-        </SOURCES>
-      </library>
-    </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -36,9 +25,147 @@
           <root url="jar://$USER_HOME$/.gradle/caches/2.14.1/generated-gradle-jars/gradle-api-2.14.1.jar!/" />
         </CLASSES>
         <JAVADOC />
+        <SOURCES>
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/core" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/ivy" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/language-native" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/javascript" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/jvm-services" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/internal-integ-testing" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/logging" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/platform-base" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/jetty" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/osgi" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/build-comparison" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/platform-play" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/messaging" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/resources-sftp" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/resources-http" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/open-api" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/ide-native" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/publish" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/process-services" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/wrapper" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/plugin-development" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/testing-jvm" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/language-groovy" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/model-core" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/plugins" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/maven" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/scala" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/native" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/dependency-management" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/launcher" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/ear" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/testing-native" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/language-java" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/platform-jvm" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/internal-testing" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/model-groovy" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/resources" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/tooling-api" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/test-kit" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/code-quality" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/signing" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/announce" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/testing-base" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/ui" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/language-jvm" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/sonar" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/plugin-use" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/cli" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/base-services-groovy" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/reporting" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/ide" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/diagnostics" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/base-services" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/resources-s3" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/platform-native" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/installation-beacon" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/build-init" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/language-scala" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/ide-play" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/jacoco" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/antlr" />
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/tooling-api-builders" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/lib/gradle-installation-beacon-2.14.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$USER_HOME$/.gradle/wrapper/dists/gradle-2.14.1-all/8bnwg5hd3w55iofp58khbp6yv/gradle-2.14.1/src/installation-beacon" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/2.14.1/generated-gradle-jars/gradle-api-2.14.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.googlecode.juniversalchardet:juniversalchardet:1.0.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.code.gson:gson:2.2.4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.layoutlib:layoutlib-api:25.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.tunnelvisionlabs:antlr4:4.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:annotations:25.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.jill:jill-api:0.10.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.antlr:antlr:3.5.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-commons:5.0.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.external.lombok:lombok-ast:0.2.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.guava:guava:17.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:gradle-core:2.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:builder:2.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.ddms:ddmlib:25.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:builder-test-api:2.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.tunnelvisionlabs:antlr4-annotations:4.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.antlr:ST4:4.0.8" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-logging:commons-logging:1.1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:manifest-merger:25.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.bouncycastle:bcprov-jdk15on:1.48" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.jack:jack-api:0.10.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-io:commons-io:2.4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:transform-api:2.0.0-deprecated-use-gradle-api" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.sf.proguard:proguard-base:5.2.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.abego.treelayout:org.abego.treelayout.core:1.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-tree:5.0.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm:5.0.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.bouncycastle:bcpkix-jdk15on:1.48" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.lint:lint-checks:25.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.sf.proguard:proguard-gradle:5.2.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:gradle-api:2.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.sf.kxml:kxml2:2.3.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.lint:lint:25.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.databinding:compilerCommon:2.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:dvlib:25.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:common:25.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.intellij:annotations:12.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:gradle:2.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.httpcomponents:httpclient:4.1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-debug-all:5.0.4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-analysis:5.0.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-codec:commons-codec:1.4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:repository:25.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.antlr:antlr-runtime:3.5.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:sdklib:25.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.databinding:baseLibrary:2.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:builder-model:2.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:sdk-common:25.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.eclipse.jdt.core.compiler:ecj:4.4.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.commons:commons-compress:1.8.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.lint:lint-api:25.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.httpcomponents:httpmime:4.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.squareup:javawriter:2.5.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.tunnelvisionlabs:antlr4-runtime:4.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.jacoco:org.jacoco.core:0.7.6.201602180812" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.httpcomponents:httpcore:4.1" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -48,60 +175,5 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.jacoco:org.jacoco.core:0.7.6.201602180812" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.code.gson:gson:2.2.4" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.intellij:annotations:12.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.httpcomponents:httpclient:4.1.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.layoutlib:layoutlib-api:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.tunnelvisionlabs:antlr4:4.5" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.bouncycastle:bcpkix-jdk15on:1.48" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-analysis:5.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:sdklib:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.tunnelvisionlabs:antlr4-annotations:4.5" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.antlr:ST4:4.0.8" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.bouncycastle:bcprov-jdk15on:1.48" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.httpcomponents:httpcore:4.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.guava:guava:17.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-debug-all:5.0.4" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.lint:lint-checks:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:builder:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.jill:jill-api:0.10.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.antlr:antlr-runtime:3.5.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:builder-model:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:repository:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:annotations:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.commons:commons-compress:1.8.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.databinding:baseLibrary:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.httpcomponents:httpmime:4.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-io:commons-io:2.4" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.lint:lint-api:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.sf.proguard:proguard-base:5.2.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.squareup:javawriter:2.5.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-tree:5.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-codec:commons-codec:1.4" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.eclipse.jdt.core.compiler:ecj:4.4.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:gradle:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:builder-test-api:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-commons:5.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:sdk-common:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.sf.proguard:proguard-gradle:5.2.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:manifest-merger:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:common:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.jack:jack-api:0.10.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.ddms:ddmlib:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:transform-api:2.0.0-deprecated-use-gradle-api" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.sf.kxml:kxml2:2.3.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.abego.treelayout:org.abego.treelayout.core:1.0.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.databinding:compilerCommon:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm:5.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.tunnelvisionlabs:antlr4-runtime:4.5" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.antlr:antlr:3.5.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.googlecode.juniversalchardet:juniversalchardet:1.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:gradle-api:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.external.lombok:lombok-ast:0.2.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.lint:lint:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:gradle-core:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:dvlib:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-logging:commons-logging:1.1.1" level="project" />
   </component>
 </module>
