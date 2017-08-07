@@ -60,8 +60,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
 
         def apktoolDir = new File(modIntermediateDir, 'apktool')
         def apktoolFrameworkDir = new File(modIntermediateDir, 'apktool-framework')
-        def dex2jarDir = new File(modIntermediateDir, 'dex2jar')
-        def dex2jarUnifiedDir = new File(modIntermediateDir, 'dex2jar-unified')
+        def dex2jarFile = new File(modIntermediateDir, 'dex2jar/classes.zip')
         def resourcesDir = new File(modIntermediateDir, 'resources')
         def libraryDir = new File(modOutputDir, 'aar')
 
@@ -91,16 +90,8 @@ class ApkLibraryPlugin extends AbstractPlugin {
             description = "Translates Dalvik bytecode into Java bytecode."
             group = taskGroup
             dependsOn decodeApk
-            dexFiles = project.fileTree(apktoolDir).include('*.dex')
-            outputDir = dex2jarDir
-        }
-
-        def dex2jarUnify = createDex2jarUnifyTask(project, taskNameModifier('dex2jarUnify'), dex2jarDir)
-        dex2jarUnify.with {
-            description = "Packs translated Java bytecode into a unified jar"
-            group = taskGroup
-            dependsOn dex2jar
-            destinationDir = dex2jarUnifiedDir
+            dexFiles = { decodeApk.getApkFile() }
+            outputFile = dex2jarFile
         }
 
         def resources = createResourcesTask(project, taskNameModifier('resources'), apktoolDir)
@@ -111,12 +102,12 @@ class ApkLibraryPlugin extends AbstractPlugin {
             destinationDir = resourcesDir
         }
 
-        def apkLibrary = createApkLibraryTask(project, taskNameModifier('apkLibrary'), apktoolDir, dex2jarUnifiedDir,
+        def apkLibrary = createApkLibraryTask(project, taskNameModifier('apkLibrary'), apktoolDir, dex2jarFile,
                 resourcesDir)
         apkLibrary.with {
             description = "Packs the processed application into an apk library."
             group = taskGroup
-            dependsOn decodeApk, dex2jarUnify, resources
+            dependsOn decodeApk, dex2jar, resources
             destinationDir = libraryDir
             extension = 'aar'
             def apkName = decodeApk.getApkFile().name ?: project.name ?: 'source'
@@ -126,7 +117,6 @@ class ApkLibraryPlugin extends AbstractPlugin {
 
         apkLibrary.extensions.add 'decodeApkTask', decodeApk
         apkLibrary.extensions.add 'dex2jarTask', dex2jar
-        apkLibrary.extensions.add 'dex2jarUnifyTask', dex2jarUnify
         apkLibrary.extensions.add 'resources', resources
         apkLibrary.extensions.add 'apkLibraryTask', apkLibrary
 
@@ -146,27 +136,6 @@ class ApkLibraryPlugin extends AbstractPlugin {
         }
     }
 
-    static Zip createDex2jarUnifyTask(Project project, String name, File dex2jarDir) {
-
-        def dex2jarUnify = project.tasks.create(name, Zip)
-        dex2jarUnify.with {
-            duplicatesStrategy = DuplicatesStrategy.FAIL
-            archiveName = 'classes.zip'
-            inputs.sourceDir dex2jarDir
-        }
-
-        dex2jarUnify.doFirst {
-            def tree = project.fileTree(dex2jarDir)
-            tree.include '*.jar'
-            tree.each {
-                dex2jarUnify.from(project.zipTree(it))
-            }
-        }
-
-        return dex2jarUnify
-
-    }
-
     static Zip createResourcesTask(Project project, String name, File apktoolDir) {
 
         def resources = project.tasks.create(name, Zip)
@@ -182,7 +151,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
 
     }
 
-    static Zip createApkLibraryTask(Project project, String name, File apktoolDir, File dex2jarUnifiedDir,
+    static Zip createApkLibraryTask(Project project, String name, File apktoolDir, File dex2jarFile,
             File resourcesDir) {
 
         def apkLibrary = project.tasks.create(name, Zip)
@@ -231,7 +200,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
                     into 'dexpatcher/apktool'
                 }
             }
-            from(dex2jarUnifiedDir) { CopySpec spec ->
+            from(dex2jarFile) { CopySpec spec ->
                 spec.into 'dexpatcher/dedex'
             }
             from(resourcesDir)
