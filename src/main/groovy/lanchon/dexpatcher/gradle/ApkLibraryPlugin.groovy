@@ -61,6 +61,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
         def apktoolDir = new File(modIntermediateDir, 'apktool')
         def apktoolFrameworkDir = new File(modIntermediateDir, 'apktool-framework')
         def dex2jarFile = new File(modIntermediateDir, 'dex2jar/classes.zip')
+        def dex2jarExceptionFile = new File(modIntermediateDir, 'dex2jar/dex2jar-error.zip')
         def resourcesDir = new File(modIntermediateDir, 'resources')
         def libraryDir = new File(modOutputDir, 'aar')
 
@@ -92,6 +93,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
             dependsOn decodeApk
             dexFiles = { decodeApk.getApkFile() }
             outputFile = dex2jarFile
+            exceptionFile = dex2jarExceptionFile
         }
 
         def resources = createResourcesTask(project, taskNameModifier('resources'), apktoolDir)
