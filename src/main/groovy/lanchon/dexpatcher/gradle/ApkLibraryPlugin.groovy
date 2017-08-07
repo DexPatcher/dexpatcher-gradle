@@ -105,7 +105,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
         }
 
         def apkLibrary = createApkLibraryTask(project, taskNameModifier('apkLibrary'), apktoolDir, dex2jarFile,
-                resourcesDir)
+                dex2jarExceptionFile, resourcesDir)
         apkLibrary.with {
             description = "Packs the processed application into an apk library."
             group = taskGroup
@@ -154,7 +154,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
     }
 
     static Zip createApkLibraryTask(Project project, String name, File apktoolDir, File dex2jarFile,
-            File resourcesDir) {
+            File dex2jarExceptionFile, File resourcesDir) {
 
         def apkLibrary = project.tasks.create(name, Zip)
         apkLibrary.with {
@@ -204,6 +204,9 @@ class ApkLibraryPlugin extends AbstractPlugin {
             }
             from(dex2jarFile) { CopySpec spec ->
                 spec.into 'dexpatcher/dedex'
+            }
+            from(dex2jarExceptionFile) { CopySpec spec ->
+                spec.into 'dexpatcher/dex2jar'
             }
             from(resourcesDir)
 
