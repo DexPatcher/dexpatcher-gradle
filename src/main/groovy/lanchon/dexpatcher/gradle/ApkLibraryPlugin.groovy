@@ -82,7 +82,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
             decodeClasses = false
             //keepBrokenResources = true
         }
-        decodeApk << {
+        decodeApk.doLast {
             printApkInfo decodeApk
         }
 

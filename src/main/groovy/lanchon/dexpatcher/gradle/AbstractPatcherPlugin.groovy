@@ -127,7 +127,7 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
             // And later add a copy to the output of the merge.
             androidVariants.all { BaseVariant variant ->
                 def task = variant.mergeResources
-                task << {
+                task.doLast {
                     def toFile = new File(task.outputDir, 'values/dexpatcher-public.xml')
                     com.google.common.io.Files.createParentDirs(toFile)
                     Files.copy(apkLibrary.publicXmlFile.toPath(), toFile.toPath())
