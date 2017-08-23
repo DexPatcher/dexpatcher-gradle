@@ -13,6 +13,8 @@ package lanchon.dexpatcher.gradle
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.extensions.ApkLibraryExtension
+import lanchon.dexpatcher.gradle.extensions.ApktoolExtension
+import lanchon.dexpatcher.gradle.extensions.DexpatcherConfigExtension
 import lanchon.dexpatcher.gradle.tasks.DecodeApkTask
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
 
@@ -78,7 +80,12 @@ class ApkLibraryPlugin extends AbstractPlugin {
                 return files[0]
             }
             outputDir = apktoolDir
-            setFrameworkDirAsOutput apktoolFrameworkDir
+            def dexpatcherConfig = project.extensions.getByType(DexpatcherConfigExtension)
+            def apktool = (dexpatcherConfig as ExtensionAware).extensions.getByType(ApktoolExtension)
+            setFrameworkDirAsOutput {
+                def dirAsOutput = apktool.getFrameworkDirAsOutput();
+                return (getFrameworkDirAsInput() || dirAsOutput) ? dirAsOutput : apktoolFrameworkDir
+            }
             decodeClasses = false
             //keepBrokenResources = true
         }
