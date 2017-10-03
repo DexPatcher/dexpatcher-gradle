@@ -20,21 +20,22 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 
 /*
-Apktool v2.2.1 - a tool for reengineering Android apk files
+Apktool v2.3.0 - a tool for reengineering Android apk files
 usage: apktool [-q|--quiet OR -v|--verbose] d[ecode] [options] <file_apk>
-    --api <API>          The numeric api-level of the file to generate, e.g. 14 for ICS.
- -b,--no-debug-info      don't write out debug info (.local, .param, .line, etc.)
- -f,--force              Force delete destination directory.
- -k,--keep-broken-res    Use if there was an error and some resources were dropped, e.g.
-                         "Invalid config flags detected. Dropping resources", but you
-                         want to decode them anyway, even with errors. You will have to
-                         fix them manually before building.
- -m,--match-original     Keeps files to closest to original as possible. Prevents rebuild.
- -o,--output <dir>       The name of folder that gets written. Default is apk.out
- -p,--frame-path <dir>   Uses framework files located in <dir>.
- -r,--no-res             Do not decode resources.
- -s,--no-src             Do not decode sources.
- -t,--frame-tag <tag>    Uses framework files tagged by <tag>.
+ -api,--api-level <API>   The numeric api-level of the file to generate, e.g. 14 for ICS.
+ -b,--no-debug-info       don't write out debug info (.local, .param, .line, etc.)
+ -f,--force               Force delete destination directory.
+ -k,--keep-broken-res     Use if there was an error and some resources were dropped, e.g.
+                          "Invalid config flags detected. Dropping resources", but you
+                          want to decode them anyway, even with errors. You will have to
+                          fix them manually before building.
+ -m,--match-original      Keeps files to closest to original as possible. Prevents rebuild.
+    --no-assets           Do not decode assets.
+ -o,--output <dir>        The name of folder that gets written. Default is apk.out
+ -p,--frame-path <dir>    Uses framework files located in <dir>.
+ -r,--no-res              Do not decode resources.
+ -s,--no-src              Do not decode sources.
+ -t,--frame-tag <tag>     Uses framework files tagged by <tag>.
 */
 
 @CompileStatic
@@ -44,6 +45,7 @@ class DecodeApkTask extends AbstractApktoolTask {
     def outputDir
     def frameworkTag
     def apiLevel
+    def decodeAssets = true
     def decodeResources = true
     def decodeClasses = true
     def keepBrokenResources
@@ -59,6 +61,7 @@ class DecodeApkTask extends AbstractApktoolTask {
     @OutputDirectory File getOutputDir() { project.file(outputDir) }
     @Optional @Input String getFrameworkTag() { Resolver.resolve(frameworkTag) as String }
     @Optional @Input Integer getApiLevel() { Resolver.resolve(apiLevel) as Integer }
+    @Optional @Input Boolean getDecodeAssets() { Resolver.resolve(decodeAssets) as Boolean }
     @Optional @Input Boolean getDecodeResources() { Resolver.resolve(decodeResources) as Boolean }
     @Optional @Input Boolean getDecodeClasses() { Resolver.resolve(decodeClasses) as Boolean }
     @Optional @Input Boolean getKeepBrokenResources() { Resolver.resolve(keepBrokenResources) as Boolean }
@@ -73,6 +76,7 @@ class DecodeApkTask extends AbstractApktoolTask {
         if (frameworkTag) args.addAll(['--frame-tag', frameworkTag])
         def apiLevel = getApiLevel()
         if (apiLevel) args.addAll(['--api', apiLevel as String])
+        if (!getDecodeAssets()) args.add('--no-assets')
         if (!getDecodeResources()) args.add('--no-res')
         if (!getDecodeClasses()) args.add('--no-src')
         if (getKeepBrokenResources()) args.add('--keep-broken-res')

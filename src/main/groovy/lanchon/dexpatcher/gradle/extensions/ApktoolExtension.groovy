@@ -41,6 +41,7 @@ class ApktoolExtension extends AbstractToolExtension {
     // Decode
     def frameworkTag
     Integer apiLevel
+    Boolean decodeAssets = true
     Boolean decodeResources = true
     Boolean decodeClasses = true
     Boolean keepBrokenResources
