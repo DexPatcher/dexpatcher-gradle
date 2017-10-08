@@ -12,6 +12,7 @@ package lanchon.dexpatcher.gradle
 
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import java.util.zip.ZipOutputStream
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
@@ -109,8 +110,12 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
         project.afterEvaluate {
             afterPrepareApkLibrary { PrepareLibraryTask task ->
                 com.google.common.io.Files.createParentDirs(dedexFile)
-                Files.copy(apkLibraryUnchecked.dedexFile.toPath(), dedexFile.toPath(),
-                        StandardCopyOption.REPLACE_EXISTING)
+                if (patcherExtension.importSymbols) {
+                    Files.copy(apkLibraryUnchecked.dedexFile.toPath(), dedexFile.toPath(),
+                            StandardCopyOption.REPLACE_EXISTING)
+                } else {
+                    new ZipOutputStream(new FileOutputStream(dedexFile)).close();
+                }
             }
         }
     }
