@@ -22,7 +22,7 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
 
 /*
-DexPatcher Version 1.2.0 by Lanchon
+DexPatcher Version 1.4.1 by Lanchon
            https://dexpatcher.github.io/
 usage: dexpatcher [<option> ...] [--output <patched-dex-or-dir>]
                   <source-dex-apk-or-dir> [<patch-dex-apk-or-dir> ...]
@@ -38,9 +38,10 @@ usage: dexpatcher [<option> ...] [--output <patched-dex-or-dir>]
  -M,--multi-dex-threaded      multi-threaded multi-dex (implies: -m)
  -m,--multi-dex               enable multi-dex support
     --max-dex-pool-size <n>   maximum size of dex pools (default: 65536)
+    --no-auto-ignore          no trivial default constructor auto-ignore
  -o,--output <dex-or-dir>     name of output file or directory
+ -P,--path-root <root>        output absolute paths of source code files
  -p,--path                    output relative paths of source code files
-    --path-root <root>        output absolute paths of source code files
  -q,--quiet                   do not output warnings
     --stats                   output timing statistics
  -v,--verbose                 output extra information
@@ -67,6 +68,7 @@ class DexpatcherTask extends AbstractJavaExecTask {
     def multiDexJobs
     def maxDexPoolSize
     def annotationPackage
+    def constructorAutoIgnore = true
     def compatDexTag
     def verbosity
     def logSourcePath
@@ -110,6 +112,7 @@ class DexpatcherTask extends AbstractJavaExecTask {
     @Optional @Input Integer getMaxDexPoolSize() { Resolver.resolve(maxDexPoolSize) as Integer }
 
     @Optional @Input String getAnnotationPackage() { Resolver.resolve(annotationPackage) as String }
+    @Optional @Input Boolean getConstructorAutoIgnore() { Resolver.resolve(constructorAutoIgnore) as Boolean }
     @Optional @Input Boolean getCompatDexTag() { Resolver.resolve(compatDexTag) as Boolean }
 
     Verbosity getVerbosity() { Resolver.resolve(verbosity) as Verbosity }
@@ -147,6 +150,7 @@ class DexpatcherTask extends AbstractJavaExecTask {
 
         def annotations = getAnnotationPackage()
         if (annotations != null) args.addAll(['--annotations', annotations])
+        if (!getConstructorAutoIgnore()) args.add('--no-auto-ignore')
         if (getCompatDexTag()) args.add('--compat-dextag')
 
         switch (getVerbosity()) {

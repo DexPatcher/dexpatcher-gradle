@@ -37,6 +37,7 @@ class DexpatcherExtension extends AbstractToolExtension {
     Integer multiDexJobs
     Integer maxDexPoolSize
     String annotationPackage
+    Boolean constructorAutoIgnore = true
     Boolean compatDexTag
     Verbosity verbosity
     Boolean logSourcePath

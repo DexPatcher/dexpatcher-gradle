@@ -55,6 +55,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
             task.multiDexJobs = { dexpatcher.multiDexJobs }
             task.maxDexPoolSize = { dexpatcher.maxDexPoolSize }
             task.annotationPackage = { dexpatcher.annotationPackage }
+            task.constructorAutoIgnore = { dexpatcher.constructorAutoIgnore }
             task.compatDexTag = { dexpatcher.compatDexTag }
             task.verbosity = { dexpatcher.verbosity }
             task.logSourcePath = { dexpatcher.logSourcePath }
