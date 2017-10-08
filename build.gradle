@@ -15,7 +15,7 @@ plugins {
 }
 
 group = 'com.github.lanchon.dexpatcher'
-version = '0.4.5'
+version = '0.4.6'
 
 sourceCompatibility = '1.7'
 
