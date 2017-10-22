@@ -54,11 +54,12 @@ class ApktoolExtension extends AbstractToolExtension {
     Boolean forceDebuggableBuild
     Boolean forceCleanBuild
 
-    ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Closure getProperty) {
+    ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig, DEFAULT_SUBDIR_NAME)
-        dir = getProperty(DIR_PROPERTY)
-        frameworkDir = getProperty(FRAMEWORK_DIR_PROPERTY)
-        aaptFile = getProperty(AAPT_FILE_PROPERTY)
+        def properties = dexpatcherConfig.properties
+        dir = properties.getAsFile(DIR_PROPERTY)
+        frameworkDir = properties.getAsFile(FRAMEWORK_DIR_PROPERTY)
+        aaptFile = properties.getAsFile(AAPT_FILE_PROPERTY)
     }
 
     // Base

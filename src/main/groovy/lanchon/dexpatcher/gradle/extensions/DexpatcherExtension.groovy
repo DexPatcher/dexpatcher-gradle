@@ -44,9 +44,10 @@ class DexpatcherExtension extends AbstractToolExtension {
     def logSourcePathRoot
     Boolean logStats
 
-    DexpatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Closure getProperty) {
+    DexpatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig, DEFAULT_SUBDIR_NAME)
-        dir = getProperty(DIR_PROPERTY)
+        def properties = dexpatcherConfig.properties
+        dir = properties.getAsFile(DIR_PROPERTY)
     }
 
     String getLogSourcePathRoot() { Resolver.resolve(logSourcePathRoot) as String }

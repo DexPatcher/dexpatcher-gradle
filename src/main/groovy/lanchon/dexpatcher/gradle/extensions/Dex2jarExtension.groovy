@@ -30,9 +30,10 @@ class Dex2jarExtension extends AbstractToolExtension {
     Boolean topologicalSort
     Boolean handleExceptions
 
-    Dex2jarExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Closure getProperty) {
+    Dex2jarExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig, DEFAULT_SUBDIR_NAME)
-        dir = getProperty(DIR_PROPERTY)
+        def properties = dexpatcherConfig.properties
+        dir = properties.getAsFile(DIR_PROPERTY)
     }
 
 }

@@ -34,8 +34,6 @@ class DexpatcherBasePlugin implements Plugin<Project> {
 
     static final String TASK_GROUP = 'DexPatcher'
 
-    private static final String LOCAL_PROPERTIES = 'local.properties'
-
     protected Project project
     protected DexpatcherConfigExtension dexpatcherConfig
     protected DexpatcherExtension dexpatcher
@@ -110,26 +108,11 @@ class DexpatcherBasePlugin implements Plugin<Project> {
     }
 
     private void setExtensions() {
-        Properties localProperties = getLocalPropertiesRecursive(project)
-        def getProperty = { String key -> project.properties.get(key) ?: localProperties.getProperty(key) }
-        def getResolvedProperty = { String key -> Resolver.resolveNullableFile(project.rootProject, getProperty(key)) }
-        dexpatcherConfig = project.extensions.create(DexpatcherConfigExtension.EXTENSION_NAME, DexpatcherConfigExtension, project, getResolvedProperty)
+        dexpatcherConfig = project.extensions.create(DexpatcherConfigExtension.EXTENSION_NAME, DexpatcherConfigExtension, project)
         def subextensions = (dexpatcherConfig as ExtensionAware).extensions
-        dexpatcher = subextensions.create(DexpatcherExtension.EXTENSION_NAME, DexpatcherExtension, project, dexpatcherConfig, getResolvedProperty)
-        apktool = subextensions.create(ApktoolExtension.EXTENSION_NAME, ApktoolExtension, project, dexpatcherConfig, getResolvedProperty)
-        dex2jar = subextensions.create(Dex2jarExtension.EXTENSION_NAME, Dex2jarExtension, project, dexpatcherConfig, getResolvedProperty)
-    }
-
-    private static Properties getLocalPropertiesRecursive(Project project) {
-        Properties parentProperties = project.parent ? getLocalPropertiesRecursive(project.parent) : null
-        Properties properties = new Properties(parentProperties)
-        File file = project.file(LOCAL_PROPERTIES)
-        if (file.exists()) {
-            file.withInputStream {
-                properties.load(it)
-            }
-        }
-        return properties
+        dexpatcher = subextensions.create(DexpatcherExtension.EXTENSION_NAME, DexpatcherExtension, project, dexpatcherConfig)
+        apktool = subextensions.create(ApktoolExtension.EXTENSION_NAME, ApktoolExtension, project, dexpatcherConfig)
+        dex2jar = subextensions.create(Dex2jarExtension.EXTENSION_NAME, Dex2jarExtension, project, dexpatcherConfig)
     }
 
 }

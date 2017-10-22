@@ -12,6 +12,7 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.ProjectProperties
 import lanchon.dexpatcher.gradle.Resolver
 
 import org.gradle.api.Project
@@ -33,16 +34,18 @@ class DexpatcherConfigExtension {
     }
 
     protected final Project project
+    protected final ProjectProperties properties
 
     def dir
     def toolDir
     def libDir
 
-    DexpatcherConfigExtension(Project project, Closure getProperty) {
+    DexpatcherConfigExtension(Project project) {
         this.project = project
-        dir = getProperty(DIR_PROPERTY)
-        toolDir = getProperty(TOOL_DIR_PROPERTY)
-        libDir = getProperty(LIB_DIR_PROPERTY)
+        properties = new ProjectProperties(project)
+        dir = properties.getAsFile(DIR_PROPERTY)
+        toolDir = properties.getAsFile(TOOL_DIR_PROPERTY)
+        libDir = properties.getAsFile(LIB_DIR_PROPERTY)
     }
 
     File getDir() { Resolver.resolveNullableFile(project, dir) }
@@ -55,5 +58,7 @@ class DexpatcherConfigExtension {
     File getResolvedToolDir(File specificToolDir, String defaultSubdirName) {
         resolvePath(specificToolDir, getResolvedToolDir(), defaultSubdirName)
     }
+
+    ProjectProperties getProperties() { properties }
 
 }
