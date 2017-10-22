@@ -57,15 +57,15 @@ class ApkLibraryPlugin extends AbstractPlugin {
             Closure<File> dirModifier) {
 
         def modApkDir = dirModifier(project.file('apk'))
-        def modIntermediateDir = dirModifier(new File(project.buildDir, 'intermediates'))
-        def modOutputDir = dirModifier(new File(project.buildDir, 'outputs'))
+        def modIntermediateDir = dirModifier(Resolver.getFile(project.buildDir, 'intermediates'))
+        def modOutputDir = dirModifier(Resolver.getFile(project.buildDir, 'outputs'))
 
-        def apktoolDir = new File(modIntermediateDir, 'apktool')
-        def apktoolFrameworkDir = new File(modIntermediateDir, 'apktool-framework')
-        def dex2jarFile = new File(modIntermediateDir, 'dex2jar/classes.zip')
-        def dex2jarExceptionFile = new File(modIntermediateDir, 'dex2jar/dex2jar-error.zip')
-        def resourcesDir = new File(modIntermediateDir, 'resources')
-        def libraryDir = new File(modOutputDir, 'aar')
+        def apktoolDir = Resolver.getFile(modIntermediateDir, 'apktool')
+        def apktoolFrameworkDir = Resolver.getFile(modIntermediateDir, 'apktool-framework')
+        def dex2jarFile = Resolver.getFile(modIntermediateDir, 'dex2jar/classes.zip')
+        def dex2jarExceptionFile = Resolver.getFile(modIntermediateDir, 'dex2jar/dex2jar-error.zip')
+        def resourcesDir = Resolver.getFile(modIntermediateDir, 'resources')
+        def libraryDir = Resolver.getFile(modOutputDir, 'aar')
 
         def decodeApk = project.tasks.create(taskNameModifier('decodeApk'), DecodeApkTask)
         decodeApk.with {
@@ -134,7 +134,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
     }
 
     private static void printApkInfo(DecodeApkTask task) {
-        def apktoolYmlFile = new File(task.getOutputDir(), 'apktool.yml')
+        def apktoolYmlFile = Resolver.getFile(task.getOutputDir(), 'apktool.yml')
         if (apktoolYmlFile.file) {
             def pattern = ~/^\s*(minSdkVersion|targetSdkVersion|versionCode|versionName):/
             println 'APK information:'
@@ -151,8 +151,8 @@ class ApkLibraryPlugin extends AbstractPlugin {
         resources.with {
             duplicatesStrategy = DuplicatesStrategy.FAIL
             archiveName = 'classes.jar'
-            from(new File(apktoolDir, 'unknown'))
-            from(new File(apktoolDir, 'original/META-INF')) { CopySpec spec ->
+            from(Resolver.getFile(apktoolDir, 'unknown'))
+            from(Resolver.getFile(apktoolDir, 'original/META-INF')) { CopySpec spec ->
                 spec.into 'META-INF'
             }
         }
@@ -189,7 +189,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
                     include 'assets/'
                 }
             }
-            from(new File(apktoolDir, 'lib')) { CopySpec spec ->
+            from(Resolver.getFile(apktoolDir, 'lib')) { CopySpec spec ->
                 spec.into 'jni'
             }
             from(apktoolDir) { CopySpec spec ->

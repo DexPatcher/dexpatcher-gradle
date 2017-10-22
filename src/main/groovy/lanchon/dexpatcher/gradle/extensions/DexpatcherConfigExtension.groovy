@@ -29,7 +29,7 @@ class DexpatcherConfigExtension {
     private static final String DEFAULT_LIB_SUBDIR_NAME = 'libs'
 
     private static File resolvePath(File file, File defaultBaseDir, String defaultSubdirName) {
-        file ?: (defaultBaseDir ? new File(defaultBaseDir, defaultSubdirName) : null)
+        file ?: (defaultBaseDir ? Resolver.getFile(defaultBaseDir, defaultSubdirName) : null)
     }
 
     protected final Project project

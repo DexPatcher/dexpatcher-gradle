@@ -80,7 +80,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
     @Override
     protected void addDependencies(File rootDir) {
         super.addDependencies rootDir
-        def pluginDir = new File(rootDir, 'patched-application')
+        def pluginDir = Resolver.getFile(rootDir, 'patched-application')
         super.addDependencies pluginDir
         addDependencies pluginDir, 'apk'
     }
@@ -88,7 +88,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
     private DexpatcherTask createPatchDexTask(ApplicationVariant variant) {
 
         def patchDex = project.tasks.create("patch${variant.name.capitalize()}Dex", DexpatcherTask)
-        File patchedDexDir = new File(dexpatcherDir, "patched-dex/${variant.dirName}")
+        File patchedDexDir = Resolver.getFile(dexpatcherDir, "patched-dex/${variant.dirName}")
         patchDex.with {
             description = "Patches the source dex from an apk library using the just-built patch dex."
             group = DexpatcherBasePlugin.TASK_GROUP
@@ -209,7 +209,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
             into dexDir
         }
         afterPrepareDependencies(variant) { File libDir ->
-            importDex.from new File(libDir, 'dexpatcher/dex')
+            importDex.from Resolver.getFile(libDir, 'dexpatcher/dex')
         }
         variant.outputs.each {
             if (it instanceof ApkVariantOutput) {

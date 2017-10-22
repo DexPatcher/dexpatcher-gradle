@@ -52,10 +52,10 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
 
         protected ApkLibraryPaths(File apkLibDir) {
             rootDir = apkLibDir
-            dexpatcherDir = new File(rootDir, 'dexpatcher')
-            dexDir = new File(dexpatcherDir, 'dex')
-            dedexFile = new File(dexpatcherDir, 'dedex/classes.zip')
-            publicXmlFile = new File(dexpatcherDir, 'values/public.xml')
+            dexpatcherDir = Resolver.getFile(rootDir, 'dexpatcher')
+            dexDir = Resolver.getFile(dexpatcherDir, 'dex')
+            dedexFile = Resolver.getFile(dexpatcherDir, 'dedex/classes.zip')
+            publicXmlFile = Resolver.getFile(dexpatcherDir, 'values/public.xml')
         }
 
     }
@@ -74,7 +74,7 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
 
     protected void applyAfterAndroid() {
 
-        dexpatcherDir = new File(project.buildDir, 'intermediates/dexpatcher')
+        dexpatcherDir = Resolver.getFile(project.buildDir, 'intermediates/dexpatcher')
 
         addDependencies dexpatcherConfig.resolvedLibDir
 
@@ -97,13 +97,13 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
     }
 
     protected void addDependencies(File rootDir, String scope) {
-        def jars = Resolver.getJars(project, new File(rootDir, scope))
+        def jars = Resolver.getJars(project, Resolver.getFile(rootDir, scope))
         project.configurations.getByName(scope).dependencies.add(project.dependencies.create(jars))
     }
 
     private void addDedexedClassesToProvidedScope() {
         // Add a non-existent jar file to the 'provided' scope.
-        def dedexFile = new File(dexpatcherDir, 'dedex/classes.jar')
+        def dedexFile = Resolver.getFile(dexpatcherDir, 'dedex/classes.jar')
         def dedexDependency = project.dependencies.create(project.files(dedexFile))
         project.configurations.getByName('provided').dependencies.add(dedexDependency)
         // And later copy the dedexed classes of the apk library into that empty slot.
@@ -125,7 +125,7 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
             // Get 'public.xml' out of the resource merge inputs.
             prepareApkLibraryDoLast { PrepareLibraryTask task ->
                 def apkLibrary = new ApkLibraryPaths(task.explodedDir)
-                def fromFile = new File(apkLibrary.rootDir, 'res/values/public.xml')
+                def fromFile = Resolver.getFile(apkLibrary.rootDir, 'res/values/public.xml')
                 com.google.common.io.Files.createParentDirs(apkLibrary.publicXmlFile)
                 Files.move(fromFile.toPath(), apkLibrary.publicXmlFile.toPath())
             }
@@ -133,7 +133,7 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
             androidVariants.all { BaseVariant variant ->
                 def task = variant.mergeResources
                 task.doLast {
-                    def toFile = new File(task.outputDir, 'values/dexpatcher-public.xml')
+                    def toFile = Resolver.getFile(task.outputDir, 'values/dexpatcher-public.xml')
                     com.google.common.io.Files.createParentDirs(toFile)
                     Files.copy(apkLibrary.publicXmlFile.toPath(), toFile.toPath())
                 }
@@ -164,7 +164,7 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
     }
 
     private boolean isPrepareApkLibraryTask (PrepareLibraryTask task) {
-        return new File(task.explodedDir, 'dexpatcher').directory
+        return Resolver.getFile(task.explodedDir, 'dexpatcher').directory
     }
 
     // Task Graph
@@ -230,7 +230,7 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
             into mergeResources.outputDir
         }
         afterPrepareDependencies(variant) { File libDir ->
-            importResources.from new File(libDir, 'res')
+            importResources.from Resolver.getFile(libDir, 'res')
         }
         mergeResources.dependsOn importResources
         variant.assemble.extensions.add 'importResources', importResources

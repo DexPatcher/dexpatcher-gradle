@@ -42,6 +42,11 @@ abstract class Resolver {
         resolveNullable(object) { project.files(it) }
     }
 
+    static File getFile(File parent, String child) {
+        if (parent == null) throw new NullPointerException();
+        return new File(parent, child)
+    }
+
     static FileCollection getJars(Project project, File rootDirOrFile) {
         def jars = project.fileTree(rootDirOrFile)
         jars.include '**/*.jar'
