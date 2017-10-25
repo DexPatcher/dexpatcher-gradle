@@ -72,13 +72,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
         decodeApk.with {
             description = "Unpacks an Android application and decodes its manifest and resources."
             group = taskGroup
-            apkFile = {
-                def fileOrDir = Resolver.resolveNullableFile(project, apkFileOrDir)
-                if (fileOrDir.isFile()) return fileOrDir
-                def tree = project.fileTree(fileOrDir)
-                tree.include '*.apk'
-                return tree.singleFile
-            }
+            apkFile = { Resolver.resolveSingleFile(project, apkFileOrDir, '*.apk') }
             outputDir = apktoolDir
             def dexpatcherConfig = project.extensions.getByType(DexpatcherConfigExtension)
             def apktool = (dexpatcherConfig as ExtensionAware).extensions.getByType(ApktoolExtension)

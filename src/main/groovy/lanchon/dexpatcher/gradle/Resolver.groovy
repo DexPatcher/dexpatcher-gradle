@@ -42,6 +42,14 @@ abstract class Resolver {
         resolveNullable(object) { project.files(it) }
     }
 
+    static File resolveSingleFile(Project project, Object object, String... includes) {
+        def fileOrDir = Resolver.resolveNullableFile(project, object)
+        if (fileOrDir.isFile()) return fileOrDir
+        def tree = project.fileTree(fileOrDir)
+        tree.include includes
+        return tree.singleFile
+    }
+
     static File getFile(File parent, String child) {
         if (parent == null) throw new NullPointerException();
         return new File(parent, child)
