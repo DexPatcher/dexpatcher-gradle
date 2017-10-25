@@ -18,34 +18,30 @@ import org.gradle.api.file.FileCollection
 @CompileStatic
 abstract class Resolver {
 
-    static def resolve(Object object) {
-        if (object instanceof Closure) resolve(object.call())
-        else object
+    static def resolve(def object) {
+        object instanceof Closure ? resolve(object.call()) : object
     }
 
-    static <T> T resolve(Object object, Closure<T> closure) {
-        if (object instanceof Closure) resolve(object.call(), closure)
-        else closure.call(object)
+    static <T> T resolve(def object, Closure<T> closure) {
+        object instanceof Closure ? resolve(object.call(), closure) : closure.call(object)
     }
 
-    static <T> T resolveNullable(Object object, Closure<T> closure) {
-        if (object instanceof Closure) resolveNullable(object.call(), closure)
-        else if (object) closure.call(object)
-        else null
+    static <T> T resolveNullable(def object, Closure<T> closure) {
+        object instanceof Closure ? resolveNullable(object.call(), closure) : object ? closure.call(object) : null
     }
 
-    static File resolveNullableFile(Project project, Object object) {
-        resolveNullable(object) { project.file(it) }
+    static File resolveNullableFile(Project project, def file) {
+        resolveNullable(file) { project.file(it) }
     }
 
-    static FileCollection resolveNullableFiles(Project project, Object object) {
-        resolveNullable(object) { project.files(it) }
+    static FileCollection resolveNullableFiles(Project project, def files) {
+        resolveNullable(files) { project.files(it) }
     }
 
-    static File resolveSingleFile(Project project, Object object, String... includes) {
-        def fileOrDir = Resolver.resolveNullableFile(project, object)
-        if (fileOrDir.isFile()) return fileOrDir
-        def tree = project.fileTree(fileOrDir)
+    static File resolveSingleFile(Project project, def fileOrDir, String... includes) {
+        def path = Resolver.resolveNullableFile(project, fileOrDir)
+        if (path.isFile()) return path
+        def tree = project.fileTree(path)
         tree.include includes
         return tree.singleFile
     }
