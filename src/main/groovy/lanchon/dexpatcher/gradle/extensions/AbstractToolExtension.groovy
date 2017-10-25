@@ -36,7 +36,7 @@ abstract class AbstractToolExtension {
     }
 
     File getDir() { Resolver.resolveNullableFile(project, dir) }
-    File getResolvedDir() { dexpatcherConfig.getResolvedToolDir(getDir(), defaultSubdirName) }
+    File getResolvedDir() { Resolver.getFile(getDir(), dexpatcherConfig.getResolvedToolDir(), defaultSubdirName) }
 
     FileCollection getClasspath() { Resolver.getJars(project, getResolvedDir()) }
 

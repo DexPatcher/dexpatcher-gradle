@@ -29,10 +29,6 @@ class DexpatcherConfigExtension {
     private static final String DEFAULT_TOOL_SUBDIR_NAME = 'tools'
     private static final String DEFAULT_LIB_SUBDIR_NAME = 'libs'
 
-    private static File resolvePath(File file, File defaultBaseDir, String defaultSubdirName) {
-        file ?: (defaultBaseDir ? Resolver.getFile(defaultBaseDir, defaultSubdirName) : null)
-    }
-
     protected final Project project
     protected final ProjectProperties properties
 
@@ -52,12 +48,9 @@ class DexpatcherConfigExtension {
     File getToolDir() { Resolver.resolveNullableFile(project, toolDir) }
     File getLibDir() { Resolver.resolveNullableFile(project, libDir) }
 
-    File getResolvedToolDir() { resolvePath(getToolDir(), getDir(), DEFAULT_TOOL_SUBDIR_NAME) }
-    File getResolvedLibDir() { resolvePath(getLibDir(), getDir(), DEFAULT_LIB_SUBDIR_NAME) }
+    File getResolvedToolDir() { Resolver.getFile(getToolDir(), getDir(), DEFAULT_TOOL_SUBDIR_NAME) }
+    File getResolvedLibDir() { Resolver.getFile(getLibDir(), getDir(), DEFAULT_LIB_SUBDIR_NAME) }
 
-    File getResolvedToolDir(File specificToolDir, String defaultSubdirName) {
-        resolvePath(specificToolDir, getResolvedToolDir(), defaultSubdirName)
-    }
 
     ProjectProperties getProperties() { properties }
 
