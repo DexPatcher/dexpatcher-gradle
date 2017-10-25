@@ -12,6 +12,8 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.Resolver
+
 import org.gradle.api.Project
 
 @CompileStatic
@@ -19,10 +21,13 @@ class ApkLibraryExtension extends AbstractSubextension {
 
     static final String EXTENSION_NAME = 'apkLibrary'
 
+    def apkFileOrDir = 'apk'
     boolean disableClean
 
     ApkLibraryExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig)
     }
+
+    File getApkFileOrDir() { Resolver.resolveNullableFile(project, apkFileOrDir) }
 
 }

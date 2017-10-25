@@ -46,7 +46,8 @@ class ApkLibraryPlugin extends AbstractPlugin {
 
         project.plugins.apply(BasePlugin)
 
-        def apkLibrary = createTaskChain(project, DexpatcherBasePlugin.TASK_GROUP, { it }, { it })
+        def apkLibrary = createTaskChain(project, DexpatcherBasePlugin.TASK_GROUP, { it }, { it },
+                { apkLibrary.getApkFileOrDir() })
         project.tasks.getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(apkLibrary)
         project.artifacts.add(Dependency.DEFAULT_CONFIGURATION, apkLibrary)
 
@@ -55,9 +56,8 @@ class ApkLibraryPlugin extends AbstractPlugin {
     }
 
     static Zip createTaskChain(Project project, String taskGroup, Closure<String> taskNameModifier,
-            Closure<File> dirModifier) {
+            Closure<File> dirModifier, def apkFileOrDir) {
 
-        def modApkDir = dirModifier(project.file('apk'))
         def modIntermediateDir = dirModifier(Resolver.getFile(project.buildDir, 'intermediates'))
         def modOutputDir = dirModifier(Resolver.getFile(project.buildDir, 'outputs'))
 
@@ -73,12 +73,11 @@ class ApkLibraryPlugin extends AbstractPlugin {
             description = "Unpacks an Android application and decodes its manifest and resources."
             group = taskGroup
             apkFile = {
-                def tree = project.fileTree(modApkDir)
+                def fileOrDir = Resolver.resolveNullableFile(project, apkFileOrDir)
+                if (fileOrDir.isFile()) return fileOrDir
+                def tree = project.fileTree(fileOrDir)
                 tree.include '*.apk'
-                def files = tree.getFiles()
-                if (files.isEmpty()) throw new RuntimeException("No apk file found in '$modApkDir'")
-                if (files.size() > 1) throw new RuntimeException("Multiple apk files found in '$modApkDir'")
-                return files[0]
+                return tree.singleFile
             }
             outputDir = apktoolDir
             def dexpatcherConfig = project.extensions.getByType(DexpatcherConfigExtension)
