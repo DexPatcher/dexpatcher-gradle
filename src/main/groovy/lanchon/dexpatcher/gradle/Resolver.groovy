@@ -51,8 +51,8 @@ abstract class Resolver {
         file ?: (defaultParent ? new File(defaultParent, defaultChild) : null)
     }
 
-    static FileCollection getJars(Project project, File rootDirOrFile) {
-        def jars = project.fileTree(rootDirOrFile)
+    static FileCollection getJars(Project project, File fileOrDir) {
+        def jars = project.fileTree(fileOrDir)
         jars.include '**/*.jar'
         return jars
     }
