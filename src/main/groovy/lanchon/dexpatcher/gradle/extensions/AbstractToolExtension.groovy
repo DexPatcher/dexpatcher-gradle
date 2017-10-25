@@ -24,21 +24,21 @@ abstract class AbstractToolExtension {
 
     protected final Project project
     protected final DexpatcherConfigExtension dexpatcherConfig
-    protected final String defaultSubdirName;
 
     def dir
     def extraArgs
     //boolean addBlankLines
     //boolean deleteOutputs = true
 
-    AbstractToolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, String defaultSubdirName) {
+    AbstractToolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         this.project = project
         this.dexpatcherConfig = dexpatcherConfig
-        this.defaultSubdirName = defaultSubdirName
     }
 
+    protected abstract String getName()
+
     File getDir() { Resolver.resolveNullableFile(project, dir) }
-    File getResolvedDir() { Resolver.getFile(getDir(), dexpatcherConfig.getResolvedToolDir(), defaultSubdirName) }
+    File getResolvedDir() { Resolver.getFile(getDir(), dexpatcherConfig.getResolvedToolDir(), name) }
 
     FileCollection getClasspath() { Resolver.getJars(project, getResolvedDir()) }
 
