@@ -25,9 +25,13 @@ class DexpatcherConfigExtension {
     private static final String DIR_PROPERTY = 'dexpatcher.dir'
     private static final String TOOL_DIR_PROPERTY = 'dexpatcher.toolDir'
     private static final String LIB_DIR_PROPERTY = 'dexpatcher.libDir'
+    private static final String COMPILE_LIB_DIR_PROPERTY = 'dexpatcher.compileLibDir'
+    private static final String PROVIDED_LIB_DIR_PROPERTY = 'dexpatcher.providedLibDir'
 
     private static final String DEFAULT_TOOL_SUBDIR_NAME = 'tools'
     private static final String DEFAULT_LIB_SUBDIR_NAME = 'libs'
+    private static final String DEFAULT_COMPILE_SUBDIR_NAME = 'compile'
+    private static final String DEFAULT_PROVIDED_SUBDIR_NAME = 'provided'
 
     protected final Project project
     protected final ProjectProperties properties
@@ -35,6 +39,8 @@ class DexpatcherConfigExtension {
     def dir
     def toolDir
     def libDir
+    def compileLibDir
+    def providedLibDir
 
     DexpatcherConfigExtension(Project project) {
         this.project = project
@@ -42,15 +48,21 @@ class DexpatcherConfigExtension {
         dir = properties.getAsFile(DIR_PROPERTY)
         toolDir = properties.getAsFile(TOOL_DIR_PROPERTY)
         libDir = properties.getAsFile(LIB_DIR_PROPERTY)
+        compileLibDir = properties.getAsFile(COMPILE_LIB_DIR_PROPERTY)
+        providedLibDir = properties.getAsFile(PROVIDED_LIB_DIR_PROPERTY)
     }
 
     File getDir() { Resolver.resolveNullableFile(project, dir) }
     File getToolDir() { Resolver.resolveNullableFile(project, toolDir) }
     File getLibDir() { Resolver.resolveNullableFile(project, libDir) }
+    File getCompileLibDir() { Resolver.resolveNullableFile(project, compileLibDir) }
+    File getProvidedLibDir() { Resolver.resolveNullableFile(project, providedLibDir) }
 
     File getResolvedToolDir() { Resolver.getFile(getToolDir(), getDir(), DEFAULT_TOOL_SUBDIR_NAME) }
     File getResolvedLibDir() { Resolver.getFile(getLibDir(), getDir(), DEFAULT_LIB_SUBDIR_NAME) }
 
+    File getResolvedCompileLibDir() { Resolver.getFile(getCompileLibDir(), getResolvedLibDir(), DEFAULT_COMPILE_SUBDIR_NAME) }
+    File getResolvedProvidedLibDir() { Resolver.getFile(getProvidedLibDir(), getResolvedLibDir(), DEFAULT_PROVIDED_SUBDIR_NAME) }
 
     ProjectProperties getProperties() { properties }
 

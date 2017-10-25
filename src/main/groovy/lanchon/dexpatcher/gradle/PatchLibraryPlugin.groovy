@@ -64,10 +64,6 @@ class PatchLibraryPlugin extends AbstractPatcherPlugin {
     }
 
     @Override
-    protected void addDependencies(File rootDir) {
-        super.addDependencies rootDir
-        def pluginDir = Resolver.getFile(rootDir, 'patch-library')
-        super.addDependencies pluginDir
-    }
+    protected String getScopeForCompileLibs() { 'provided' }
 
 }

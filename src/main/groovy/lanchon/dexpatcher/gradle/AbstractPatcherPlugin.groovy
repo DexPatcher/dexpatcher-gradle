@@ -75,8 +75,7 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
     protected void applyAfterAndroid() {
 
         dexpatcherDir = Resolver.getFile(project.buildDir, 'intermediates/dexpatcher')
-
-        addDependencies dexpatcherConfig.resolvedLibDir
+        addDependencies()
 
         // Setup 'apkLibrary' property.
         project.afterEvaluate {
@@ -91,13 +90,15 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
 
     }
 
-    protected void addDependencies(File rootDir) {
-        addDependencies rootDir, 'compile'
-        addDependencies rootDir, 'provided'
+    protected void addDependencies() {
+        addDependencies getScopeForCompileLibs(), dexpatcherConfig.resolvedCompileLibDir
+        addDependencies 'provided', dexpatcherConfig.resolvedProvidedLibDir
     }
 
-    protected void addDependencies(File rootDir, String scope) {
-        def jars = Resolver.getJars(project, Resolver.getFile(rootDir, scope))
+    protected abstract String getScopeForCompileLibs()
+
+    protected void addDependencies(String scope, File rootDirOrFile) {
+        def jars = Resolver.getJars(project, rootDirOrFile)
         project.configurations.getByName(scope).dependencies.add(project.dependencies.create(jars))
     }
 

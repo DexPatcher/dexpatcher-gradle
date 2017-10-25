@@ -78,12 +78,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
     }
 
     @Override
-    protected void addDependencies(File rootDir) {
-        super.addDependencies rootDir
-        def pluginDir = Resolver.getFile(rootDir, 'patched-application')
-        super.addDependencies pluginDir
-        addDependencies pluginDir, 'apk'
-    }
+    protected String getScopeForCompileLibs() { 'compile' }
 
     private DexpatcherTask createPatchDexTask(ApplicationVariant variant) {
 
