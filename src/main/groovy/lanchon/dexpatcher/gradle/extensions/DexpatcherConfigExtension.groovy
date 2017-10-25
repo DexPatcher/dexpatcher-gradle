@@ -22,11 +22,13 @@ class DexpatcherConfigExtension {
 
     static final String EXTENSION_NAME = 'dexpatcherConfig'
 
-    private static final String DIR_PROPERTY = 'dexpatcher.dir'
-    private static final String TOOL_DIR_PROPERTY = 'dexpatcher.toolDir'
-    private static final String LIB_DIR_PROPERTY = 'dexpatcher.libDir'
-    private static final String COMPILE_LIB_DIR_PROPERTY = 'dexpatcher.compileLibDir'
-    private static final String PROVIDED_LIB_DIR_PROPERTY = 'dexpatcher.providedLibDir'
+    private static final String PREFIX = 'dexpatcher.'
+
+    private static final String DIR_PROPERTY = PREFIX + 'dir'
+    private static final String TOOL_DIR_PROPERTY = PREFIX + 'tool.dir'
+    private static final String LIB_DIR_PROPERTY = PREFIX + 'lib.dir'
+    private static final String COMPILE_LIB_DIR_PROPERTY = PREFIX + 'lib.compile.dir'
+    private static final String PROVIDED_LIB_DIR_PROPERTY = PREFIX + 'lib.provided.dir'
 
     private static final String DEFAULT_TOOL_SUBDIR_NAME = 'tools'
     private static final String DEFAULT_LIB_SUBDIR_NAME = 'libs'

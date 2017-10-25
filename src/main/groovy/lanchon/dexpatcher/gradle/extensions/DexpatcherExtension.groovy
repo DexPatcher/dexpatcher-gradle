@@ -22,9 +22,9 @@ class DexpatcherExtension extends AbstractToolExtension {
 
     static final String EXTENSION_NAME = 'dexpatcher'
 
-    private static final String DIR_PROPERTY = 'dexpatcher.dexpatcher.dir'
+    private static final String PREFIX = super.PREFIX + EXTENSION_NAME + '.'
 
-    private static final String DEFAULT_SUBDIR_NAME = EXTENSION_NAME
+    private static final String DIR_PROPERTY = PREFIX + 'dir'
 
     static final def QUIET = Verbosity.QUIET
     static final def NORMAL = Verbosity.NORMAL
@@ -45,7 +45,7 @@ class DexpatcherExtension extends AbstractToolExtension {
     Boolean logStats
 
     DexpatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-        super(project, dexpatcherConfig, DEFAULT_SUBDIR_NAME)
+        super(project, dexpatcherConfig, EXTENSION_NAME)
         def properties = dexpatcherConfig.properties
         dir = properties.getAsFile(DIR_PROPERTY)
     }

@@ -19,9 +19,9 @@ class Dex2jarExtension extends AbstractToolExtension {
 
     static final String EXTENSION_NAME = 'dex2jar'
 
-    private static final String DIR_PROPERTY = 'dexpatcher.dex2jar.dir'
+    private static final String PREFIX = super.PREFIX + EXTENSION_NAME + '.'
 
-    private static final String DEFAULT_SUBDIR_NAME = EXTENSION_NAME
+    private static final String DIR_PROPERTY = PREFIX + 'dir'
 
     Boolean translateCode = true
     Boolean translateDebugInfo
@@ -31,7 +31,7 @@ class Dex2jarExtension extends AbstractToolExtension {
     Boolean handleExceptions
 
     Dex2jarExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-        super(project, dexpatcherConfig, DEFAULT_SUBDIR_NAME)
+        super(project, dexpatcherConfig, EXTENSION_NAME)
         def properties = dexpatcherConfig.properties
         dir = properties.getAsFile(DIR_PROPERTY)
     }

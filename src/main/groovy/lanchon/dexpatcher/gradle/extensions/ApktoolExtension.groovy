@@ -22,11 +22,11 @@ class ApktoolExtension extends AbstractToolExtension {
 
     static final String EXTENSION_NAME = 'apktool'
 
-    private static final String DIR_PROPERTY = 'dexpatcher.apktool.dir'
-    private static final String FRAMEWORK_DIR_PROPERTY = 'dexpatcher.apktool.frameworkDir'
-    private static final String AAPT_FILE_PROPERTY = 'dexpatcher.apktool.aaptFile'
+    private static final String PREFIX = super.PREFIX + EXTENSION_NAME + '.'
 
-    private static final String DEFAULT_SUBDIR_NAME = EXTENSION_NAME
+    private static final String DIR_PROPERTY = PREFIX + 'dir'
+    private static final String FRAMEWORK_DIR_PROPERTY = PREFIX + 'framework.dir'
+    private static final String AAPT_FILE_PROPERTY = PREFIX + 'aapt.file'
 
     static final def QUIET = Verbosity.QUIET
     static final def NORMAL = Verbosity.NORMAL
@@ -55,7 +55,7 @@ class ApktoolExtension extends AbstractToolExtension {
     Boolean forceCleanBuild
 
     ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-        super(project, dexpatcherConfig, DEFAULT_SUBDIR_NAME)
+        super(project, dexpatcherConfig, EXTENSION_NAME)
         def properties = dexpatcherConfig.properties
         dir = properties.getAsFile(DIR_PROPERTY)
         frameworkDir = properties.getAsFile(FRAMEWORK_DIR_PROPERTY)

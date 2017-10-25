@@ -20,6 +20,8 @@ import org.gradle.api.file.FileCollection
 @CompileStatic
 abstract class AbstractToolExtension {
 
+    protected static final String PREFIX = 'dexpatcher.tool.'
+
     protected final Project project
     protected final DexpatcherConfigExtension dexpatcherConfig
     protected final String defaultSubdirName;
