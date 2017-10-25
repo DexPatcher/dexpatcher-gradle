@@ -46,7 +46,8 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
         super.apply(project)
 
         def subextensions = (dexpatcherConfig as ExtensionAware).extensions
-        patchedAppExtension = (PatchedAppExtension) subextensions.create(PatchedAppExtension.EXTENSION_NAME, PatchedAppExtension)
+        patchedAppExtension = (PatchedAppExtension) subextensions.create(PatchedAppExtension.EXTENSION_NAME,
+                PatchedAppExtension, project, dexpatcherConfig)
 
         project.plugins.apply(AppPlugin)
         appExtension = project.extensions.getByType(AppExtension)

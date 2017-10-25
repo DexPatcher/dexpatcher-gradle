@@ -42,7 +42,8 @@ class PatchLibraryPlugin extends AbstractPatcherPlugin {
         super.apply(project)
 
         def subextensions = (dexpatcherConfig as ExtensionAware).extensions
-        patchLibraryExtension = (PatchLibraryExtension) subextensions.create(PatchLibraryExtension.EXTENSION_NAME, PatchLibraryExtension)
+        patchLibraryExtension = (PatchLibraryExtension) subextensions.create(PatchLibraryExtension.EXTENSION_NAME,
+                PatchLibraryExtension, project, dexpatcherConfig)
 
         project.plugins.apply(LibraryPlugin)
         libraryExtension = project.extensions.getByType(LibraryExtension)

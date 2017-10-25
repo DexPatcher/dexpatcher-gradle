@@ -41,7 +41,8 @@ class ApkLibraryPlugin extends AbstractPlugin {
         super.apply(project)
 
         def subextensions = (dexpatcherConfig as ExtensionAware).extensions
-        apkLibrary = (ApkLibraryExtension) subextensions.create(ApkLibraryExtension.EXTENSION_NAME, ApkLibraryExtension)
+        apkLibrary = (ApkLibraryExtension) subextensions.create(ApkLibraryExtension.EXTENSION_NAME,
+                ApkLibraryExtension, project, dexpatcherConfig)
 
         project.plugins.apply(BasePlugin)
 

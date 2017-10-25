@@ -18,11 +18,9 @@ import lanchon.dexpatcher.gradle.Resolver
 import org.gradle.api.Project
 
 @CompileStatic
-class DexpatcherConfigExtension {
+class DexpatcherConfigExtension extends AbstractExtension {
 
     static final String EXTENSION_NAME = 'dexpatcherConfig'
-
-    private static final String PREFIX = 'dexpatcher.'
 
     private static final String DIR_PROPERTY = PREFIX + 'dir'
     private static final String TOOL_DIR_PROPERTY = PREFIX + 'tool.dir'
@@ -35,7 +33,6 @@ class DexpatcherConfigExtension {
     private static final String DEFAULT_COMPILE_SUBDIR_NAME = 'compile'
     private static final String DEFAULT_PROVIDED_SUBDIR_NAME = 'provided'
 
-    protected final Project project
     protected final ProjectProperties properties
 
     def dir
@@ -45,7 +42,7 @@ class DexpatcherConfigExtension {
     def providedLibDir
 
     DexpatcherConfigExtension(Project project) {
-        this.project = project
+        super(project)
         properties = new ProjectProperties(project)
         dir = properties.getAsFile(DIR_PROPERTY)
         toolDir = properties.getAsFile(TOOL_DIR_PROPERTY)

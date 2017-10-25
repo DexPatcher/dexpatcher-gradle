@@ -12,11 +12,17 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
+import org.gradle.api.Project
+
 @CompileStatic
-class ApkLibraryExtension {
+class ApkLibraryExtension extends AbstractSubextension {
 
     static final String EXTENSION_NAME = 'apkLibrary'
 
     boolean disableClean
+
+    ApkLibraryExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
+        super(project, dexpatcherConfig)
+    }
 
 }

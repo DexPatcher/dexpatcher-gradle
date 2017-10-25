@@ -15,16 +15,14 @@ import groovy.transform.CompileStatic
 import org.gradle.api.Project
 
 @CompileStatic
-abstract class AbstractPatcherExtension extends AbstractSubextension {
+abstract class AbstractExtension {
 
-    boolean importSymbols = true;
+    protected static final String PREFIX = 'dexpatcher.'
 
-    //boolean patchManifest = true      // TODO
-    //boolean patchResources = true     // TODO
-    //boolean patchCode = true          // TODO
+    protected final Project project
 
-    AbstractPatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-        super(project, dexpatcherConfig)
+    AbstractExtension(Project project) {
+        this.project = project
     }
 
 }

@@ -18,12 +18,9 @@ import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 
 @CompileStatic
-abstract class AbstractToolExtension {
+abstract class AbstractToolExtension extends AbstractSubextension {
 
-    protected static final String PREFIX = 'dexpatcher.tool.'
-
-    protected final Project project
-    protected final DexpatcherConfigExtension dexpatcherConfig
+    protected static final String PREFIX = super.PREFIX + 'tool.'
 
     def dir
     def extraArgs
@@ -31,8 +28,7 @@ abstract class AbstractToolExtension {
     //boolean deleteOutputs = true
 
     AbstractToolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-        this.project = project
-        this.dexpatcherConfig = dexpatcherConfig
+        super(project, dexpatcherConfig)
     }
 
     protected abstract String getName()
