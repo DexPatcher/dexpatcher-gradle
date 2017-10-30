@@ -79,7 +79,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
     }
 
     @Override
-    protected String getScopeForCompileLibs() { 'compile' }
+    protected String getScopeForAddedLibs() { 'compile' }
 
     private DexpatcherTask createPatchDexTask(ApplicationVariant variant) {
 

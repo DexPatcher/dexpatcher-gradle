@@ -91,11 +91,11 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
     }
 
     protected void addDependencies() {
-        addDependencies getScopeForCompileLibs(), dexpatcherConfig.resolvedCompileLibDir
+        addDependencies getScopeForAddedLibs(), dexpatcherConfig.resolvedAddedLibDir
         addDependencies 'provided', dexpatcherConfig.resolvedProvidedLibDir
     }
 
-    protected abstract String getScopeForCompileLibs()
+    protected abstract String getScopeForAddedLibs()
 
     protected void addDependencies(String scope, File rootDirOrFile) {
         def jars = Resolver.getJars(project, rootDirOrFile)

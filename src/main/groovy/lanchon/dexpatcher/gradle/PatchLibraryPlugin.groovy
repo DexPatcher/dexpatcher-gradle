@@ -65,6 +65,6 @@ class PatchLibraryPlugin extends AbstractPatcherPlugin {
     }
 
     @Override
-    protected String getScopeForCompileLibs() { 'provided' }
+    protected String getScopeForAddedLibs() { 'provided' }
 
 }
