@@ -14,6 +14,7 @@ import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.Resolver
 
+import org.gradle.api.tasks.Console
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Optional
@@ -98,7 +99,7 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
         }
     }
 
-    Verbosity getVerbosity() { Resolver.resolve(verbosity) as Verbosity }
+    @Console Verbosity getVerbosity() { Resolver.resolve(verbosity) as Verbosity }
 
     @Optional @Input File getFrameworkDir() {
         def dir = Resolver.resolveNullableFile(project, frameworkDir)

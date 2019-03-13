@@ -15,6 +15,7 @@ import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.Resolver
 
 import org.gradle.api.file.FileCollection
+import org.gradle.api.tasks.Console
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
@@ -115,12 +116,12 @@ class DexpatcherTask extends AbstractJavaExecTask {
     @Optional @Input Boolean getConstructorAutoIgnore() { Resolver.resolve(constructorAutoIgnore) as Boolean }
     @Optional @Input Boolean getCompatDexTag() { Resolver.resolve(compatDexTag) as Boolean }
 
-    Verbosity getVerbosity() { Resolver.resolve(verbosity) as Verbosity }
+    @Console Verbosity getVerbosity() { Resolver.resolve(verbosity) as Verbosity }
 
-    Boolean getLogSourcePath() { Resolver.resolve(logSourcePath) as Boolean }
-    String getLogSourcePathRoot() { Resolver.resolve(logSourcePathRoot) as String }
+    @Console Boolean getLogSourcePath() { Resolver.resolve(logSourcePath) as Boolean }
+    @Console String getLogSourcePathRoot() { Resolver.resolve(logSourcePathRoot) as String }
 
-    Boolean getLogStats() { Resolver.resolve(logStats) as Boolean }
+    @Console Boolean getLogStats() { Resolver.resolve(logStats) as Boolean }
 
     @Override List<String> getArgs() {
 
