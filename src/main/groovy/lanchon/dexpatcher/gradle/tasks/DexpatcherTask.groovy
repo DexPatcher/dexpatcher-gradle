@@ -97,7 +97,7 @@ class DexpatcherTask extends AbstractJavaExecTask {
     }
 
     @Input File getSource() { Resolver.resolveNullableFile(project, source) }
-    @Optional @InputFiles private FileCollection getSourceFiles() { Resolver.resolveNullableFiles(project, source) }
+    @Optional @InputFiles protected FileCollection getSourceFileOrDir() { Resolver.resolveNullableFiles(project, source) }
 
     @Optional @InputFiles FileCollection getPatches() { Resolver.resolveNullableFiles(project, patches) }
 
