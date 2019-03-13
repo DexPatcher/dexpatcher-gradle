@@ -39,7 +39,7 @@ abstract class Resolver {
     }
 
     static File resolveSingleFile(Project project, def fileOrDir, String... includes) {
-        def path = Resolver.resolveNullableFile(project, fileOrDir)
+        def path = resolveNullableFile(project, fileOrDir)
         if (path.isFile()) return path
         def tree = project.fileTree(path)
         tree.include includes
