@@ -28,6 +28,10 @@ dependencies {
     compileOnly 'com.android.tools.build:gradle:2.1.3'
 }
 
+compileGroovy {
+    options.compilerArgs << '-proc:none'
+}
+
 jar {
     manifest {
         attributes(
