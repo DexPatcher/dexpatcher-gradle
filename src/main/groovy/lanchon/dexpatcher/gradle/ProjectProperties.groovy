@@ -28,7 +28,7 @@ class ProjectProperties {
     }
 
     String get(String key) { project.properties.get(key) ?: localProperties.getProperty(key) }
-    File getAsFile(String key) { Resolver.resolveNullableFile(project.rootProject, getProperty(key)) }
+    File getAsFile(String key) { Resolver.resolveNullableFile(project.rootProject, get(key)) }
 
     static Properties getPropertiesRecursive(Project project, String filename) {
         Properties parentProperties = project.parent ? getPropertiesRecursive(project.parent, filename) : null
