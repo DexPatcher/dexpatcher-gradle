@@ -59,7 +59,7 @@ class Dex2jarTask extends AbstractDex2jarTask {
     def forceOverwrite
 
     Dex2jarTask() {
-        main = MAIN_DEX2JAR
+        main = 'com.googlecode.dex2jar.tools.Dex2jarCmd'
     }
 
     @InputFiles FileCollection getDexFiles() { Resolver.resolveNullableFiles(project, dexFiles) }
