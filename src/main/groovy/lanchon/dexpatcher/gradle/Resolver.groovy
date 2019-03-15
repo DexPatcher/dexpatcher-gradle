@@ -13,7 +13,9 @@ package lanchon.dexpatcher.gradle
 import groovy.transform.CompileStatic
 
 import org.gradle.api.Project
+import org.gradle.api.file.Directory
 import org.gradle.api.file.FileCollection
+import org.gradle.api.provider.Provider
 
 @CompileStatic
 abstract class Resolver {
@@ -51,14 +53,43 @@ abstract class Resolver {
         return new File(parent, child)
     }
 
-    static File getFile(File file, File defaultParent, String defaultChild) {
-        file ?: (defaultParent ? new File(defaultParent, defaultChild) : null)
+    /*
+    static Directory getDirectory(Directory directory, Directory defaultParent, String defaultChild) {
+        directory ?: (defaultParent ? defaultParent.dir(defaultChild) : null)
+    }
+    */
+
+    static Provider<Directory> getDirectory(Project project, Provider<Directory> directory, Provider<Directory> defaultParent, String defaultChild) {
+        project.providers.<Directory>provider {
+            directory.getOrNull() ?: defaultParent.getOrNull()?.dir(defaultChild)
+        }
     }
 
-    static FileCollection getJars(Project project, File fileOrDir) {
-        def jars = project.fileTree(fileOrDir)
+    protected static FileCollection getJars(Project project, Directory rootDir) {
+        def jars = project.fileTree(rootDir)
         jars.include '**/*.jar'
         return jars
     }
+
+    static Provider<FileCollection> getJars(Project project, Provider<Directory> rootDir) {
+        project.providers.<FileCollection>provider {
+            Directory dir = rootDir.getOrNull()
+            return dir ? getJars(project, dir) : null
+        }
+    }
+
+    /*
+    static <T> Provider<T> getConstantProvider(ProviderFactory factory, T value) {
+        factory.<T>provider {
+            value
+        }
+    }
+
+    static <T> Provider<T> getDefaultProvider(ProviderFactory factory, Provider<T> value, Provider<T> defaultValue) {
+        factory.<T>provider {
+            value.getOrNull() ?: defaultValue.getOrNull()
+        }
+    }
+    */
 
 }

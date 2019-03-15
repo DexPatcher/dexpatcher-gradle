@@ -13,6 +13,8 @@ package lanchon.dexpatcher.gradle
 import groovy.transform.CompileStatic
 
 import org.gradle.api.Project
+import org.gradle.api.file.Directory
+import org.gradle.api.file.RegularFile
 
 @CompileStatic
 class ProjectProperties {
@@ -34,8 +36,14 @@ class ProjectProperties {
     // TODO: Decide whether to resolve file properties against the current project instead of the root project
     // (This would be a backwards-breaking change.)
 
-    File getAsFile(String key) {
-        Resolver.resolveNullableFile(project.rootProject, get(key))
+    Directory getAsDirectory(String key) {
+        String value = get(key)
+        return value ? project.rootProject.layout.projectDirectory.dir(value) : null
+    }
+
+    RegularFile getAsRegularFile(String key) {
+        String value = get(key)
+        return value ? project.rootProject.layout.projectDirectory.file(value) : null
     }
 
     static Properties getPropertiesRecursive(Project project, String filename) {

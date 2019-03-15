@@ -15,29 +15,35 @@ import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.Resolver
 
 import org.gradle.api.Project
+import org.gradle.api.file.Directory
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Provider
 
 @CompileStatic
 abstract class AbstractToolExtension extends AbstractSubextension {
 
     protected static final String PREFIX = super.PREFIX + 'tool.'
 
-    def dir
-    def extraArgs
+    final DirectoryProperty dir
+    final ListProperty<String> extraArgs
     //boolean addBlankLines
     //boolean deleteOutputs = true
 
+    final Provider<Directory> resolvedDir
+    final Provider<FileCollection> classpath
+
     AbstractToolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig)
+
+        dir = project.layout.directoryProperty()
+        extraArgs = project.objects.listProperty(String)
+
+        resolvedDir = Resolver.getDirectory(project, dir, dexpatcherConfig.resolvedToolDir, name)
+        classpath = Resolver.getJars(project, resolvedDir)
     }
 
     protected abstract String getName()
-
-    File getDir() { Resolver.resolveNullableFile(project, dir) }
-    File getResolvedDir() { Resolver.getFile(getDir(), dexpatcherConfig.getResolvedToolDir(), name) }
-
-    FileCollection getClasspath() { Resolver.getJars(project, getResolvedDir()) }
-
-    List<String> getExtraArgs() { Resolver.resolve(extraArgs).collect() { it as String } }
 
 }

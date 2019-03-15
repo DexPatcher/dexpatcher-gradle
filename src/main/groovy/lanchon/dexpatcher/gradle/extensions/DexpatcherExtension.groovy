@@ -12,10 +12,10 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Resolver
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask.Verbosity
 
 import org.gradle.api.Project
+import org.gradle.api.provider.Property
 
 @CompileStatic
 class DexpatcherExtension extends AbstractToolExtension {
@@ -31,28 +31,40 @@ class DexpatcherExtension extends AbstractToolExtension {
     static final def VERBOSE = Verbosity.VERBOSE
     static final def DEBUG = Verbosity.DEBUG
 
-    Integer apiLevel
-    Boolean multiDex
-    Boolean multiDexThreaded
-    Integer multiDexJobs
-    Integer maxDexPoolSize
-    String annotationPackage
-    Boolean constructorAutoIgnore = true
-    Boolean compatDexTag
-    Verbosity verbosity
-    Boolean logSourcePath
-    def logSourcePathRoot
-    Boolean logStats
+    final Property<Integer> apiLevel
+    final Property<Boolean> multiDex
+    final Property<Boolean> multiDexThreaded
+    final Property<Integer> multiDexJobs
+    final Property<Integer> maxDexPoolSize
+    final Property<String> annotationPackage
+    final Property<Boolean> constructorAutoIgnore
+    final Property<Boolean> compatDexTag
+    final Property<Verbosity> verbosity
+    final Property<Boolean> logSourcePath
+    final Property<String> logSourcePathRoot
+    final Property<Boolean> logStats
 
     DexpatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig)
         def properties = dexpatcherConfig.properties
-        dir = properties.getAsFile(DIR_PROPERTY)
+        dir.set properties.getAsDirectory(DIR_PROPERTY)
+
+        apiLevel = project.objects.property(Integer)
+        multiDex = project.objects.property(Boolean)
+        multiDexThreaded = project.objects.property(Boolean)
+        multiDexJobs = project.objects.property(Integer)
+        maxDexPoolSize = project.objects.property(Integer)
+        annotationPackage = project.objects.property(String)
+        constructorAutoIgnore = project.objects.property(Boolean)
+        constructorAutoIgnore.set true
+        compatDexTag = project.objects.property(Boolean)
+        verbosity = project.objects.property(Verbosity)
+        logSourcePath = project.objects.property(Boolean)
+        logSourcePathRoot = project.objects.property(String)
+        logStats = project.objects.property(Boolean)
     }
 
     @Override
     protected String getName() { EXTENSION_NAME }
-
-    String getLogSourcePathRoot() { Resolver.resolve(logSourcePathRoot) as String }
 
 }

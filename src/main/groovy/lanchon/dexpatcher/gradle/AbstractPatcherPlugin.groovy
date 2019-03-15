@@ -22,6 +22,8 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.PrepareLibraryTask
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Task
+import org.gradle.api.file.Directory
+import org.gradle.api.provider.Provider
 
 // TODO: Locate apk lib based on bundle extension at afterEvaluate time.
 
@@ -97,8 +99,8 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
 
     protected abstract String getScopeForAddedLibs()
 
-    protected void addDependencies(String scope, File rootDirOrFile) {
-        def jars = Resolver.getJars(project, rootDirOrFile)
+    protected void addDependencies(String scope, Provider<Directory> rootDir) {
+        def jars = Resolver.getJars(project, rootDir)
         project.configurations.getByName(scope).dependencies.add(project.dependencies.create(jars))
     }
 

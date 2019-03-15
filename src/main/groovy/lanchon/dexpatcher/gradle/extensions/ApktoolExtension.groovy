@@ -12,10 +12,12 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Resolver
 import lanchon.dexpatcher.gradle.tasks.AbstractApktoolTask.Verbosity
 
 import org.gradle.api.Project
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 
 @CompileStatic
 class ApktoolExtension extends AbstractToolExtension {
@@ -33,47 +35,58 @@ class ApktoolExtension extends AbstractToolExtension {
     static final def VERBOSE = Verbosity.VERBOSE
 
     // Base
-    Verbosity verbosity
-    def frameworkDir
-    def frameworkDirAsInput
-    def frameworkDirAsOutput
+    final Property<Verbosity> verbosity
+    final DirectoryProperty frameworkDir
+    final DirectoryProperty frameworkDirAsInput
+    final DirectoryProperty frameworkDirAsOutput
 
     // Decode
-    def frameworkTag
-    Integer apiLevel
-    Boolean decodeAssets = true
-    Boolean decodeResources = true
-    Boolean decodeClasses = true
-    Boolean keepBrokenResources
-    Boolean stripDebugInfo
-    Boolean matchOriginal
+    final Property<String> frameworkTag
+    final Property<Integer> apiLevel
+    final Property<Boolean> decodeAssets
+    final Property<Boolean> decodeResources
+    final Property<Boolean> decodeClasses
+    final Property<Boolean> keepBrokenResources
+    final Property<Boolean> stripDebugInfo
+    final Property<Boolean> matchOriginal
 
     // Build
-    def aaptFile
-    Boolean copyOriginal
-    Boolean forceDebuggableBuild
-    Boolean forceCleanBuild
+    final RegularFileProperty aaptFile
+    final Property<Boolean> copyOriginal
+    final Property<Boolean> forceDebuggableBuild
+    final Property<Boolean> forceCleanBuild
 
     ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig)
         def properties = dexpatcherConfig.properties
-        dir = properties.getAsFile(DIR_PROPERTY)
-        frameworkDir = properties.getAsFile(FRAMEWORK_DIR_PROPERTY)
-        aaptFile = properties.getAsFile(AAPT_FILE_PROPERTY)
+        dir.set properties.getAsDirectory(DIR_PROPERTY)
+
+        verbosity = project.objects.property(Verbosity)
+        frameworkDir = project.layout.directoryProperty()
+        frameworkDir.set properties.getAsDirectory(FRAMEWORK_DIR_PROPERTY)
+        frameworkDirAsInput = project.layout.directoryProperty()
+        frameworkDirAsOutput = project.layout.directoryProperty()
+
+        frameworkTag = project.objects.property(String)
+        apiLevel = project.objects.property(Integer)
+        decodeAssets = project.objects.property(Boolean)
+        decodeAssets.set true
+        decodeResources = project.objects.property(Boolean)
+        decodeResources.set true
+        decodeClasses = project.objects.property(Boolean)
+        decodeClasses.set true
+        keepBrokenResources = project.objects.property(Boolean)
+        stripDebugInfo = project.objects.property(Boolean)
+        matchOriginal = project.objects.property(Boolean)
+
+        aaptFile = project.layout.fileProperty()
+        aaptFile.set properties.getAsRegularFile(AAPT_FILE_PROPERTY)
+        copyOriginal = project.objects.property(Boolean)
+        forceDebuggableBuild = project.objects.property(Boolean)
+        forceCleanBuild = project.objects.property(Boolean)
     }
 
     @Override
     protected String getName() { EXTENSION_NAME }
-
-    // Base
-    File getFrameworkDir() { Resolver.resolveNullableFile(project, frameworkDir) }
-    File getFrameworkDirAsInput() { Resolver.resolveNullableFile(project, frameworkDirAsInput) }
-    File getFrameworkDirAsOutput() { Resolver.resolveNullableFile(project, frameworkDirAsOutput) }
-
-    // Decode
-    String getFrameworkTag() { Resolver.resolve(frameworkTag) as String }
-
-    // Build
-    File getAaptFile() { Resolver.resolveNullableFile(project, aaptFile) }
 
 }
