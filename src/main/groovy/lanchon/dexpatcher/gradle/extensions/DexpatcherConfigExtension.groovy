@@ -33,7 +33,7 @@ class DexpatcherConfigExtension extends AbstractExtension {
     private static final String DEFAULT_ADDED_SUBDIR_NAME = 'added'
     private static final String DEFAULT_PROVIDED_SUBDIR_NAME = 'provided'
 
-    protected final ProjectProperties properties
+    final ProjectProperties properties
 
     def dir
     def toolDir
@@ -62,7 +62,5 @@ class DexpatcherConfigExtension extends AbstractExtension {
 
     File getResolvedAddedLibDir() { Resolver.getFile(getAddedLibDir(), getResolvedLibDir(), DEFAULT_ADDED_SUBDIR_NAME) }
     File getResolvedProvidedLibDir() { Resolver.getFile(getProvidedLibDir(), getResolvedLibDir(), DEFAULT_PROVIDED_SUBDIR_NAME) }
-
-    ProjectProperties getProperties() { properties }
 
 }
