@@ -27,8 +27,16 @@ class ProjectProperties {
         localProperties = getPropertiesRecursive(project, LOCAL_PROPERTIES)
     }
 
-    String get(String key) { project.properties.get(key) ?: localProperties.getProperty(key) }
-    File getAsFile(String key) { Resolver.resolveNullableFile(project.rootProject, get(key)) }
+    String get(String key) {
+        project.properties.get(key) ?: localProperties.getProperty(key)
+    }
+
+    // TODO: Decide whether to resolve file properties against the current project instead of the root project
+    // (This would be a backwards-breaking change.)
+
+    File getAsFile(String key) {
+        Resolver.resolveNullableFile(project.rootProject, get(key))
+    }
 
     static Properties getPropertiesRecursive(Project project, String filename) {
         Properties parentProperties = project.parent ? getPropertiesRecursive(project.parent, filename) : null
