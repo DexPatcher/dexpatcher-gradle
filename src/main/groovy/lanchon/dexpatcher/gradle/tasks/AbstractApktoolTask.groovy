@@ -12,11 +12,14 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Resolver
-
+import org.gradle.api.file.Directory
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Console
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 
@@ -75,48 +78,41 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
 
     protected final String command
 
-    def verbosity
-    def frameworkDir
-    def frameworkDirAsInput
-    def frameworkDirAsOutput
+    @Console final Property<Verbosity> verbosity
+    @Optional @Input final DirectoryProperty frameworkDir
+    @Optional @InputDirectory final DirectoryProperty frameworkDirAsInput
+    @Optional @OutputDirectory final DirectoryProperty frameworkDirAsOutput
+
+    @Internal protected final Provider<Directory> resolvedFrameworkDir
 
     AbstractApktoolTask(String command) {
+
         this.command = command
         main = 'brut.apktool.Main'
-        addBlankLines = {
-            switch (getVerbosity()) {
-                case Verbosity.QUIET:
-                    return false
-                    break
-                case Verbosity.NORMAL:
-                case null:
-                case Verbosity.VERBOSE:
-                    return true
-                    break
-                default:
-                    throw new AssertionError('Unexpected verbosity', null)
+
+        verbosity = project.objects.property(Verbosity)
+        frameworkDir = project.layout.directoryProperty()
+        frameworkDirAsInput = project.layout.directoryProperty()
+        frameworkDirAsOutput = project.layout.directoryProperty()
+
+        resolvedFrameworkDir = project.providers.<Directory>provider {
+            def dir = frameworkDir.orNull
+            if (dir) return dir
+            def dirAsInput = frameworkDirAsInput.orNull
+            def dirAsOutput = frameworkDirAsOutput.orNull
+            if (dirAsInput && dirAsOutput && project.file(dirAsInput) != project.file(dirAsOutput)) {
+                throw new RuntimeException('Ambiguous framework directory')
             }
+            return dirAsInput ?: dirAsOutput
         }
+
     }
-
-    @Console Verbosity getVerbosity() { Resolver.resolve(verbosity) as Verbosity }
-
-    @Optional @Input File getFrameworkDir() {
-        def dir = Resolver.resolveNullableFile(project, frameworkDir)
-        if (dir) return dir
-        def dirAsInput = getFrameworkDirAsInput()
-        def dirAsOutput = getFrameworkDirAsOutput()
-        if (dirAsInput && dirAsOutput && dirAsInput != dirAsOutput) throw new RuntimeException(
-                'Ambiguous framework directory')
-        return dirAsInput ?: dirAsOutput
-    }
-
-    @Optional @InputDirectory File getFrameworkDirAsInput() { Resolver.resolveNullableFile(project, frameworkDirAsInput) }
-    @Optional @OutputDirectory File getFrameworkDirAsOutput() { Resolver.resolveNullableFile(project, frameworkDirAsOutput) }
 
     @Override List<String> getArgs() {
+
         ArrayList<String> args = new ArrayList()
-        switch (getVerbosity()) {
+
+        switch (verbosity.orNull) {
             case Verbosity.QUIET:
                 args.add('--quiet')
                 break
@@ -129,10 +125,29 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
             default:
                 throw new AssertionError('Unexpected verbosity', null)
         }
+
         args.add(command)
-        def frameworkDir = getFrameworkDir()
-        if (frameworkDir) args.addAll(['--frame-path', frameworkDir as String])
+
+        def fwDir = frameworkDir.orNull
+        if (fwDir) args.addAll(['--frame-path', fwDir as String])
+
         return args;
+
+    }
+
+    @Override protected boolean defaultAddBlankLines() {
+        switch (verbosity.orNull) {
+            case Verbosity.QUIET:
+                return false
+                break
+            case Verbosity.NORMAL:
+            case null:
+            case Verbosity.VERBOSE:
+                return true
+                break
+            default:
+                throw new AssertionError('Unexpected verbosity', null)
+        }
     }
 
 }

@@ -167,7 +167,7 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
     }
 
     private boolean isPrepareApkLibraryTask (PrepareLibraryTask task) {
-        return Resolver.getFile(task.explodedDir, 'dexpatcher').directory
+        return Resolver.getFile(task.explodedDir, 'dexpatcher').isDirectory()
     }
 
     // Task Graph

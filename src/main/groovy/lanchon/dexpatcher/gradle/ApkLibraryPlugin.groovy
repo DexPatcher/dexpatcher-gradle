@@ -13,8 +13,6 @@ package lanchon.dexpatcher.gradle
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.extensions.ApkLibraryExtension
-import lanchon.dexpatcher.gradle.extensions.ApktoolExtension
-import lanchon.dexpatcher.gradle.extensions.DexpatcherConfigExtension
 import lanchon.dexpatcher.gradle.tasks.DecodeApkTask
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
 
@@ -22,8 +20,10 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.CopySpec
 import org.gradle.api.file.DuplicatesStrategy
+import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.ExtensionAware
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.bundling.Zip
 
@@ -47,7 +47,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
         project.plugins.apply(BasePlugin)
 
         def apkLibrary = createTaskChain(project, DexpatcherBasePlugin.TASK_GROUP, { it }, { it },
-                { apkLibrary.getApkFileOrDir() })
+                apkLibrary.apkFileOrDir)
         project.tasks.getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(apkLibrary)
         project.artifacts.add(Dependency.DEFAULT_CONFIGURATION, apkLibrary)
 
@@ -56,7 +56,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
     }
 
     static Zip createTaskChain(Project project, String taskGroup, Closure<String> taskNameModifier,
-            Closure<File> dirModifier, def apkFileOrDir) {
+            Closure<File> dirModifier, Provider<File> apkFileOrDir) {
 
         def modIntermediateDir = dirModifier(Resolver.getFile(project.buildDir, 'intermediates'))
         def modOutputDir = dirModifier(Resolver.getFile(project.buildDir, 'outputs'))
@@ -72,16 +72,15 @@ class ApkLibraryPlugin extends AbstractPlugin {
         decodeApk.with {
             description = "Unpacks an Android application and decodes its manifest and resources."
             group = taskGroup
-            apkFile = { Resolver.resolveSingleFile(project, apkFileOrDir, '*.apk') }
-            outputDir = apktoolDir
-            def dexpatcherConfig = project.extensions.getByType(DexpatcherConfigExtension)
-            def apktool = (dexpatcherConfig as ExtensionAware).extensions.getByType(ApktoolExtension)
-            setFrameworkDirAsOutput {
-                def dirAsOutput = apktool.getFrameworkDirAsOutput();
-                return (getFrameworkDirAsInput() || dirAsOutput) ? dirAsOutput : apktoolFrameworkDir
-            }
-            decodeClasses = false
-            //keepBrokenResources = true
+            apkFile.set project.layout.file(project.providers.<File>provider {
+                Resolver.resolveSingleFile(project, apkFileOrDir.get(), '*.apk')
+            })
+            outputDir.set apktoolDir
+            frameworkDir.set null
+            frameworkDirAsInput.set null
+            frameworkDirAsOutput.set apktoolFrameworkDir
+            decodeClasses.set false
+            //keepBrokenResources.set true
         }
         decodeApk.doLast {
             printApkInfo decodeApk
@@ -92,9 +91,11 @@ class ApkLibraryPlugin extends AbstractPlugin {
             description = "Translates Dalvik bytecode into Java bytecode."
             group = taskGroup
             dependsOn decodeApk
-            dexFiles = { decodeApk.getApkFile() }
-            outputFile = dex2jarFile
-            exceptionFile = dex2jarExceptionFile
+            dexFiles.set  project.providers.<FileCollection>provider {
+                project.files(decodeApk.apkFile)
+            }
+            outputFile.set dex2jarFile
+            exceptionFile.set dex2jarExceptionFile
         }
 
         def resources = createResourcesTask(project, taskNameModifier('resources'), apktoolDir)
@@ -113,7 +114,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
             dependsOn decodeApk, dex2jar, resources
             destinationDir = libraryDir
             extension = 'aar'
-            def apkName = decodeApk.getApkFile().name ?: project.name ?: 'source'
+            def apkName = decodeApk.apkFile.orNull?.asFile?.name ?: project.name ?: 'source'
             if (!apkName.toLowerCase(Locale.ENGLISH).endsWith('.apk')) apkName += '.apk'
             archiveName = apkName + '.' + extension
         }
@@ -128,14 +129,14 @@ class ApkLibraryPlugin extends AbstractPlugin {
     }
 
     private static void printApkInfo(DecodeApkTask task) {
-        def apktoolYmlFile = Resolver.getFile(task.getOutputDir(), 'apktool.yml')
-        if (apktoolYmlFile.file) {
+        def apktoolYmlFile = task.outputDir.get().file('apktool.yml').asFile
+        if (apktoolYmlFile.isFile()) {
             def pattern = ~/^\s*(minSdkVersion|targetSdkVersion|versionCode|versionName):/
             println 'APK information:'
             apktoolYmlFile.eachLine { line ->
                 if (pattern.matcher(line).find()) println line
             }
-            if (task.getAddBlankLines()) println()
+            if (task.resolvedAddBlankLines) println()
         }
     }
 

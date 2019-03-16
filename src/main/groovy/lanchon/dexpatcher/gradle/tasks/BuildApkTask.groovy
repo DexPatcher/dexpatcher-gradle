@@ -12,8 +12,9 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Resolver
-
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
@@ -34,42 +35,53 @@ usage: apktool [-q|--quiet OR -v|--verbose] b[uild] [options] <app_path>
 @CompileStatic
 class BuildApkTask extends AbstractApktoolTask {
 
-    def inputDir
-    def apkFile
-    def aaptFile
-    def copyOriginal
-    def forceDebuggableBuild
-    def forceCleanBuild
+    @InputDirectory final DirectoryProperty inputDir
+    @OutputFile final RegularFileProperty apkFile
+
+    @Optional @InputFile final RegularFileProperty aaptFile
+    @Optional @Input final Property<Boolean> copyOriginal
+    @Optional @Input final Property<Boolean> forceDebuggableBuild
+    @Optional @Input final Property<Boolean> forceCleanBuild
 
     BuildApkTask() {
-        super('build')
-    }
 
-    @InputDirectory File getInputDir() { Resolver.resolveNullableFile(project, inputDir) }
-    @OutputFile File getApkFile() { Resolver.resolveNullableFile(project, apkFile) }
-    @Optional @InputFile File getAaptFile() { Resolver.resolveNullableFile(project, aaptFile) }
-    @Optional @Input Boolean getCopyOriginal() { Resolver.resolve(copyOriginal) as Boolean }
-    @Optional @Input Boolean getForceDebuggableBuild() { Resolver.resolve(forceDebuggableBuild) as Boolean }
-    @Optional @Input Boolean getForceCleanBuild() { Resolver.resolve(forceCleanBuild) as Boolean }
+        super('build')
+
+        inputDir = project.layout.directoryProperty()
+        apkFile = project.layout.fileProperty()
+        aaptFile = project.layout.fileProperty()
+        copyOriginal = project.objects.property(Boolean)
+        forceDebuggableBuild = project.objects.property(Boolean)
+        forceCleanBuild = project.objects.property(Boolean)
+
+    }
 
     @Override List<String> getArgs() {
+
         def args = super.getArgs()
-        args.addAll(['--output', getApkFile() as String])
-        if (getAaptFile()) args.addAll(['--aapt', getAaptFile() as String])
-        if (getCopyOriginal()) args.add('--copy-original')
-        if (getForceDebuggableBuild()) args.add('--debug')
-        if (getForceCleanBuild()) args.add('--force-all')
-        args.addAll(getExtraArgs())
-        args.add(getInputDir() as String)
+
+        args.addAll(['--output', apkFile.get() as String])
+
+        def aapt = aaptFile.orNull
+        if (aapt) args.addAll(['--aapt', aapt as String])
+        if (copyOriginal.orNull) args.add('--copy-original')
+        if (forceDebuggableBuild.orNull) args.add('--debug')
+        if (forceCleanBuild.orNull) args.add('--force-all')
+
+        addExtraArgsTo args
+
+        args.add(inputDir.get() as String)
+
         return args;
+
     }
 
-    @Override void beforeExec() {
-        deleteOutputFile getApkFile()
+    @Override protected void beforeExec() {
+        deleteOutputFile apkFile.get()
     }
 
-    @Override void afterExec() {
-        checkOutputFile getApkFile()
+    @Override protected void afterExec() {
+        checkOutputFile apkFile.get()
     }
 
 }

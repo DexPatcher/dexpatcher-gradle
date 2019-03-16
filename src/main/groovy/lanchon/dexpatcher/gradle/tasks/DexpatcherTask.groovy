@@ -12,11 +12,14 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Resolver
-
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Console
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
@@ -59,102 +62,95 @@ class DexpatcherTask extends AbstractJavaExecTask {
         DEBUG
     }
 
-    def source
-    def patches
-    def outputFile
-    def outputDir
-    def apiLevel
-    def multiDex
-    def multiDexThreaded
-    def multiDexJobs
-    def maxDexPoolSize
-    def annotationPackage
-    def constructorAutoIgnore = true
-    def compatDexTag
-    def verbosity
-    def logSourcePath
-    def logSourcePathRoot
-    def logStats
+    @Input final Property<File> source
+    @Optional @InputFiles final Property<FileCollection> patches
+    @Optional @OutputFile final RegularFileProperty outputFile
+    @Optional @OutputDirectory final DirectoryProperty outputDir
+
+    @Optional @Input final Property<Integer> apiLevel
+    @Optional @Input final Property<Boolean> multiDex
+    @Optional @Input final Property<Boolean> multiDexThreaded
+    @Optional @Input final Property<Integer> multiDexJobs
+    @Optional @Input final Property<Integer> maxDexPoolSize
+    @Optional @Input final Property<String> annotationPackage
+    @Optional @Input final Property<Boolean> constructorAutoIgnore
+    @Optional @Input final Property<Boolean> compatDexTag
+    @Console final Property<Verbosity> verbosity
+    @Console final Property<Boolean> logSourcePath
+    @Console final Property<String> logSourcePathRoot
+    @Console final Property<Boolean> logStats
 
     DexpatcherTask() {
+
         main = 'lanchon.dexpatcher.Main'
-        def alwaysAddBlankLines = true
-        addBlankLines = alwaysAddBlankLines || {
-            switch (getVerbosity()) {
-                case Verbosity.QUIET:
-                case Verbosity.NORMAL:
-                case null:
-                    return false
-                    break
-                case Verbosity.VERBOSE:
-                case Verbosity.DEBUG:
-                    return true
-                    break
-                default:
-                    throw new AssertionError('Unexpected verbosity', null)
-            }
-        }
+
+        source = project.objects.property(File)
+        patches = project.objects.property(FileCollection)
+        outputFile = project.layout.fileProperty()
+        outputDir = project.layout.directoryProperty()
+
+        apiLevel = project.objects.property(Integer)
+        multiDex = project.objects.property(Boolean)
+        multiDexThreaded = project.objects.property(Boolean)
+        multiDexJobs = project.objects.property(Integer)
+        maxDexPoolSize = project.objects.property(Integer)
+        annotationPackage = project.objects.property(String)
+        constructorAutoIgnore = project.objects.property(Boolean)
+        constructorAutoIgnore.set true
+        compatDexTag = project.objects.property(Boolean)
+        verbosity = project.objects.property(Verbosity)
+        logSourcePath = project.objects.property(Boolean)
+        logSourcePathRoot = project.objects.property(String)
+        logStats = project.objects.property(Boolean)
+
     }
 
-    @Input File getSource() { Resolver.resolveNullableFile(project, source) }
-    @Optional @InputFiles protected FileCollection getSourceFileOrDir() { Resolver.resolveNullableFiles(project, source) }
+    @Optional @InputFile protected File getSourceFile() {
+        File src = source.orNull
+        if (!src) return null
+        src = project.file(src)
+        return src.isFile() ? src : null
+    }
 
-    @Optional @InputFiles FileCollection getPatches() { Resolver.resolveNullableFiles(project, patches) }
-
-    @Optional @OutputFile File getOutputFile() { Resolver.resolveNullableFile(project, outputFile) }
-    @Optional @OutputDirectory File getOutputDir() { Resolver.resolveNullableFile(project, outputDir) }
-
-    @Optional @Input Integer getApiLevel() { Resolver.resolve(apiLevel) as Integer }
-
-    @Optional @Input Boolean getMultiDex() { Resolver.resolve(multiDex) as Boolean }
-    @Optional @Input Boolean getMultiDexThreaded() { Resolver.resolve(multiDexThreaded) as Boolean }
-    @Optional @Input Integer getMultiDexJobs() { Resolver.resolve(multiDexJobs) as Integer }
-
-    @Optional @Input Integer getMaxDexPoolSize() { Resolver.resolve(maxDexPoolSize) as Integer }
-
-    @Optional @Input String getAnnotationPackage() { Resolver.resolve(annotationPackage) as String }
-    @Optional @Input Boolean getConstructorAutoIgnore() { Resolver.resolve(constructorAutoIgnore) as Boolean }
-    @Optional @Input Boolean getCompatDexTag() { Resolver.resolve(compatDexTag) as Boolean }
-
-    @Console Verbosity getVerbosity() { Resolver.resolve(verbosity) as Verbosity }
-
-    @Console Boolean getLogSourcePath() { Resolver.resolve(logSourcePath) as Boolean }
-    @Console String getLogSourcePathRoot() { Resolver.resolve(logSourcePathRoot) as String }
-
-    @Console Boolean getLogStats() { Resolver.resolve(logStats) as Boolean }
+    @Optional @InputDirectory protected File getSourceDir() {
+        File src = source.orNull
+        if (!src) return null
+        src = project.file(src)
+        return src.isDirectory() ? src : null
+    }
 
     @Override List<String> getArgs() {
 
         ArrayList<String> args = new ArrayList()
 
-        def outFile = getOutputFile()
-        def outDir = getOutputDir()
+        def outFile = outputFile.orNull
+        def outDir = outputDir.orNull
         if (!outFile && !outDir) throw new RuntimeException('No output file or directory specified')
         if (outFile && outDir) throw new RuntimeException('Output file and directory must not both be specified')
         args.addAll(['--output', (outFile ? outFile : outDir) as String])
 
-        def api = getApiLevel()
-        if (api != null) args.addAll(['--api-level', api as String])
+        def api = apiLevel.orNull
+        if (api) args.addAll(['--api-level', api as String])
 
-        if (getMultiDex()) {
-            if (!getMultiDexThreaded()) {
+        if (multiDex.orNull) {
+            if (!multiDexThreaded.orNull) {
                 args.add('--multi-dex')
             } else {
                 args.add('--multi-dex-threaded')
-                def jobs = getMultiDexJobs()
-                if (jobs != null) args.addAll(['--multi-dex-jobs', jobs as String])
+                def jobs = multiDexJobs.orNull
+                if (jobs) args.addAll(['--multi-dex-jobs', jobs as String])
             }
         }
 
-        def poolSize = getMaxDexPoolSize()
-        if (poolSize != null) args.addAll(['--max-dex-pool-size', poolSize as String])
+        def poolSize = maxDexPoolSize.orNull
+        if (poolSize) args.addAll(['--max-dex-pool-size', poolSize as String])
 
-        def annotations = getAnnotationPackage()
-        if (annotations != null) args.addAll(['--annotations', annotations])
-        if (!getConstructorAutoIgnore()) args.add('--no-auto-ignore')
-        if (getCompatDexTag()) args.add('--compat-dextag')
+        def annotations = annotationPackage.orNull
+        if (!annotations.is(null)) args.addAll(['--annotations', annotations])
+        if (!constructorAutoIgnore.orNull) args.add('--no-auto-ignore')
+        if (compatDexTag.orNull) args.add('--compat-dextag')
 
-        switch (getVerbosity()) {
+        switch (verbosity.orNull) {
             case Verbosity.QUIET:
                 args.add('--quiet')
                 break
@@ -171,30 +167,48 @@ class DexpatcherTask extends AbstractJavaExecTask {
                 throw new AssertionError('Unexpected verbosity', null)
         }
 
-        if (getLogSourcePath()) args.add('--path')
-        def pathRoot = getLogSourcePathRoot()
-        if (pathRoot != null) args.addAll(['--path-root', pathRoot])
+        if (logSourcePath.orNull) args.add('--path')
+        def pathRoot = logSourcePathRoot.orNull
+        if (!pathRoot.is(null)) args.addAll(['--path-root', pathRoot])
 
-        if (getLogStats()) args.add('--stats')
+        if (logStats.orNull) args.add('--stats')
 
-        args.addAll(getExtraArgs())
+        addExtraArgsTo args
 
-        args.add(getSource() as String)
-        def patches = getPatches()
-        if (patches) args.addAll(patches as List<String>)
+        args.add(source.get() as String)
+        def patchList = patches.orNull
+        if (patchList) args.addAll(patchList as List<String>)
 
         return args;
 
     }
 
-    @Override void beforeExec() {
-        deleteOutputFile getOutputFile()
-        deleteOutputDir getOutputDir()
+    @Override protected boolean defaultAddBlankLines() {
+        def alwaysNeedsBlankLines = true
+        if (alwaysNeedsBlankLines) return true;
+        switch (verbosity.orNull) {
+            case Verbosity.QUIET:
+            case Verbosity.NORMAL:
+            case null:
+                return false
+                break
+            case Verbosity.VERBOSE:
+            case Verbosity.DEBUG:
+                return true
+                break
+            default:
+                throw new AssertionError('Unexpected verbosity', null)
+        }
     }
 
-    @Override void afterExec() {
-        checkOutputFile getOutputFile()
-        checkOutputDir getOutputDir()
+    @Override protected void beforeExec() {
+        deleteOutputFile outputFile.orNull
+        deleteOutputDir outputDir.orNull
+    }
+
+    @Override protected void afterExec() {
+        checkOutputFile outputFile.orNull
+        checkOutputDir outputDir.orNull
     }
 
 }

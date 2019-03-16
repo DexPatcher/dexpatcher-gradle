@@ -12,9 +12,10 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Resolver
-
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
@@ -46,80 +47,88 @@ version: reader-2.1-SNAPSHOT, translator-2.1-SNAPSHOT, ir-2.1-SNAPSHOT
 @CompileStatic
 class Dex2jarTask extends AbstractDex2jarTask {
 
-    def dexFiles
-    def outputFile
-    def outputDir
-    def exceptionFile
-    def translateCode = true
-    def translateDebugInfo
-    def optimizeSynchronized
-    def reuseRegisters
-    def topologicalSort
-    def handleExceptions
-    def forceOverwrite
+    @InputFiles final Property<FileCollection> dexFiles
+    @Optional @OutputFile final RegularFileProperty outputFile
+    @Optional @OutputDirectory final DirectoryProperty outputDir
+    @Optional @OutputFile final RegularFileProperty exceptionFile
+
+    @Optional @Input final Property<Boolean> translateCode
+    @Optional @Input final Property<Boolean> translateDebugInfo
+    @Optional @Input final Property<Boolean> optimizeSynchronized
+    @Optional @Input final Property<Boolean> reuseRegisters
+    @Optional @Input final Property<Boolean> topologicalSort
+    @Optional @Input final Property<Boolean> handleExceptions
+
+    @Optional @Input final Property<Boolean> forceOverwrite
 
     Dex2jarTask() {
+
         main = 'com.googlecode.dex2jar.tools.Dex2jarCmd'
+
+        dexFiles = project.objects.property(FileCollection)
+        outputFile = project.layout.fileProperty()
+        outputDir = project.layout.directoryProperty()
+        exceptionFile = project.layout.fileProperty()
+
+        translateCode = project.objects.property(Boolean)
+        translateCode.set true
+        translateDebugInfo = project.objects.property(Boolean)
+        optimizeSynchronized = project.objects.property(Boolean)
+        reuseRegisters = project.objects.property(Boolean)
+        topologicalSort = project.objects.property(Boolean)
+        handleExceptions = project.objects.property(Boolean)
+
+        forceOverwrite = project.objects.property(Boolean)
+
     }
-
-    @InputFiles FileCollection getDexFiles() { Resolver.resolveNullableFiles(project, dexFiles) }
-
-    @Optional @OutputFile File getOutputFile() { Resolver.resolveNullableFile(project, outputFile) }
-    @Optional @OutputDirectory File getOutputDir() { Resolver.resolveNullableFile(project, outputDir) }
-
-    @Optional @OutputFile File getExceptionFile() { Resolver.resolveNullableFile(project, exceptionFile) }
-
-    @Optional @Input Boolean getTranslateCode() { Resolver.resolve(translateCode) as Boolean }
-    @Optional @Input Boolean getTranslateDebugInfo() { Resolver.resolve(translateDebugInfo) as Boolean }
-    @Optional @Input Boolean getOptimizeSynchronized() { Resolver.resolve(optimizeSynchronized) as Boolean }
-    @Optional @Input Boolean getReuseRegisters() { Resolver.resolve(reuseRegisters) as Boolean }
-    @Optional @Input Boolean getTopologicalSort() { Resolver.resolve(topologicalSort) as Boolean }
-    @Optional @Input Boolean getHandleExceptions() { Resolver.resolve(handleExceptions) as Boolean }
-    @Optional @Input Boolean getForceOverwrite() { Resolver.resolve(forceOverwrite) as Boolean }
 
     @Override List<String> getArgs() {
 
         ArrayList<String> args = new ArrayList()
 
-        def outFile = getOutputFile()
-        def outDir = getOutputDir()
+        def outFile = outputFile.orNull
+        def outDir = outputDir.orNull
         if (!outFile && !outDir) throw new RuntimeException('No output file or directory specified')
         if (outFile && outDir) throw new RuntimeException('Output file and directory must not both be specified')
         if (outFile) {
             args.addAll(['--output', outFile as String])
-            workingDir = outFile.parentFile
+            workingDir = outFile.asFile.parentFile
         }
-        else workingDir = outDir
+        else workingDir = outDir.asFile
 
-        def exceptionFile = getExceptionFile()
-        if (exceptionFile) args.addAll(['--exception-file', exceptionFile as String])
+        def exceptFile = exceptionFile.orNull
+        if (exceptFile) args.addAll(['--exception-file', exceptFile as String])
 
-        if (!getTranslateCode()) args.add('--no-code')
-        if (getTranslateDebugInfo()) args.add('--debug-info')
-        if (getOptimizeSynchronized()) args.add('-os')   // typo in long option '--optmize-synchronized'
-        if (getReuseRegisters()) args.add('--reuse-reg')
-        if (getTopologicalSort()) args.add('--topological-sort')
-        if (!getHandleExceptions()) args.add('--not-handle-exception')
-        if (getForceOverwrite()) args.add('--force')
+        if (!translateCode.orNull) args.add('--no-code')
+        if (translateDebugInfo.orNull) args.add('--debug-info')
+        if (optimizeSynchronized.orNull) args.add('-os')   // typo in long option '--optmize-synchronized'
+        if (reuseRegisters.orNull) args.add('--reuse-reg')
+        if (topologicalSort.orNull) args.add('--topological-sort')
+        if (!handleExceptions.orNull) args.add('--not-handle-exception')
+        if (forceOverwrite.orNull) args.add('--force')
 
-        args.addAll(getExtraArgs())
+        addExtraArgsTo args
 
-        def dexFiles = getDexFiles()
-        if (!dexFiles || dexFiles.empty) throw new RuntimeException('No input dex files specified')
-        args.addAll(dexFiles as List<String>)
+        def inputFiles = dexFiles.get()
+        if (inputFiles.empty) throw new RuntimeException('No input dex files specified')
+        args.addAll(inputFiles as List<String>)
 
         return args;
 
     }
 
-    @Override void beforeExec() {
-        deleteOutputFile getOutputFile()
-        deleteOutputDir getOutputDir()
+    @Override protected boolean defaultAddBlankLines() {
+        false
     }
 
-    @Override void afterExec() {
-        checkOutputFile getOutputFile()
-        checkOutputDir getOutputDir()
+    @Override protected void beforeExec() {
+        deleteOutputFile outputFile.orNull
+        deleteOutputDir outputDir.orNull
+    }
+
+    @Override protected void afterExec() {
+        checkOutputFile outputFile.orNull
+        checkOutputDir outputDir.orNull
     }
 
 }

@@ -49,7 +49,7 @@ abstract class Resolver {
     }
 
     static File getFile(File parent, String child) {
-        if (parent == null) throw new NullPointerException();
+        if (parent.is(null)) throw new NullPointerException();
         return new File(parent, child)
     }
 
@@ -61,20 +61,17 @@ abstract class Resolver {
 
     static Provider<Directory> getDirectory(Project project, Provider<Directory> directory, Provider<Directory> defaultParent, String defaultChild) {
         project.providers.<Directory>provider {
-            directory.getOrNull() ?: defaultParent.getOrNull()?.dir(defaultChild)
+            directory.orNull ?: defaultParent.orNull?.dir(defaultChild)
         }
-    }
-
-    protected static FileCollection getJars(Project project, Directory rootDir) {
-        def jars = project.fileTree(rootDir)
-        jars.include '**/*.jar'
-        return jars
     }
 
     static Provider<FileCollection> getJars(Project project, Provider<Directory> rootDir) {
         project.providers.<FileCollection>provider {
-            Directory dir = rootDir.getOrNull()
-            return dir ? getJars(project, dir) : null
+            Directory dir = rootDir.orNull
+            if (dir.is(null)) return null
+            def jars = project.fileTree(dir)
+            jars.include '**/*.jar'
+            return jars
         }
     }
 
@@ -87,7 +84,7 @@ abstract class Resolver {
 
     static <T> Provider<T> getDefaultProvider(ProviderFactory factory, Provider<T> value, Provider<T> defaultValue) {
         factory.<T>provider {
-            value.getOrNull() ?: defaultValue.getOrNull()
+            value.orNull ?: defaultValue.orNull
         }
     }
     */

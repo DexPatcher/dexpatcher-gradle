@@ -12,8 +12,9 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Resolver
-
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
@@ -41,61 +42,78 @@ usage: apktool [-q|--quiet OR -v|--verbose] d[ecode] [options] <file_apk>
 @CompileStatic
 class DecodeApkTask extends AbstractApktoolTask {
 
-    def apkFile
-    def outputDir
-    def frameworkTag
-    def apiLevel
-    def decodeAssets = true
-    def decodeResources = true
-    def decodeClasses = true
-    def keepBrokenResources
-    def stripDebugInfo
-    def matchOriginal
-    def forceOverwrite
+    @InputFile final RegularFileProperty apkFile
+    @OutputDirectory final DirectoryProperty outputDir
+
+    @Optional @Input final Property<String> frameworkTag
+    @Optional @Input final Property<Integer> apiLevel
+    @Optional @Input final Property<Boolean> decodeAssets
+    @Optional @Input final Property<Boolean> decodeResources
+    @Optional @Input final Property<Boolean> decodeClasses
+    @Optional @Input final Property<Boolean> keepBrokenResources
+    @Optional @Input final Property<Boolean> stripDebugInfo
+    @Optional @Input final Property<Boolean> matchOriginal
+
+    @Optional @Input final Property<Boolean> forceOverwrite
 
     DecodeApkTask() {
-        super('decode')
-    }
 
-    @InputFile File getApkFile() { project.file(apkFile) }
-    @OutputDirectory File getOutputDir() { project.file(outputDir) }
-    @Optional @Input String getFrameworkTag() { Resolver.resolve(frameworkTag) as String }
-    @Optional @Input Integer getApiLevel() { Resolver.resolve(apiLevel) as Integer }
-    @Optional @Input Boolean getDecodeAssets() { Resolver.resolve(decodeAssets) as Boolean }
-    @Optional @Input Boolean getDecodeResources() { Resolver.resolve(decodeResources) as Boolean }
-    @Optional @Input Boolean getDecodeClasses() { Resolver.resolve(decodeClasses) as Boolean }
-    @Optional @Input Boolean getKeepBrokenResources() { Resolver.resolve(keepBrokenResources) as Boolean }
-    @Optional @Input Boolean getStripDebugInfo() { Resolver.resolve(stripDebugInfo) as Boolean }
-    @Optional @Input Boolean getMatchOriginal() { Resolver.resolve(matchOriginal) as Boolean }
-    @Optional @Input Boolean getForceOverwrite() { Resolver.resolve(forceOverwrite) as Boolean }
+        super('decode')
+
+        apkFile = project.layout.fileProperty()
+        outputDir = project.layout.directoryProperty()
+
+        frameworkTag = project.objects.property(String)
+        apiLevel = project.objects.property(Integer)
+        decodeAssets = project.objects.property(Boolean)
+        decodeAssets.set true
+        decodeResources = project.objects.property(Boolean)
+        decodeResources.set true
+        decodeClasses = project.objects.property(Boolean)
+        decodeClasses.set true
+        keepBrokenResources = project.objects.property(Boolean)
+        stripDebugInfo = project.objects.property(Boolean)
+        matchOriginal = project.objects.property(Boolean)
+
+        forceOverwrite = project.objects.property(Boolean)
+
+    }
 
     @Override List<String> getArgs() {
+
         def args = super.getArgs()
-        args.addAll(['--output', getOutputDir() as String])
-        def frameworkTag = getFrameworkTag()
-        if (frameworkTag) args.addAll(['--frame-tag', frameworkTag])
-        def apiLevel = getApiLevel()
-        if (apiLevel) args.addAll(['--api', apiLevel as String])
-        if (!getDecodeAssets()) args.add('--no-assets')
-        if (!getDecodeResources()) args.add('--no-res')
-        if (!getDecodeClasses()) args.add('--no-src')
-        if (getKeepBrokenResources()) args.add('--keep-broken-res')
-        if (getStripDebugInfo()) args.add('--no-debug-info')
-        if (getMatchOriginal()) args.add('--match-original')
-        if (getForceOverwrite()) args.add('--force')
-        args.addAll(getExtraArgs())
-        args.add(getApkFile() as String)
+
+        args.addAll(['--output', outputDir.get() as String])
+
+        def fwTag = frameworkTag.orNull
+        if (fwTag) args.addAll(['--frame-tag', fwTag])
+        def api = apiLevel.orNull
+        if (api) args.addAll(['--api', api as String])
+        if (!decodeAssets.orNull) args.add('--no-assets')
+        if (!decodeResources.orNull) args.add('--no-res')
+        if (!decodeClasses.orNull) args.add('--no-src')
+        if (keepBrokenResources.orNull) args.add('--keep-broken-res')
+        if (stripDebugInfo.orNull) args.add('--no-debug-info')
+        if (matchOriginal.orNull) args.add('--match-original')
+
+        if (forceOverwrite.orNull) args.add('--force')
+
+        addExtraArgsTo args
+
+        args.add(apkFile.get() as String)
+
         return args;
+
     }
 
-    @Override void beforeExec() {
-        def dir = getOutputDir()
+    @Override protected void beforeExec() {
+        def dir = outputDir.get()
         deleteOutputDir dir
-        deleteOutputFile dir
+        deleteOutputFile dir.file('.')
     }
 
-    @Override void afterExec() {
-        checkOutputDir getOutputDir()
+    @Override protected void afterExec() {
+        checkOutputDir outputDir.get()
     }
 
 }

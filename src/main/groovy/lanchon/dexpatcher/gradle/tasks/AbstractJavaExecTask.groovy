@@ -12,10 +12,14 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Resolver
-
+import org.gradle.api.file.Directory
+import org.gradle.api.file.RegularFile
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Console
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.Optional
 import org.gradle.process.JavaExecSpec
@@ -23,46 +27,99 @@ import org.gradle.process.JavaExecSpec
 @CompileStatic
 abstract class AbstractJavaExecTask extends JavaExec {
 
-    def extraArgs
-    def addBlankLines
-    def deleteOutputs = true
+    @Input final ListProperty<String> extraArgs
+    @Console final Property<Boolean> addBlankLines
+    @Optional @Input final Property<Boolean> deleteOutputs
 
-    @Input List<String> getExtraArgs() { Resolver.resolve(extraArgs).collect() { it as String } }
-    @Console Boolean getAddBlankLines() { Resolver.resolve(addBlankLines) as Boolean }
-    @Optional @Input Boolean getDeleteOutputs() { Resolver.resolve(deleteOutputs) as Boolean }
+    @Internal final Provider<Boolean> resolvedAddBlankLines
 
-    @Override abstract List<String> getArgs()
+    AbstractJavaExecTask() {
 
-    @Override JavaExec setArgs(Iterable<?> args) { throw new UnsupportedOperationException() }
-    @Override JavaExec args(Object... args) { throw new UnsupportedOperationException() }
-    @Override JavaExecSpec args(Iterable<?> args) { throw new UnsupportedOperationException() }
+        extraArgs = project.objects.listProperty(String)
+        addBlankLines = project.objects.property(Boolean)
+        //addBlankLines.set ((Boolean) null)
+        deleteOutputs = project.objects.property(Boolean)
+        deleteOutputs.set true
+
+        resolvedAddBlankLines = project.providers.<Boolean>provider {
+            def add = addBlankLines.orNull
+            !add.is(null) ? add : defaultAddBlankLines()
+        }
+
+    }
 
     @Override void exec() {
-        def blankLines = getAddBlankLines()
+        boolean blankLines = resolvedAddBlankLines.get()
         if (blankLines) println()
-        super.setArgs(getArgs())
+        def args = getArgs()
+        super.setArgs args
         beforeExec()
         super.exec()
         afterExec()
         if (blankLines) println()
     }
 
+    @Override final JavaExec setArgs(Iterable<?> args) { throw new UnsupportedOperationException() }
+    @Override final JavaExec args(Object... args) { throw new UnsupportedOperationException() }
+    @Override final JavaExecSpec args(Iterable<?> args) { throw new UnsupportedOperationException() }
+
+    @Override abstract List<String> getArgs()
+
+    protected abstract boolean defaultAddBlankLines()
+
     protected abstract void beforeExec()
     protected abstract void afterExec()
 
+    protected void addExtraArgsTo(Collection<? super String> args) {
+        def extras = extraArgs.orNull
+        if (extras) args.addAll(extras)
+    }
+
+
+
+
+
+
+
+
+
+/*
+
     protected void deleteOutputFile(File file) {
-        if (deleteOutputs && file) project.delete project.files(file)
+        if (deleteOutputs.orNull && file) project.delete project.files(file)
     }
 
     protected void deleteOutputDir(File dir) {
-        if (deleteOutputs && dir) project.delete project.fileTree(dir)
+        if (deleteOutputs.orNull && dir) project.delete project.fileTree(dir)
     }
 
     protected void checkOutputFile(File file) {
-        if (file && !file.file) throw new RuntimeException('No output generated')
+        if (file && !file.isFile()) throw new RuntimeException('No output generated')
     }
 
     protected void checkOutputDir(File dir) {
+        if (dir && project.fileTree(dir).empty) throw new RuntimeException('No output generated')
+    }
+
+
+*/
+
+
+
+
+    protected void deleteOutputFile(RegularFile file) {
+        if (deleteOutputs.orNull && file) project.delete project.files(file)
+    }
+
+    protected void deleteOutputDir(Directory dir) {
+        if (deleteOutputs.orNull && dir) project.delete project.fileTree(dir)
+    }
+
+    protected void checkOutputFile(RegularFile file) {
+        if (file && !file.asFile.isFile()) throw new RuntimeException('No output generated')
+    }
+
+    protected void checkOutputDir(Directory dir) {
         if (dir && project.fileTree(dir).empty) throw new RuntimeException('No output generated')
     }
 
