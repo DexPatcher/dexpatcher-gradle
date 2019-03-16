@@ -19,6 +19,7 @@ import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 
 @CompileStatic
@@ -28,7 +29,7 @@ abstract class AbstractToolExtension extends AbstractSubextension {
 
     final DirectoryProperty dir
     final ListProperty<String> extraArgs
-    //boolean addBlankLines
+    final Property<Boolean> addBlankLines
     //boolean deleteOutputs = true
 
     final Provider<Directory> resolvedDir
@@ -40,6 +41,8 @@ abstract class AbstractToolExtension extends AbstractSubextension {
 
         dir = project.layout.directoryProperty()
         extraArgs = project.objects.listProperty(String)
+        addBlankLines = project.objects.property(Boolean)
+        //addBlankLines.set ((Boolean) null)
 
         resolvedDir = Resolver.getDirectory(project, dir, dexpatcherConfig.resolvedToolDir, name)
         classpath = Resolver.getJars(project, resolvedDir)

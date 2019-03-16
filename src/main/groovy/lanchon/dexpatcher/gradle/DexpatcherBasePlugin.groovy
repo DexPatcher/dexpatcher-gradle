@@ -103,7 +103,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
     private void setupToolTask(AbstractJavaExecTask task, AbstractToolExtension extension) {
         task.classpath extension.classpath
         task.extraArgs.set extension.extraArgs
-        //task.addBlankLines.set extension.addBlankLines
+        task.addBlankLines.set extension.addBlankLines
         //task.deleteOutputs.set extension.deleteOutputs
     }
 
