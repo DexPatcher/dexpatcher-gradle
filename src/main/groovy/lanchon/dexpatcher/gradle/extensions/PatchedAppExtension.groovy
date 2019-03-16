@@ -24,11 +24,13 @@ class PatchedAppExtension extends AbstractPatcherExtension {
     final Property<Boolean> multiDexThreadedForAllDebugBuilds
 
     PatchedAppExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
+
         super(project, dexpatcherConfig)
 
         multiDexThreadedForMultiDexDebugBuilds = project.objects.property(Boolean)
         multiDexThreadedForMultiDexDebugBuilds.set true
         multiDexThreadedForAllDebugBuilds = project.objects.property(Boolean)
+
     }
 
 }

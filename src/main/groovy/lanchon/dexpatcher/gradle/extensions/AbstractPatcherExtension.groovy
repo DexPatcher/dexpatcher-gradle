@@ -25,10 +25,12 @@ abstract class AbstractPatcherExtension extends AbstractSubextension {
     //boolean patchCode = true          // TODO
 
     AbstractPatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
+
         super(project, dexpatcherConfig)
 
         importSymbols = project.objects.property(Boolean)
         importSymbols.set true
+
     }
 
 }

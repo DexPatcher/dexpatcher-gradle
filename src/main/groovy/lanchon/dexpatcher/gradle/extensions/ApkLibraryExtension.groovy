@@ -24,11 +24,13 @@ class ApkLibraryExtension extends AbstractSubextension {
     final Property<Boolean> disableClean
 
     ApkLibraryExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
+
         super(project, dexpatcherConfig)
 
         apkFileOrDir = project.objects.property(File)
         apkFileOrDir.set project.file('apk')
         disableClean = project.objects.property(Boolean)
+
     }
 
 }

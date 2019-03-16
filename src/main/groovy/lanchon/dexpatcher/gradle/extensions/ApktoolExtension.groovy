@@ -57,6 +57,7 @@ class ApktoolExtension extends AbstractToolExtension {
     final Property<Boolean> forceCleanBuild
 
     ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
+
         super(project, dexpatcherConfig)
         def properties = dexpatcherConfig.properties
         dir.set properties.getAsDirectory(DIR_PROPERTY)
@@ -84,6 +85,7 @@ class ApktoolExtension extends AbstractToolExtension {
         copyOriginal = project.objects.property(Boolean)
         forceDebuggableBuild = project.objects.property(Boolean)
         forceCleanBuild = project.objects.property(Boolean)
+
     }
 
     @Override

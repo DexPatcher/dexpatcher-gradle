@@ -32,6 +32,7 @@ class Dex2jarExtension extends AbstractToolExtension {
     final Property<Boolean> handleExceptions
 
     Dex2jarExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
+
         super(project, dexpatcherConfig)
         def properties = dexpatcherConfig.properties
         dir.set properties.getAsDirectory(DIR_PROPERTY)
@@ -43,6 +44,7 @@ class Dex2jarExtension extends AbstractToolExtension {
         reuseRegisters = project.objects.property(Boolean)
         topologicalSort = project.objects.property(Boolean)
         handleExceptions = project.objects.property(Boolean)
+
     }
 
     @Override

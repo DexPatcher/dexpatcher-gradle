@@ -50,6 +50,7 @@ class DexpatcherConfigExtension extends AbstractExtension {
     final Provider<Directory> resolvedProvidedLibDir
 
     DexpatcherConfigExtension(Project project) {
+
         super(project)
         properties = new ProjectProperties(project)
 
@@ -68,6 +69,7 @@ class DexpatcherConfigExtension extends AbstractExtension {
         resolvedLibDir = Resolver.getDirectory(project, libDir, dir, DEFAULT_LIB_SUBDIR_NAME)
         resolvedAddedLibDir = Resolver.getDirectory(project, addedLibDir, resolvedLibDir, DEFAULT_ADDED_SUBDIR_NAME)
         resolvedProvidedLibDir = Resolver.getDirectory(project, providedLibDir, resolvedLibDir, DEFAULT_PROVIDED_SUBDIR_NAME)
+
     }
 
 }
