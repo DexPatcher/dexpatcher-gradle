@@ -50,6 +50,7 @@ class PatchLibraryPlugin extends AbstractPatcherPlugin {
         libraryVariants = libraryExtension.libraryVariants
 
         applyAfterAndroid()
+
     }
 
     @Override
