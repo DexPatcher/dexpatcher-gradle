@@ -68,16 +68,10 @@
     <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-logging:commons-logging:1.1.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-codec:commons-codec:1.4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.abego.treelayout:org.abego.treelayout.core:1.0.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: gradle-api-4.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: groovy-all-2.4.12" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: gradle-installation-beacon-4.3" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: gradle-api-4.3" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: groovy-all-2.4.12" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: gradle-installation-beacon-4.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: gradle-test-kit-4.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: gradle-api-4.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: groovy-all-2.4.12" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: gradle-installation-beacon-4.3" level="project" />
+    <orderEntry type="library" name="Gradle: gradle-api-4.5" level="project" />
+    <orderEntry type="library" name="Gradle: groovy-all-2.4.12" level="project" />
+    <orderEntry type="library" name="Gradle: gradle-installation-beacon-4.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: gradle-test-kit-4.5" level="project" />
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
