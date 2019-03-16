@@ -88,7 +88,6 @@ class DecodeApkTask extends AbstractApktoolTask {
         return args;
     }
 
-
     @Override void beforeExec() {
         def dir = getOutputDir()
         deleteOutputDir dir
