@@ -202,8 +202,8 @@ class DexpatcherTask extends AbstractJavaExecTask {
     }
 
     @Override protected void beforeExec() {
-        deleteOutputFile outputFile.orNull
-        deleteOutputDir outputDir.orNull
+        deleteOutputFileOrDir outputFile.orNull
+        deleteOutputDirContents outputDir.orNull
     }
 
     @Override protected void afterExec() {

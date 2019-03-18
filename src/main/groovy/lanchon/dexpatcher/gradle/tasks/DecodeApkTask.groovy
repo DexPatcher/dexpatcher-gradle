@@ -107,9 +107,7 @@ class DecodeApkTask extends AbstractApktoolTask {
     }
 
     @Override protected void beforeExec() {
-        def dir = outputDir.get()
-        deleteOutputDir dir
-        deleteOutputFile dir.file('.')
+        deleteOutputFileOrDir outputDir.get()
     }
 
     @Override protected void afterExec() {
