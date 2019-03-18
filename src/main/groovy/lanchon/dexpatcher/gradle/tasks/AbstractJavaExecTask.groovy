@@ -30,12 +30,6 @@ abstract class AbstractJavaExecTask extends JavaExec {
     Boolean getAddBlankLines() { Resolver.resolve(addBlankLines) as Boolean }
     @Optional @Input Boolean getDeleteOutputs() { Resolver.resolve(deleteOutputs) as Boolean }
 
-    @Override abstract List<String> getArgs()
-
-    @Override JavaExec setArgs(Iterable<?> args) { throw new UnsupportedOperationException() }
-    @Override JavaExec args(Object... args) { throw new UnsupportedOperationException() }
-    @Override JavaExecSpec args(Iterable<?> args) { throw new UnsupportedOperationException() }
-
     @Override void exec() {
         def blankLines = getAddBlankLines()
         if (blankLines) println()
@@ -45,6 +39,12 @@ abstract class AbstractJavaExecTask extends JavaExec {
         afterExec()
         if (blankLines) println()
     }
+
+    @Override JavaExec setArgs(Iterable<?> args) { throw new UnsupportedOperationException() }
+    @Override JavaExec args(Object... args) { throw new UnsupportedOperationException() }
+    @Override JavaExecSpec args(Iterable<?> args) { throw new UnsupportedOperationException() }
+
+    @Override abstract List<String> getArgs()
 
     protected abstract void beforeExec()
     protected abstract void afterExec()
