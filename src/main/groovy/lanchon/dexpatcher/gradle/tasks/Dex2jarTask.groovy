@@ -112,13 +112,13 @@ class Dex2jarTask extends AbstractDex2jarTask {
 
     }
 
-    @Override void beforeExec() {
+    @Override protected void beforeExec() {
         deleteOutputFile getOutputFile()
         deleteOutputDir getOutputDir()
         deleteOutputFile getExceptionFile()
     }
 
-    @Override void afterExec() {
+    @Override protected void afterExec() {
         checkOutputFile getOutputFile()
         checkOutputDir getOutputDir()
     }

@@ -186,12 +186,12 @@ class DexpatcherTask extends AbstractJavaExecTask {
 
     }
 
-    @Override void beforeExec() {
+    @Override protected void beforeExec() {
         deleteOutputFile getOutputFile()
         deleteOutputDir getOutputDir()
     }
 
-    @Override void afterExec() {
+    @Override protected void afterExec() {
         checkOutputFile getOutputFile()
         checkOutputDir getOutputDir()
     }

@@ -64,11 +64,11 @@ class BuildApkTask extends AbstractApktoolTask {
         return args;
     }
 
-    @Override void beforeExec() {
+    @Override protected void beforeExec() {
         deleteOutputFile getApkFile()
     }
 
-    @Override void afterExec() {
+    @Override protected void afterExec() {
         checkOutputFile getApkFile()
     }
 
