@@ -77,6 +77,7 @@ class Dex2jarTask extends AbstractDex2jarTask {
         reuseRegisters = project.objects.property(Boolean)
         topologicalSort = project.objects.property(Boolean)
         handleExceptions = project.objects.property(Boolean)
+        //handleExceptions.set true
 
         forceOverwrite = project.objects.property(Boolean)
 

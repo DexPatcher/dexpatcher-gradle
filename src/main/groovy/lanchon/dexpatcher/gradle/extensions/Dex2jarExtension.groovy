@@ -44,6 +44,7 @@ class Dex2jarExtension extends AbstractToolExtension {
         reuseRegisters = project.objects.property(Boolean)
         topologicalSort = project.objects.property(Boolean)
         handleExceptions = project.objects.property(Boolean)
+        //handleExceptions.set true
 
     }
 
