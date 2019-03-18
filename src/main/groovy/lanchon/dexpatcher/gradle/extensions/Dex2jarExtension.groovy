@@ -28,7 +28,7 @@ class Dex2jarExtension extends AbstractToolExtension {
     Boolean optimizeSynchronized
     Boolean reuseRegisters
     Boolean topologicalSort
-    Boolean handleExceptions
+    Boolean handleExceptions    // = true
 
     Dex2jarExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig)
