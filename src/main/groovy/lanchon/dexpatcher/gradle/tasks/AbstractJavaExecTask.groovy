@@ -76,38 +76,6 @@ abstract class AbstractJavaExecTask extends JavaExec {
         if (extras) args.addAll(extras)
     }
 
-
-
-
-
-
-
-
-
-/*
-
-    protected void deleteOutputFileOrDir(File file) {
-        if (deleteOutputs.orNull && file) project.delete project.files(file)
-    }
-
-    protected void deleteOutputDirContents(File dir) {
-        if (deleteOutputs.orNull && dir) project.delete project.fileTree(dir)
-    }
-
-    protected void checkOutputFile(File file) {
-        if (file && !file.isFile()) throw new RuntimeException('No output generated')
-    }
-
-    protected void checkOutputDir(File dir) {
-        if (dir && project.fileTree(dir).isEmpty()) throw new RuntimeException('No output generated')
-    }
-
-
-*/
-
-
-
-
     protected void deleteOutputFileOrDir(FileSystemLocation file) {
         if (deleteOutputs.orNull && file) project.delete file
     }
