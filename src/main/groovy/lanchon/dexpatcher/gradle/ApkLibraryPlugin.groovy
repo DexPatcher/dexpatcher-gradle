@@ -113,6 +113,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
             dependsOn decodeApk, dex2jar, resources
             destinationDir = libraryDir
             extension = 'aar'
+            // WARNING: archiveName is set eagerly.
             def apkName = decodeApk.getApkFile().name ?: project.name ?: 'source'
             if (!apkName.toLowerCase(Locale.ENGLISH).endsWith('.apk')) apkName += '.apk'
             archiveName = apkName + '.' + extension
