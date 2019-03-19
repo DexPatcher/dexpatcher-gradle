@@ -22,7 +22,6 @@ import org.gradle.api.tasks.Console
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.JavaExec
-import org.gradle.api.tasks.Optional
 import org.gradle.process.JavaExecSpec
 
 @CompileStatic
@@ -30,7 +29,6 @@ abstract class AbstractJavaExecTask extends JavaExec {
 
     @Input final ListProperty<String> extraArgs
     @Console final Property<Boolean> addBlankLines
-    @Optional @Input final Property<Boolean> deleteOutputs
 
     @Internal final Provider<Boolean> resolvedAddBlankLines
 
@@ -39,8 +37,6 @@ abstract class AbstractJavaExecTask extends JavaExec {
         extraArgs = project.objects.listProperty(String)
         addBlankLines = project.objects.property(Boolean)
         //addBlankLines.set ((Boolean) null)
-        deleteOutputs = project.objects.property(Boolean)
-        deleteOutputs.set true
 
         resolvedAddBlankLines = project.providers.<Boolean>provider {
             def add = addBlankLines.orNull
@@ -77,11 +73,11 @@ abstract class AbstractJavaExecTask extends JavaExec {
     }
 
     protected void deleteOutputFileOrDir(FileSystemLocation file) {
-        if (deleteOutputs.orNull && file) project.delete file
+        if (file) project.delete file
     }
 
     protected void deleteOutputDirContents(Directory dir) {
-        if (deleteOutputs.orNull && dir) project.delete project.fileTree(dir)
+        if (dir) project.delete project.fileTree(dir)
     }
 
     protected void checkOutputFile(RegularFile file) {

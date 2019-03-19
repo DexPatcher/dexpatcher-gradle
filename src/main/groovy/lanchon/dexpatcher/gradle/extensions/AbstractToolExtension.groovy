@@ -29,7 +29,6 @@ abstract class AbstractToolExtension extends AbstractSubextension {
     final DirectoryProperty dir
     final ListProperty<String> extraArgs
     final Property<Boolean> addBlankLines
-    //final Property<Boolean> deleteOutputs = true
 
     final Provider<Directory> resolvedDir
 

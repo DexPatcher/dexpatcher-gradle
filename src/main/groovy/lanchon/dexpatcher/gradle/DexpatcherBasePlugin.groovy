@@ -104,7 +104,6 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         task.classpath Resolver.getJars(project, extension.resolvedDir)
         task.extraArgs.set extension.extraArgs
         task.addBlankLines.set extension.addBlankLines
-        //task.deleteOutputs.set extension.deleteOutputs
     }
 
     private void setExtensions() {
