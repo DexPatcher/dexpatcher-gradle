@@ -54,8 +54,6 @@ class DecodeApkTask extends AbstractApktoolTask {
     @Optional @Input final Property<Boolean> stripDebugInfo
     @Optional @Input final Property<Boolean> matchOriginal
 
-    @Optional @Input final Property<Boolean> forceOverwrite
-
     DecodeApkTask() {
 
         super('decode')
@@ -74,8 +72,6 @@ class DecodeApkTask extends AbstractApktoolTask {
         keepBrokenResources = project.objects.property(Boolean)
         stripDebugInfo = project.objects.property(Boolean)
         matchOriginal = project.objects.property(Boolean)
-
-        forceOverwrite = project.objects.property(Boolean)
 
     }
 
@@ -96,8 +92,7 @@ class DecodeApkTask extends AbstractApktoolTask {
         if (stripDebugInfo.orNull) args.add('--no-debug-info')
         if (matchOriginal.orNull) args.add('--match-original')
 
-        if (forceOverwrite.orNull) args.add('--force')
-
+        //if (forceOverwrite.orNull) args.add('--force')
         addExtraArgsTo args
 
         args.add(apkFile.get() as String)

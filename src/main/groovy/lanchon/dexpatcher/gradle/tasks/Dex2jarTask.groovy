@@ -59,8 +59,6 @@ class Dex2jarTask extends AbstractDex2jarTask {
     @Optional @Input final Property<Boolean> topologicalSort
     @Optional @Input final Property<Boolean> handleExceptions
 
-    @Optional @Input final Property<Boolean> forceOverwrite
-
     Dex2jarTask() {
 
         main = 'com.googlecode.dex2jar.tools.Dex2jarCmd'
@@ -78,8 +76,6 @@ class Dex2jarTask extends AbstractDex2jarTask {
         topologicalSort = project.objects.property(Boolean)
         handleExceptions = project.objects.property(Boolean)
         //handleExceptions.set true
-
-        forceOverwrite = project.objects.property(Boolean)
 
     }
 
@@ -106,8 +102,8 @@ class Dex2jarTask extends AbstractDex2jarTask {
         if (reuseRegisters.orNull) args.add('--reuse-reg')
         if (topologicalSort.orNull) args.add('--topological-sort')
         if (!handleExceptions.orNull) args.add('--not-handle-exception')
-        if (forceOverwrite.orNull) args.add('--force')
 
+        //if (forceOverwrite.orNull) args.add('--force')
         addExtraArgsTo args
 
         if (dexFiles.isEmpty()) throw new RuntimeException('No input dex files specified')
