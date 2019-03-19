@@ -12,10 +12,9 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
@@ -48,7 +47,7 @@ version: reader-2.1-SNAPSHOT, translator-2.1-SNAPSHOT, ir-2.1-SNAPSHOT
 @CompileStatic
 class Dex2jarTask extends AbstractDex2jarTask {
 
-    @InputFiles final ListProperty<RegularFile> dexFiles
+    @InputFiles final ConfigurableFileCollection dexFiles
     @Optional @OutputFile final RegularFileProperty outputFile
     @Optional @OutputDirectory final DirectoryProperty outputDir
     @Optional @OutputFile final RegularFileProperty exceptionFile
@@ -66,7 +65,7 @@ class Dex2jarTask extends AbstractDex2jarTask {
 
         main = 'com.googlecode.dex2jar.tools.Dex2jarCmd'
 
-        dexFiles = project.objects.listProperty(RegularFile)
+        dexFiles = project.files()
         outputFile = project.layout.fileProperty()
         outputDir = project.layout.directoryProperty()
         exceptionFile = project.layout.fileProperty()
@@ -111,9 +110,8 @@ class Dex2jarTask extends AbstractDex2jarTask {
 
         addExtraArgsTo args
 
-        def inputFiles = dexFiles.orNull
-        if (!inputFiles) throw new RuntimeException('No input dex files specified')
-        args.addAll(inputFiles as List<String>)
+        if (dexFiles.isEmpty()) throw new RuntimeException('No input dex files specified')
+        args.addAll(dexFiles as List<String>)
 
         return args;
 

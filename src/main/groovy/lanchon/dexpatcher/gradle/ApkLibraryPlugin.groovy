@@ -93,7 +93,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
             group = taskGroup
             dependsOn decodeApk
             //dexFiles.set project.providers.<List<RegularFile>>provider { [ decodeApk.apkFile.get() ] }
-            dexFiles.set decodeApk.apkFile.<List<RegularFile>>map { [ it ] }
+            dexFiles.from decodeApk.apkFile
             outputFile.set dex2jarFile
             exceptionFile.set dex2jarExceptionFile
         }
