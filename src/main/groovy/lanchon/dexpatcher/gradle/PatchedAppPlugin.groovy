@@ -90,7 +90,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
             description = "Patches the source dex from an apk library using the just-built patch dex."
             group = DexpatcherBasePlugin.TASK_GROUP
             source.set apkLibrary.dexDir
-            patches.set patch.<List<Directory>>map { [ it ] }
+            patch.set patch
             outputDir.set dexpatcherDir.dir("patched-dex/${variant.dirName}")
         }
 

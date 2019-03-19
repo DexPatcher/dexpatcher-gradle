@@ -62,6 +62,7 @@ class DexpatcherTask extends AbstractJavaExecTask {
     }
 
     @InputFiles final Property<FileSystemLocation> source
+    @Optional @InputFiles final Property<FileSystemLocation> patch
     @Optional @InputFiles final ListProperty<FileSystemLocation> patches
     @Optional @OutputFile final RegularFileProperty outputFile
     @Optional @OutputDirectory final DirectoryProperty outputDir
@@ -84,6 +85,7 @@ class DexpatcherTask extends AbstractJavaExecTask {
         main = 'lanchon.dexpatcher.Main'
 
         source = project.objects.property(FileSystemLocation)
+        patch = project.objects.property(FileSystemLocation)
         patches = project.objects.listProperty(FileSystemLocation)
         outputFile = project.layout.fileProperty()
         outputDir = project.layout.directoryProperty()
@@ -161,7 +163,11 @@ class DexpatcherTask extends AbstractJavaExecTask {
         addExtraArgsTo args
 
         args.add(source.get() as String)
+
+        def singlePatch = patch.orNull
         def patchList = patches.orNull
+        if (singlePatch && patchList) throw new RuntimeException('Properties patch and patches must not both be specified')
+        if (singlePatch) args.add(singlePatch as String)
         if (patchList) args.addAll(patchList as List<String>)
 
         return args;
