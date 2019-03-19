@@ -20,46 +20,10 @@ import org.gradle.api.provider.Provider
 @CompileStatic
 abstract class Resolver {
 
-/*
-    static def resolve(def object) {
-        object instanceof Closure ? resolve(object.call()) : object
-    }
-
-    static <T> T resolve(def object, Closure<T> closure) {
-        object instanceof Closure ? resolve(object.call(), closure) : closure.call(object)
-    }
-
-    static <T> T resolveNullable(def object, Closure<T> closure) {
-        object instanceof Closure ? resolveNullable(object.call(), closure) : object ? closure.call(object) : null
-    }
-
-    static File resolveNullableFile(Project project, def file) {
-        resolveNullable(file) { project.file(it) }
-    }
-
-    static FileCollection resolveNullableFiles(Project project, def files) {
-        resolveNullable(files) { project.files(it) }
-    }
-
-    static File resolveSingleFile(Project project, def fileOrDir, String... includes) {
-        def path = resolveNullableFile(project, fileOrDir)
-        if (path.isFile()) return path
-        def tree = project.fileTree(path)
-        tree.include includes
-        return tree.singleFile
-    }
-*/
-
     static File getFile(File parent, String child) {
         if (parent.is(null)) throw new NullPointerException();
         return new File(parent, child)
     }
-
-    /*
-    static Directory resolveDir(Directory directory, Directory defaultParent, String defaultChild) {
-        directory ?: (defaultParent ? defaultParent.dir(defaultChild) : null)
-    }
-    */
 
     static Provider<Directory> getResolvedDir(Project project, Provider<Directory> directory, Provider<Directory> defaultParent, String defaultChild) {
         project.providers.<Directory>provider {
