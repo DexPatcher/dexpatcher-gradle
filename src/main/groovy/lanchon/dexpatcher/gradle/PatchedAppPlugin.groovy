@@ -27,6 +27,7 @@ import com.google.common.collect.ImmutableSet
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.file.Directory
 import org.gradle.api.plugins.ExtensionAware
 
 @CompileStatic
@@ -83,18 +84,16 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
 
     private DexpatcherTask createPatchDexTask(ApplicationVariant variant) {
 
+        def patch = project.layout.directoryProperty()
         def patchDex = project.tasks.create("patch${variant.name.capitalize()}Dex", DexpatcherTask)
-        File patchedDexDir = Resolver.getFile(dexpatcherDir, "patched-dex/${variant.dirName}")
         patchDex.with {
             description = "Patches the source dex from an apk library using the just-built patch dex."
             group = DexpatcherBasePlugin.TASK_GROUP
-            outputDir.set patchedDexDir
-        }
-        afterPrepareApkLibrary {
-            patchDex.source.set apkLibrary.dexDir
+            source.set apkLibrary.dexDir
+            patches.set patch.<List<Directory>>map { [ it ] }
+            outputDir.set dexpatcherDir.dir("patched-dex/${variant.dirName}")
         }
 
-        Set<File> patchedDexFolders = ImmutableSet.of(patchedDexDir)
         variant.outputs.each {
             if (it instanceof ApkVariantOutput) {
 
@@ -121,13 +120,13 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
                     if (dexFolder.is(null)) throw new RuntimeException(
                             "Output of variant '${variant.name}' has null dex folder")
 
-                    def oldPatches = patchDex.patches.orNull
-                    def newPatches = project.files(dexFolder)
-                    if (!oldPatches.is(null) && oldPatches != newPatches) throw new RuntimeException(
-                            "Outputs of variant '${variant.name}' do not share dex folders")
-                    patchDex.patches.set newPatches
+                    def oldPatch = patch.orNull
+                    patch.set dexFolder
+                    if (oldPatch && oldPatch != patch.orNull) throw new RuntimeException(
+                        "Outputs of variant '${variant.name}' do not share dex folders")
 
-                    //packageApp.dexFolders = outDexFolders
+                    Set<File> patchedDexFolders = ImmutableSet.of(patchDex.outputDir.get().asFile)
+                    //packageApp.dexFolders = patchedDexFolders
                     setPackageTaskDexFolders(packageApp, patchedDexFolders)
 
                 }
@@ -158,7 +157,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
         // 'packageApp.dexFolders' is not writable in Android plugin v2.1.3 and earlier.
         //packageTask.dexFolders = dexFolders
         // The class of 'packageTask' is subclassed by some presumably run-time mechanism.
-        //def dexFoldersField = packageApp.getClass().getDeclaredField('dexFolders')
+        //def dexFoldersField = packageTask.getClass().getDeclaredField('dexFolders')
         def dexFoldersField
         def theClass = packageTask.getClass()
         for (;;) {

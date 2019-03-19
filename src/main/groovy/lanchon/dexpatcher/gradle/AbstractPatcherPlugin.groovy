@@ -21,8 +21,11 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.PrepareLibraryTask
 import org.gradle.api.DomainObjectSet
+import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.Directory
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Provider
 
 // TODO: Locate apk lib based on bundle extension at afterEvaluate time.
@@ -46,44 +49,53 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
 
     protected static class ApkLibraryPaths {
 
-        final File rootDir
-        final File dexpatcherDir
-        final File dexDir
-        final File dedexFile
-        final File publicXmlFile
+        final static String PUBLIC_XML_FILE = 'dexpatcher/values/public.xml'
 
-        protected ApkLibraryPaths(File apkLibDir) {
-            rootDir = apkLibDir
-            dexpatcherDir = Resolver.getFile(rootDir, 'dexpatcher')
-            dexDir = Resolver.getFile(dexpatcherDir, 'dex')
-            dedexFile = Resolver.getFile(dexpatcherDir, 'dedex/classes.zip')
-            publicXmlFile = Resolver.getFile(dexpatcherDir, 'values/public.xml')
+        final DirectoryProperty rootDir
+        final DirectoryProperty dexpatcherDir
+        final DirectoryProperty dexDir
+        final RegularFileProperty dedexFile
+
+        protected ApkLibraryPaths(Project project, Provider<Directory> apkLibDir) {
+            rootDir = project.layout.directoryProperty(apkLibDir.<Directory>map {
+                if (!it) throw new RuntimeException('Apk library not found')
+                return it
+            })
+            dexpatcherDir = project.layout.directoryProperty(rootDir.dir('dexpatcher'))
+            dexDir = project.layout.directoryProperty(dexpatcherDir.dir('dex'))
+            dedexFile = project.layout.fileProperty(dexpatcherDir.file('dedex/classes.zip'))
         }
 
     }
 
-    protected File dexpatcherDir
-    protected ApkLibraryPaths apkLibraryUnchecked
-
-    protected ApkLibraryPaths getApkLibrary() {
-        if (!apkLibraryUnchecked) throw new RuntimeException('Apk library not found')
-        return apkLibraryUnchecked
-    }
+    protected DirectoryProperty dexpatcherDir
+    private DirectoryProperty apkLibRootDirUnchecked
+    protected ApkLibraryPaths apkLibrary
 
     protected abstract AbstractPatcherExtension getPatcherExtension()
     protected abstract BaseExtension getAndroidExtension()
     protected abstract DomainObjectSet<? extends BaseVariant> getAndroidVariants()
 
+    @Override
+    void apply(Project project) {
+
+        super.apply(project)
+
+        dexpatcherDir = project.layout.directoryProperty(project.layout.buildDirectory.dir('intermediates/dexpatcher'))
+        apkLibRootDirUnchecked = project.layout.directoryProperty()
+        apkLibrary = new ApkLibraryPaths(project, apkLibRootDirUnchecked)
+
+    }
+
     protected void applyAfterAndroid() {
 
-        dexpatcherDir = Resolver.getFile(project.buildDir, 'intermediates/dexpatcher')
         addDependencies()
 
         // Setup 'apkLibrary' property.
         project.afterEvaluate {
             afterPrepareApkLibrary { PrepareLibraryTask task ->
-                if (apkLibraryUnchecked) throw new RuntimeException('Multiple apk libraries found')
-                apkLibraryUnchecked = new ApkLibraryPaths(task.explodedDir)
+                if (apkLibRootDirUnchecked.orNull) throw new RuntimeException('Multiple apk libraries found')
+                apkLibRootDirUnchecked.set task.explodedDir
             }
         }
 
@@ -100,24 +112,25 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
     protected abstract String getScopeForAddedLibs()
 
     protected void addDependencies(String scope, Provider<Directory> rootDir) {
-        def jars = Resolver.getJars(project, rootDir)
+        def jars = Resolver.getJars(project, rootDir).get()
         project.configurations.getByName(scope).dependencies.add(project.dependencies.create(jars))
     }
 
     private void addDedexedClassesToProvidedScope() {
         // Add a non-existent jar file to the 'provided' scope.
-        def dedexFile = Resolver.getFile(dexpatcherDir, 'dedex/classes.jar')
+        def dedexFile = dexpatcherDir.file('dedex/classes.jar')
         def dedexDependency = project.dependencies.create(project.files(dedexFile))
         project.configurations.getByName('provided').dependencies.add(dedexDependency)
         // And later copy the dedexed classes of the apk library into that empty slot.
         project.afterEvaluate {
             afterPrepareApkLibrary { PrepareLibraryTask task ->
-                com.google.common.io.Files.createParentDirs(dedexFile)
+                def dedex = dedexFile.get().asFile
+                com.google.common.io.Files.createParentDirs(dedex)
                 if (patcherExtension.importSymbols) {
-                    Files.copy(apkLibraryUnchecked.dedexFile.toPath(), dedexFile.toPath(),
+                    Files.copy(apkLibrary.dedexFile.get().asFile.toPath(), dedex.toPath(),
                             StandardCopyOption.REPLACE_EXISTING)
                 } else {
-                    new ZipOutputStream(new FileOutputStream(dedexFile)).close();
+                    new ZipOutputStream(new FileOutputStream(dedex)).close();
                 }
             }
         }
@@ -127,18 +140,19 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
         project.afterEvaluate {
             // Get 'public.xml' out of the resource merge inputs.
             prepareApkLibraryDoLast { PrepareLibraryTask task ->
-                def apkLibrary = new ApkLibraryPaths(task.explodedDir)
-                def fromFile = Resolver.getFile(apkLibrary.rootDir, 'res/values/public.xml')
-                com.google.common.io.Files.createParentDirs(apkLibrary.publicXmlFile)
-                Files.move(fromFile.toPath(), apkLibrary.publicXmlFile.toPath())
+                def fromFile = Resolver.getFile(task.explodedDir, 'res/values/public.xml')
+                def toFile = Resolver.getFile(task.explodedDir, ApkLibraryPaths.PUBLIC_XML_FILE)
+                com.google.common.io.Files.createParentDirs(toFile)
+                Files.move(fromFile.toPath(), toFile.toPath())
             }
             // And later add a copy to the output of the merge.
             androidVariants.all { BaseVariant variant ->
                 def task = variant.mergeResources
                 task.doLast {
+                    def fromFile = apkLibrary.rootDir.get().file(ApkLibraryPaths.PUBLIC_XML_FILE).asFile
                     def toFile = Resolver.getFile(task.outputDir, 'values/dexpatcher-public.xml')
                     com.google.common.io.Files.createParentDirs(toFile)
-                    Files.copy(apkLibrary.publicXmlFile.toPath(), toFile.toPath())
+                    Files.copy(fromFile.toPath(), toFile.toPath())
                 }
             }
         }

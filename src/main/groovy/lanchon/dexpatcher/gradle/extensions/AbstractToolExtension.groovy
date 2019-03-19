@@ -17,7 +17,6 @@ import lanchon.dexpatcher.gradle.Resolver
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.FileCollection
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
@@ -30,10 +29,9 @@ abstract class AbstractToolExtension extends AbstractSubextension {
     final DirectoryProperty dir
     final ListProperty<String> extraArgs
     final Property<Boolean> addBlankLines
-    //boolean deleteOutputs = true
+    //final Property<Boolean> deleteOutputs = true
 
     final Provider<Directory> resolvedDir
-    final Provider<FileCollection> classpath
 
     AbstractToolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
 
@@ -44,8 +42,7 @@ abstract class AbstractToolExtension extends AbstractSubextension {
         addBlankLines = project.objects.property(Boolean)
         //addBlankLines.set ((Boolean) null)
 
-        resolvedDir = Resolver.getDirectory(project, dir, dexpatcherConfig.resolvedToolDir, name)
-        classpath = Resolver.getJars(project, resolvedDir)
+        resolvedDir = Resolver.getResolvedDir(project, dir, dexpatcherConfig.resolvedToolDir, name)
 
     }
 

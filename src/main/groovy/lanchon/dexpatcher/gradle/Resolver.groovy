@@ -20,6 +20,7 @@ import org.gradle.api.provider.Provider
 @CompileStatic
 abstract class Resolver {
 
+/*
     static def resolve(def object) {
         object instanceof Closure ? resolve(object.call()) : object
     }
@@ -47,6 +48,7 @@ abstract class Resolver {
         tree.include includes
         return tree.singleFile
     }
+*/
 
     static File getFile(File parent, String child) {
         if (parent.is(null)) throw new NullPointerException();
@@ -54,12 +56,12 @@ abstract class Resolver {
     }
 
     /*
-    static Directory getDirectory(Directory directory, Directory defaultParent, String defaultChild) {
+    static Directory resolveDir(Directory directory, Directory defaultParent, String defaultChild) {
         directory ?: (defaultParent ? defaultParent.dir(defaultChild) : null)
     }
     */
 
-    static Provider<Directory> getDirectory(Project project, Provider<Directory> directory, Provider<Directory> defaultParent, String defaultChild) {
+    static Provider<Directory> getResolvedDir(Project project, Provider<Directory> directory, Provider<Directory> defaultParent, String defaultChild) {
         project.providers.<Directory>provider {
             directory.orNull ?: defaultParent.orNull?.dir(defaultChild)
         }
@@ -74,19 +76,5 @@ abstract class Resolver {
             return jars
         }
     }
-
-    /*
-    static <T> Provider<T> getConstantProvider(ProviderFactory factory, T value) {
-        factory.<T>provider {
-            value
-        }
-    }
-
-    static <T> Provider<T> getDefaultProvider(ProviderFactory factory, Provider<T> value, Provider<T> defaultValue) {
-        factory.<T>provider {
-            value.orNull ?: defaultValue.orNull
-        }
-    }
-    */
 
 }

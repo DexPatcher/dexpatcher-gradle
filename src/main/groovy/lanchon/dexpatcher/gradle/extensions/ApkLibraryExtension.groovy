@@ -13,23 +13,43 @@ package lanchon.dexpatcher.gradle.extensions
 import groovy.transform.CompileStatic
 
 import org.gradle.api.Project
+import org.gradle.api.file.Directory
+import org.gradle.api.file.FileSystemLocation
+import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 
 @CompileStatic
 class ApkLibraryExtension extends AbstractSubextension {
 
     static final String EXTENSION_NAME = 'apkLibrary'
 
-    final Property<File> apkFileOrDir
+    final Property<FileSystemLocation> apkFileOrDir
     final Property<Boolean> disableClean
 
     ApkLibraryExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
 
         super(project, dexpatcherConfig)
 
-        apkFileOrDir = project.objects.property(File)
-        apkFileOrDir.set project.file('apk')
+        apkFileOrDir = project.objects.property(FileSystemLocation)
+        apkFileOrDir.set project.layout.projectDirectory.dir('apk')
         disableClean = project.objects.property(Boolean)
+
+    }
+
+    Provider<RegularFile> getResolvedApkFile() {
+        return project.providers.<RegularFile>provider {
+            def apk = apkFileOrDir.orNull
+            switch (apk) {
+                case RegularFile:
+                    //Resolver.resolveSingleFile(project, apkFileOrDir.get(), '*.apk')
+                    return ((RegularFile) apk)
+                case Directory:
+                    return ((Directory) apk).file('*.apk')
+                default:
+                    return null
+            }
+        }
 
     }
 

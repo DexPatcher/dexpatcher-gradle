@@ -65,10 +65,10 @@ class DexpatcherConfigExtension extends AbstractExtension {
         providedLibDir = project.layout.directoryProperty()
         providedLibDir.set properties.getAsDirectory(PROVIDED_LIB_DIR_PROPERTY)
 
-        resolvedToolDir = Resolver.getDirectory(project, toolDir, dir, DEFAULT_TOOL_SUBDIR_NAME)
-        resolvedLibDir = Resolver.getDirectory(project, libDir, dir, DEFAULT_LIB_SUBDIR_NAME)
-        resolvedAddedLibDir = Resolver.getDirectory(project, addedLibDir, resolvedLibDir, DEFAULT_ADDED_SUBDIR_NAME)
-        resolvedProvidedLibDir = Resolver.getDirectory(project, providedLibDir, resolvedLibDir, DEFAULT_PROVIDED_SUBDIR_NAME)
+        resolvedToolDir = Resolver.getResolvedDir(project, toolDir, dir, DEFAULT_TOOL_SUBDIR_NAME)
+        resolvedLibDir = Resolver.getResolvedDir(project, libDir, dir, DEFAULT_LIB_SUBDIR_NAME)
+        resolvedAddedLibDir = Resolver.getResolvedDir(project, addedLibDir, resolvedLibDir, DEFAULT_ADDED_SUBDIR_NAME)
+        resolvedProvidedLibDir = Resolver.getResolvedDir(project, providedLibDir, resolvedLibDir, DEFAULT_PROVIDED_SUBDIR_NAME)
 
     }
 

@@ -20,9 +20,9 @@ abstract class AbstractPatcherExtension extends AbstractSubextension {
 
     final Property<Boolean> importSymbols
 
-    //boolean patchManifest = true      // TODO
-    //boolean patchResources = true     // TODO
-    //boolean patchCode = true          // TODO
+    //final Property<Boolean> patchManifest = true      // TODO
+    //final Property<Boolean> patchResources = true     // TODO
+    //final Property<Boolean> patchCode = true          // TODO
 
     AbstractPatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
 

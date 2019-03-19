@@ -13,13 +13,12 @@ package lanchon.dexpatcher.gradle.tasks
 import groovy.transform.CompileStatic
 
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.FileCollection
+import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Console
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
@@ -62,8 +61,8 @@ class DexpatcherTask extends AbstractJavaExecTask {
         DEBUG
     }
 
-    @Input final Property<File> source
-    @Optional @InputFiles final Property<FileCollection> patches
+    @InputFiles final Property<FileSystemLocation> source
+    @Optional @InputFiles final ListProperty<FileSystemLocation> patches
     @Optional @OutputFile final RegularFileProperty outputFile
     @Optional @OutputDirectory final DirectoryProperty outputDir
 
@@ -84,8 +83,8 @@ class DexpatcherTask extends AbstractJavaExecTask {
 
         main = 'lanchon.dexpatcher.Main'
 
-        source = project.objects.property(File)
-        patches = project.objects.property(FileCollection)
+        source = project.objects.property(FileSystemLocation)
+        patches = project.objects.listProperty(FileSystemLocation)
         outputFile = project.layout.fileProperty()
         outputDir = project.layout.directoryProperty()
 
@@ -103,20 +102,6 @@ class DexpatcherTask extends AbstractJavaExecTask {
         logSourcePathRoot = project.objects.property(String)
         logStats = project.objects.property(Boolean)
 
-    }
-
-    @Optional @InputFile protected File getSourceFile() {
-        File src = source.orNull
-        if (!src) return null
-        src = project.file(src)
-        return src.isFile() ? src : null
-    }
-
-    @Optional @InputDirectory protected File getSourceDir() {
-        File src = source.orNull
-        if (!src) return null
-        src = project.file(src)
-        return src.isDirectory() ? src : null
     }
 
     @Override List<String> getArgs() {

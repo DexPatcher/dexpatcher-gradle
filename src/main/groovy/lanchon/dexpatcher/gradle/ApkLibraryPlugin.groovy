@@ -19,8 +19,9 @@ import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.file.CopySpec
+import org.gradle.api.file.Directory
 import org.gradle.api.file.DuplicatesStrategy
-import org.gradle.api.file.FileCollection
+import org.gradle.api.file.RegularFile
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.provider.Provider
@@ -47,7 +48,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
         project.plugins.apply(BasePlugin)
 
         def apkLibrary = createTaskChain(project, DexpatcherBasePlugin.TASK_GROUP, { it }, { it },
-                apkLibrary.apkFileOrDir)
+                apkLibrary.resolvedApkFile)
         project.tasks.getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(apkLibrary)
         project.artifacts.add(Dependency.DEFAULT_CONFIGURATION, apkLibrary)
 
@@ -56,28 +57,28 @@ class ApkLibraryPlugin extends AbstractPlugin {
     }
 
     static Zip createTaskChain(Project project, String taskGroup, Closure<String> taskNameModifier,
-            Closure<File> dirModifier, Provider<File> apkFileOrDir) {
+            Closure<Directory> dirModifier, Provider<RegularFile> theApkFile) {
 
-        def modIntermediateDir = dirModifier(Resolver.getFile(project.buildDir, 'intermediates'))
-        def modOutputDir = dirModifier(Resolver.getFile(project.buildDir, 'outputs'))
+        def buildDir = project.layout.buildDirectory.get()
 
-        def apktoolDir = Resolver.getFile(modIntermediateDir, 'apktool')
-        def apktoolFrameworkDir = Resolver.getFile(modIntermediateDir, 'apktool-framework')
-        def dex2jarFile = Resolver.getFile(modIntermediateDir, 'dex2jar/classes.zip')
-        def dex2jarExceptionFile = Resolver.getFile(modIntermediateDir, 'dex2jar/dex2jar-error.zip')
-        def resourcesDir = Resolver.getFile(modIntermediateDir, 'resources')
-        def libraryDir = Resolver.getFile(modOutputDir, 'aar')
+        def modIntermediateDir = dirModifier(buildDir.dir('intermediates'))
+        def modOutputDir = dirModifier(buildDir.dir('outputs'))
+
+        def apktoolDir = modIntermediateDir.dir('apktool')
+        def apktoolFrameworkDir = modIntermediateDir.dir('apktool-framework')
+        def dex2jarFile = modIntermediateDir.file('dex2jar/classes.zip')
+        def dex2jarExceptionFile = modIntermediateDir.file('dex2jar/dex2jar-error.zip')
+        def resourcesDir = modIntermediateDir.dir('resources')
+        def libraryDir = modOutputDir.dir('aar')
 
         def decodeApk = project.tasks.create(taskNameModifier('decodeApk'), DecodeApkTask)
         decodeApk.with {
             description = "Unpacks an Android application and decodes its manifest and resources."
             group = taskGroup
-            apkFile.set project.layout.file(project.providers.<File>provider {
-                Resolver.resolveSingleFile(project, apkFileOrDir.get(), '*.apk')
-            })
+            apkFile.set theApkFile
             outputDir.set apktoolDir
-            frameworkDir.set null
-            frameworkDirAsInput.set null
+            frameworkDir.set ((Directory) null)
+            frameworkDirAsInput.set ((Directory) null)
             frameworkDirAsOutput.set apktoolFrameworkDir
             decodeClasses.set false
             //keepBrokenResources.set true
@@ -91,9 +92,8 @@ class ApkLibraryPlugin extends AbstractPlugin {
             description = "Translates Dalvik bytecode into Java bytecode."
             group = taskGroup
             dependsOn decodeApk
-            dexFiles.set  project.providers.<FileCollection>provider {
-                project.files(decodeApk.apkFile)
-            }
+            //dexFiles.set project.providers.<List<RegularFile>>provider { [ decodeApk.apkFile.get() ] }
+            dexFiles.set decodeApk.apkFile.<List<RegularFile>>map { [ it ] }
             outputFile.set dex2jarFile
             exceptionFile.set dex2jarExceptionFile
         }
@@ -103,7 +103,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
             description = "Packs extra resources into a jar"
             group = taskGroup
             dependsOn decodeApk
-            destinationDir = resourcesDir
+            destinationDir = resourcesDir.asFile
         }
 
         def apkLibrary = createApkLibraryTask(project, taskNameModifier('apkLibrary'), apktoolDir, dex2jarFile,
@@ -112,7 +112,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
             description = "Packs the processed application into an apk library."
             group = taskGroup
             dependsOn decodeApk, dex2jar, resources
-            destinationDir = libraryDir
+            destinationDir = libraryDir.asFile
             extension = 'aar'
             // WARNING: archiveName is set eagerly.
             def apkName = decodeApk.apkFile.orNull?.asFile?.name ?: project.name ?: 'source'
@@ -141,23 +141,21 @@ class ApkLibraryPlugin extends AbstractPlugin {
         }
     }
 
-    static Zip createResourcesTask(Project project, String name, File apktoolDir) {
-
+    static Zip createResourcesTask(Project project, String name, Directory apktoolDir) {
         def resources = project.tasks.create(name, Zip)
         resources.with {
             duplicatesStrategy = DuplicatesStrategy.FAIL
             archiveName = 'classes.jar'
-            from(Resolver.getFile(apktoolDir, 'unknown'))
-            from(Resolver.getFile(apktoolDir, 'original/META-INF')) { CopySpec spec ->
+            from(apktoolDir.dir('unknown'))
+            from(apktoolDir.dir('original/META-INF')) { CopySpec spec ->
                 spec.into 'META-INF'
             }
         }
         return resources
-
     }
 
-    static Zip createApkLibraryTask(Project project, String name, File apktoolDir, File dex2jarFile,
-            File dex2jarExceptionFile, File resourcesDir) {
+    static Zip createApkLibraryTask(Project project, String name, Directory apktoolDir, RegularFile dex2jarFile,
+            RegularFile dex2jarExceptionFile, Directory resourcesDir) {
 
         def apkLibrary = project.tasks.create(name, Zip)
         apkLibrary.with {
@@ -185,7 +183,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
                     include 'assets/'
                 }
             }
-            from(Resolver.getFile(apktoolDir, 'lib')) { CopySpec spec ->
+            from(apktoolDir.dir('lib')) { CopySpec spec ->
                 spec.into 'jni'
             }
             from(apktoolDir) { CopySpec spec ->
