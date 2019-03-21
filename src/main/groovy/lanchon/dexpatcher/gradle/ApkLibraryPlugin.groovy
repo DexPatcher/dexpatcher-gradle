@@ -92,7 +92,6 @@ class ApkLibraryPlugin extends AbstractPlugin {
             description = "Translates Dalvik bytecode into Java bytecode."
             group = taskGroup
             dependsOn decodeApk
-            //dexFiles.set project.providers.<List<RegularFile>>provider { [ decodeApk.apkFile.get() ] }
             dexFiles.from decodeApk.apkFile
             outputFile.set dex2jarFile
             exceptionFile.set dex2jarExceptionFile
