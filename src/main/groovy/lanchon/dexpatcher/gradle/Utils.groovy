@@ -41,4 +41,9 @@ abstract class Utils {
         }
     }
 
+    static void addJarDependency(Project project, String configuration, Provider<Directory> jarDir) {
+        def jars = Utils.getJars(project, jarDir).get()
+        project.configurations.getByName(configuration).dependencies.add(project.dependencies.create(jars))
+    }
+
 }

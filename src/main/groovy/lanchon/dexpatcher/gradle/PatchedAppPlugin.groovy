@@ -54,6 +54,8 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
         appExtension = project.extensions.getByType(AppExtension)
         appVariants = appExtension.applicationVariants
 
+        dexpatcherConfig.addLibDependencies(true)
+
         applyAfterAndroid()
 
     }
@@ -78,9 +80,6 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
         }
 
     }
-
-    @Override
-    protected boolean mustBundleLibs() { true }
 
     private DexpatcherTask createPatchDexTask(ApplicationVariant variant) {
 

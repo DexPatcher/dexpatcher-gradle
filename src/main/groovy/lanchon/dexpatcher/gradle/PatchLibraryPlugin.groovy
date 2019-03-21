@@ -49,6 +49,8 @@ class PatchLibraryPlugin extends AbstractPatcherPlugin {
         libraryExtension = project.extensions.getByType(LibraryExtension)
         libraryVariants = libraryExtension.libraryVariants
 
+        dexpatcherConfig.addLibDependencies(false)
+
         applyAfterAndroid()
 
     }
@@ -64,8 +66,5 @@ class PatchLibraryPlugin extends AbstractPatcherPlugin {
         //}
 
     }
-
-    @Override
-    protected boolean mustBundleLibs() { false }
 
 }

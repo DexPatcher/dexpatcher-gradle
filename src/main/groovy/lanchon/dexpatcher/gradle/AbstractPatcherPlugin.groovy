@@ -89,8 +89,6 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
 
     protected void applyAfterAndroid() {
 
-        addDependencies()
-
         // Setup 'apkLibrary' property.
         project.afterEvaluate {
             afterPrepareApkLibrary { PrepareLibraryTask task ->
@@ -102,24 +100,6 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
         addDedexedClassesToProvidedScope()
         workaroundForPublicXmlMergeBug()
 
-    }
-
-    protected void addDependencies() {
-        def v3 = true
-        def providedConfig = v3 ? 'compileOnly' : 'provided'
-        def compileConfig = v3 ? 'implementation' : 'compile'
-        def runtimeConfig = v3 ? 'runtimeOnly' : 'apk'
-        def bundle = mustBundleLibs()
-        addDependencies providedConfig, dexpatcherConfig.resolvedProvidedLibDir
-        addDependencies bundle ? compileConfig : providedConfig, dexpatcherConfig.resolvedCompileLibDir
-        if (bundle) addDependencies runtimeConfig, dexpatcherConfig.resolvedRuntimeLibDir
-    }
-
-    protected abstract boolean mustBundleLibs()
-
-    protected void addDependencies(String configuration, Provider<Directory> rootDir) {
-        def jars = Utils.getJars(project, rootDir).get()
-        project.configurations.getByName(configuration).dependencies.add(project.dependencies.create(jars))
     }
 
     private void addDedexedClassesToProvidedScope() {
