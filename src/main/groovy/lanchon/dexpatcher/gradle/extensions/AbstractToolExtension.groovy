@@ -12,7 +12,7 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Resolver
+import lanchon.dexpatcher.gradle.Utils
 
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
@@ -41,7 +41,7 @@ abstract class AbstractToolExtension extends AbstractSubextension {
         addBlankLines = project.objects.property(Boolean)
         //addBlankLines.set ((Boolean) null)
 
-        resolvedDir = Resolver.getResolvedDir(project, dir, dexpatcherConfig.resolvedToolDir, name)
+        resolvedDir = Utils.getResolvedDir(project, dir, dexpatcherConfig.resolvedToolDir, name)
 
     }
 

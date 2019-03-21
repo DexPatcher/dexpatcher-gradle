@@ -13,7 +13,7 @@ package lanchon.dexpatcher.gradle.extensions
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.ProjectProperties
-import lanchon.dexpatcher.gradle.Resolver
+import lanchon.dexpatcher.gradle.Utils
 
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
@@ -71,11 +71,11 @@ class DexpatcherConfigExtension extends AbstractExtension {
         runtimeLibDir = project.layout.directoryProperty()
         runtimeLibDir.set properties.getAsDirectory(RUNTIME_LIB_DIR_PROPERTY)
 
-        resolvedToolDir = Resolver.getResolvedDir(project, toolDir, dir, DEFAULT_TOOL_SUBDIR_NAME)
-        resolvedLibDir = Resolver.getResolvedDir(project, libDir, dir, DEFAULT_LIB_SUBDIR_NAME)
-        resolvedProvidedLibDir = Resolver.getResolvedDir(project, providedLibDir, resolvedLibDir, DEFAULT_PROVIDED_SUBDIR_NAME)
-        resolvedCompileLibDir = Resolver.getResolvedDir(project, compileLibDir, resolvedLibDir, DEFAULT_COMPILE_SUBDIR_NAME)
-        resolvedRuntimeLibDir = Resolver.getResolvedDir(project, runtimeLibDir, resolvedLibDir, DEFAULT_RUNTIME_SUBDIR_NAME)
+        resolvedToolDir = Utils.getResolvedDir(project, toolDir, dir, DEFAULT_TOOL_SUBDIR_NAME)
+        resolvedLibDir = Utils.getResolvedDir(project, libDir, dir, DEFAULT_LIB_SUBDIR_NAME)
+        resolvedProvidedLibDir = Utils.getResolvedDir(project, providedLibDir, resolvedLibDir, DEFAULT_PROVIDED_SUBDIR_NAME)
+        resolvedCompileLibDir = Utils.getResolvedDir(project, compileLibDir, resolvedLibDir, DEFAULT_COMPILE_SUBDIR_NAME)
+        resolvedRuntimeLibDir = Utils.getResolvedDir(project, runtimeLibDir, resolvedLibDir, DEFAULT_RUNTIME_SUBDIR_NAME)
 
     }
 

@@ -18,7 +18,7 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.provider.Provider
 
 @CompileStatic
-abstract class Resolver {
+abstract class Utils {
 
     static File getFile(File parent, String child) {
         if (parent.is(null)) throw new NullPointerException();

@@ -101,7 +101,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
     }
 
     private void setupToolTask(AbstractJavaExecTask task, AbstractToolExtension extension) {
-        task.classpath Resolver.getJars(project, extension.resolvedDir)
+        task.classpath Utils.getJars(project, extension.resolvedDir)
         task.extraArgs.set extension.extraArgs
         task.addBlankLines.set extension.addBlankLines
     }

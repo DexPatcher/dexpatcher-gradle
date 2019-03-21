@@ -118,7 +118,7 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
     protected abstract boolean mustBundleLibs()
 
     protected void addDependencies(String configuration, Provider<Directory> rootDir) {
-        def jars = Resolver.getJars(project, rootDir).get()
+        def jars = Utils.getJars(project, rootDir).get()
         project.configurations.getByName(configuration).dependencies.add(project.dependencies.create(jars))
     }
 
@@ -146,8 +146,8 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
         project.afterEvaluate {
             // Get 'public.xml' out of the resource merge inputs.
             prepareApkLibraryDoLast { PrepareLibraryTask task ->
-                def fromFile = Resolver.getFile(task.explodedDir, 'res/values/public.xml')
-                def toFile = Resolver.getFile(task.explodedDir, ApkLibraryPaths.PUBLIC_XML_FILE)
+                def fromFile = Utils.getFile(task.explodedDir, 'res/values/public.xml')
+                def toFile = Utils.getFile(task.explodedDir, ApkLibraryPaths.PUBLIC_XML_FILE)
                 com.google.common.io.Files.createParentDirs(toFile)
                 Files.move(fromFile.toPath(), toFile.toPath())
             }
@@ -156,7 +156,7 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
                 def task = variant.mergeResources
                 task.doLast {
                     def fromFile = apkLibrary.rootDir.get().file(ApkLibraryPaths.PUBLIC_XML_FILE).asFile
-                    def toFile = Resolver.getFile(task.outputDir, 'values/dexpatcher-public.xml')
+                    def toFile = Utils.getFile(task.outputDir, 'values/dexpatcher-public.xml')
                     com.google.common.io.Files.createParentDirs(toFile)
                     Files.copy(fromFile.toPath(), toFile.toPath())
                 }
@@ -187,7 +187,7 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
     }
 
     private boolean isPrepareApkLibraryTask (PrepareLibraryTask task) {
-        return Resolver.getFile(task.explodedDir, 'dexpatcher').isDirectory()
+        return Utils.getFile(task.explodedDir, 'dexpatcher').isDirectory()
     }
 
     // Task Graph
