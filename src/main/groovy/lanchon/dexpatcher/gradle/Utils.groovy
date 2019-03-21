@@ -31,19 +31,23 @@ abstract class Utils {
         }
     }
 
+    static FileCollection getJars(Project project, Directory rootDir) {
+        def jars = project.fileTree(rootDir)
+        jars.include '**/*.jar'
+        return jars
+    }
+
     static Provider<FileCollection> getJars(Project project, Provider<Directory> rootDir) {
         project.providers.<FileCollection>provider {
             Directory dir = rootDir.orNull
-            if (dir.is(null)) return null
-            def jars = project.fileTree(dir)
-            jars.include '**/*.jar'
-            return jars
+            return !dir.is(null) ? getJars(project, dir) : null
         }
     }
 
-    static void addJarDependency(Project project, String configuration, Provider<Directory> jarDir) {
-        def jars = Utils.getJars(project, jarDir).get()
-        project.configurations.getByName(configuration).dependencies.add(project.dependencies.create(jars))
+    static void addJarDependency(Project project, String configuration, Directory jarDir) {
+        def jars = Utils.getJars(project, jarDir)
+        def dependency = project.dependencies.create(jars)
+        project.configurations.getByName(configuration).dependencies.add(dependency)
     }
 
 }

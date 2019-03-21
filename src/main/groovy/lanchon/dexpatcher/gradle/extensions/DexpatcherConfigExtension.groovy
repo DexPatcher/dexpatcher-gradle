@@ -84,9 +84,9 @@ class DexpatcherConfigExtension extends AbstractExtension {
         def providedConfig = androidPluginV3 ? 'compileOnly'    : 'provided'
         def compileConfig  = androidPluginV3 ? 'implementation' : 'compile'
         def runtimeConfig  = androidPluginV3 ? 'runtimeOnly'    : 'apk'
-        Utils.addJarDependency project, providedConfig, resolvedProvidedLibDir
-        Utils.addJarDependency project, bundleLibs ? compileConfig : providedConfig, resolvedCompileLibDir
-        if (bundleLibs) Utils.addJarDependency project, runtimeConfig, resolvedRuntimeLibDir
+        Utils.addJarDependency project, providedConfig, resolvedProvidedLibDir.get()
+        Utils.addJarDependency project, bundleLibs ? compileConfig : providedConfig, resolvedCompileLibDir.get()
+        if (bundleLibs) Utils.addJarDependency project, runtimeConfig, resolvedRuntimeLibDir.get()
     }
 
 }
