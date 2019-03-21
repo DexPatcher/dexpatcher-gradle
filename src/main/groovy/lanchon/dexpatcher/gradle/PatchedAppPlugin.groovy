@@ -27,7 +27,6 @@ import com.google.common.collect.ImmutableSet
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.file.Directory
 import org.gradle.api.plugins.ExtensionAware
 
 @CompileStatic
