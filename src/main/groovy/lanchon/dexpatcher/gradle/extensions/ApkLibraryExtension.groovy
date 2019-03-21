@@ -42,9 +42,9 @@ class ApkLibraryExtension extends AbstractSubextension {
             def apk = apkFileOrDir.orNull
             switch (apk) {
                 case RegularFile:
-                    //Resolver.resolveSingleFile(project, apkFileOrDir.get(), '*.apk')
                     return ((RegularFile) apk)
                 case Directory:
+                    // TODO: Resolver.resolveSingleFile(project, apkFileOrDir.get(), '*.apk')
                     return ((Directory) apk).file('*.apk')
                 default:
                     return null
