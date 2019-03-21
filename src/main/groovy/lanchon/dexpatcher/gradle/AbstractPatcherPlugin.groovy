@@ -105,15 +105,21 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
     }
 
     protected void addDependencies() {
-        addDependencies getScopeForAddedLibs(), dexpatcherConfig.resolvedAddedLibDir
-        addDependencies 'provided', dexpatcherConfig.resolvedProvidedLibDir
+        def v3 = true
+        def providedConfig = v3 ? 'compileOnly' : 'provided'
+        def compileConfig = v3 ? 'implementation' : 'compile'
+        def runtimeConfig = v3 ? 'runtimeOnly' : 'apk'
+        def bundle = mustBundleLibs()
+        addDependencies providedConfig, dexpatcherConfig.resolvedProvidedLibDir
+        addDependencies bundle ? compileConfig : providedConfig, dexpatcherConfig.resolvedCompileLibDir
+        if (bundle) addDependencies runtimeConfig, dexpatcherConfig.resolvedRuntimeLibDir
     }
 
-    protected abstract String getScopeForAddedLibs()
+    protected abstract boolean mustBundleLibs()
 
-    protected void addDependencies(String scope, Provider<Directory> rootDir) {
+    protected void addDependencies(String configuration, Provider<Directory> rootDir) {
         def jars = Resolver.getJars(project, rootDir).get()
-        project.configurations.getByName(scope).dependencies.add(project.dependencies.create(jars))
+        project.configurations.getByName(configuration).dependencies.add(project.dependencies.create(jars))
     }
 
     private void addDedexedClassesToProvidedScope() {

@@ -28,26 +28,30 @@ class DexpatcherConfigExtension extends AbstractExtension {
     private static final String DIR_PROPERTY = PREFIX + 'dir'
     private static final String TOOL_DIR_PROPERTY = PREFIX + 'tool.dir'
     private static final String LIB_DIR_PROPERTY = PREFIX + 'lib.dir'
-    private static final String ADDED_LIB_DIR_PROPERTY = PREFIX + 'lib.added.dir'
     private static final String PROVIDED_LIB_DIR_PROPERTY = PREFIX + 'lib.provided.dir'
+    private static final String COMPILE_LIB_DIR_PROPERTY = PREFIX + 'lib.compile.dir'
+    private static final String RUNTIME_LIB_DIR_PROPERTY = PREFIX + 'lib.runtime.dir'
 
     private static final String DEFAULT_TOOL_SUBDIR_NAME = 'tools'
     private static final String DEFAULT_LIB_SUBDIR_NAME = 'libs'
-    private static final String DEFAULT_ADDED_SUBDIR_NAME = 'added'
     private static final String DEFAULT_PROVIDED_SUBDIR_NAME = 'provided'
+    private static final String DEFAULT_COMPILE_SUBDIR_NAME = 'compile'
+    private static final String DEFAULT_RUNTIME_SUBDIR_NAME = 'runtime'
 
     final ProjectProperties properties
 
     final DirectoryProperty dir
     final DirectoryProperty toolDir
     final DirectoryProperty libDir
-    final DirectoryProperty addedLibDir
     final DirectoryProperty providedLibDir
+    final DirectoryProperty compileLibDir
+    final DirectoryProperty runtimeLibDir
 
     final Provider<Directory> resolvedToolDir
     final Provider<Directory> resolvedLibDir
-    final Provider<Directory> resolvedAddedLibDir
     final Provider<Directory> resolvedProvidedLibDir
+    final Provider<Directory> resolvedCompileLibDir
+    final Provider<Directory> resolvedRuntimeLibDir
 
     DexpatcherConfigExtension(Project project) {
 
@@ -60,15 +64,18 @@ class DexpatcherConfigExtension extends AbstractExtension {
         toolDir.set properties.getAsDirectory(TOOL_DIR_PROPERTY)
         libDir = project.layout.directoryProperty()
         libDir.set properties.getAsDirectory(LIB_DIR_PROPERTY)
-        addedLibDir = project.layout.directoryProperty()
-        addedLibDir.set properties.getAsDirectory(ADDED_LIB_DIR_PROPERTY)
         providedLibDir = project.layout.directoryProperty()
         providedLibDir.set properties.getAsDirectory(PROVIDED_LIB_DIR_PROPERTY)
+        compileLibDir = project.layout.directoryProperty()
+        compileLibDir.set properties.getAsDirectory(COMPILE_LIB_DIR_PROPERTY)
+        runtimeLibDir = project.layout.directoryProperty()
+        runtimeLibDir.set properties.getAsDirectory(RUNTIME_LIB_DIR_PROPERTY)
 
         resolvedToolDir = Resolver.getResolvedDir(project, toolDir, dir, DEFAULT_TOOL_SUBDIR_NAME)
         resolvedLibDir = Resolver.getResolvedDir(project, libDir, dir, DEFAULT_LIB_SUBDIR_NAME)
-        resolvedAddedLibDir = Resolver.getResolvedDir(project, addedLibDir, resolvedLibDir, DEFAULT_ADDED_SUBDIR_NAME)
         resolvedProvidedLibDir = Resolver.getResolvedDir(project, providedLibDir, resolvedLibDir, DEFAULT_PROVIDED_SUBDIR_NAME)
+        resolvedCompileLibDir = Resolver.getResolvedDir(project, compileLibDir, resolvedLibDir, DEFAULT_COMPILE_SUBDIR_NAME)
+        resolvedRuntimeLibDir = Resolver.getResolvedDir(project, runtimeLibDir, resolvedLibDir, DEFAULT_RUNTIME_SUBDIR_NAME)
 
     }
 
