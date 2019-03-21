@@ -38,16 +38,19 @@ class ApkLibraryExtension extends AbstractSubextension {
     }
 
     Provider<RegularFile> getResolvedApkFile() {
-        return project.providers.<RegularFile>provider {
-            def apk = apkFileOrDir.orNull
-            switch (apk) {
+        return apkFileOrDir.<RegularFile>map {
+            switch (it) {
                 case RegularFile:
-                    return ((RegularFile) apk)
+                    return (RegularFile) it
                 case Directory:
-                    // TODO: Resolver.resolveSingleFile(project, apkFileOrDir.get(), '*.apk')
-                    return ((Directory) apk).file('*.apk')
+                    def dir = (Directory) it
+                    def tree = project.fileTree(dir)
+                    tree.include '*.apk'
+                    def apk = project.layout.fileProperty()
+                    apk.set tree.singleFile
+                    return apk.get()
                 default:
-                    return null
+                    throw new IllegalArgumentException('Unexpected apkFileOrDir value type')
             }
         }
 
