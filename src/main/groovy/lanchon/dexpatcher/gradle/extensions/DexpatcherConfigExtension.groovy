@@ -12,6 +12,7 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.Configurations
 import lanchon.dexpatcher.gradle.ProjectProperties
 import lanchon.dexpatcher.gradle.Utils
 
@@ -80,13 +81,9 @@ class DexpatcherConfigExtension extends AbstractExtension {
     }
 
     void addLibDependencies(boolean bundleLibs) {
-        def androidPluginV3 = true
-        def providedConfig = androidPluginV3 ? 'compileOnly'    : 'provided'
-        def compileConfig  = androidPluginV3 ? 'implementation' : 'compile'
-        def runtimeConfig  = androidPluginV3 ? 'runtimeOnly'    : 'apk'
-        Utils.addJarDependency project, providedConfig, resolvedProvidedLibDir.get()
-        Utils.addJarDependency project, bundleLibs ? compileConfig : providedConfig, resolvedCompileLibDir.get()
-        if (bundleLibs) Utils.addJarDependency project, runtimeConfig, resolvedRuntimeLibDir.get()
+        Utils.addJarDependency project, Configurations.PROVIDED, resolvedProvidedLibDir.get()
+        Utils.addJarDependency project, bundleLibs ? Configurations.COMPILE : Configurations.PROVIDED, resolvedCompileLibDir.get()
+        if (bundleLibs) Utils.addJarDependency project, Configurations.RUNTIME, resolvedRuntimeLibDir.get()
     }
 
 }

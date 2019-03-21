@@ -97,16 +97,16 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
             }
         }
 
-        addDedexedClassesToProvidedScope()
+        addDedexedClassesAsProvided()
         workaroundForPublicXmlMergeBug()
 
     }
 
-    private void addDedexedClassesToProvidedScope() {
-        // Add a non-existent jar file to the 'provided' scope.
+    private void addDedexedClassesAsProvided() {
+        // Add a non-existent jar file to the provided configuration.
         def dedexFile = dexpatcherDir.file('dedex/classes.jar')
         def dedexDependency = project.dependencies.create(project.files(dedexFile))
-        project.configurations.getByName('provided').dependencies.add(dedexDependency)
+        Configurations.PROVIDED.get(project).dependencies.add(dedexDependency)
         // And later copy the dedexed classes of the apk library into that empty slot.
         project.afterEvaluate {
             afterPrepareApkLibrary { PrepareLibraryTask task ->

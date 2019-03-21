@@ -44,10 +44,10 @@ abstract class Utils {
         }
     }
 
-    static void addJarDependency(Project project, String configuration, Directory jarDir) {
+    static void addJarDependency(Project project, Configurations configuration, Directory jarDir) {
         def jars = Utils.getJars(project, jarDir)
         def dependency = project.dependencies.create(jars)
-        project.configurations.getByName(configuration).dependencies.add(dependency)
+        configuration.get(project).dependencies.add(dependency)
     }
 
 }
