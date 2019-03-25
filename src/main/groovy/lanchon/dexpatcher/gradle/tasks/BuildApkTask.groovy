@@ -64,9 +64,9 @@ class BuildApkTask extends AbstractApktoolTask {
 
         def aapt = aaptFile.orNull
         if (aapt) args.addAll(['--aapt', aapt as String])
-        if (copyOriginal.orNull) args.add('--copy-original')
-        if (forceDebuggableBuild.orNull) args.add('--debug')
-        if (forceCleanBuild.orNull) args.add('--force-all')
+        if (copyOriginal.get()) args.add('--copy-original')
+        if (forceDebuggableBuild.get()) args.add('--debug')
+        if (forceCleanBuild.get()) args.add('--force-all')
 
         addExtraArgsTo args
 

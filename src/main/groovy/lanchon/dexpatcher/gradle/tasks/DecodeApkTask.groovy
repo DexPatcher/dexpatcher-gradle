@@ -83,16 +83,16 @@ class DecodeApkTask extends AbstractApktoolTask {
 
         def fwTag = frameworkTag.orNull
         if (fwTag) args.addAll(['--frame-tag', fwTag])
-        def api = apiLevel.orNull
+        def api = apiLevel.get()
         if (api) args.addAll(['--api', api as String])
-        if (!decodeAssets.orNull) args.add('--no-assets')
-        if (!decodeResources.orNull) args.add('--no-res')
-        if (!decodeClasses.orNull) args.add('--no-src')
-        if (keepBrokenResources.orNull) args.add('--keep-broken-res')
-        if (stripDebugInfo.orNull) args.add('--no-debug-info')
-        if (matchOriginal.orNull) args.add('--match-original')
+        if (!decodeAssets.get()) args.add('--no-assets')
+        if (!decodeResources.get()) args.add('--no-res')
+        if (!decodeClasses.get()) args.add('--no-src')
+        if (keepBrokenResources.get()) args.add('--keep-broken-res')
+        if (stripDebugInfo.get()) args.add('--no-debug-info')
+        if (matchOriginal.get()) args.add('--match-original')
 
-        //if (forceOverwrite.orNull) args.add('--force')
+        //if (forceOverwrite.get()) args.add('--force')
         addExtraArgsTo args
 
         args.add(apkFile.get() as String)

@@ -96,14 +96,14 @@ class Dex2jarTask extends AbstractDex2jarTask {
         def exceptFile = exceptionFile.orNull
         if (exceptFile) args.addAll(['--exception-file', exceptFile as String])
 
-        if (!translateCode.orNull) args.add('--no-code')
-        if (translateDebugInfo.orNull) args.add('--debug-info')
-        if (optimizeSynchronized.orNull) args.add('-os')   // typo in long option '--optmize-synchronized'
-        if (reuseRegisters.orNull) args.add('--reuse-reg')
-        if (topologicalSort.orNull) args.add('--topological-sort')
-        if (!handleExceptions.orNull) args.add('--not-handle-exception')
+        if (!translateCode.get()) args.add('--no-code')
+        if (translateDebugInfo.get()) args.add('--debug-info')
+        if (optimizeSynchronized.get()) args.add('-os')   // typo in long option '--optmize-synchronized'
+        if (reuseRegisters.get()) args.add('--reuse-reg')
+        if (topologicalSort.get()) args.add('--topological-sort')
+        if (!handleExceptions.get()) args.add('--not-handle-exception')
 
-        //if (forceOverwrite.orNull) args.add('--force')
+        //if (forceOverwrite.get()) args.add('--force')
         addExtraArgsTo args
 
         if (dexFiles.isEmpty()) throw new RuntimeException('No input dex files specified')

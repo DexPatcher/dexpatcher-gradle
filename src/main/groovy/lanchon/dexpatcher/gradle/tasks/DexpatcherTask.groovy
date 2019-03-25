@@ -116,26 +116,26 @@ class DexpatcherTask extends AbstractJavaExecTask {
         if (outFile && outDir) throw new RuntimeException('Output file and directory must not both be specified')
         args.addAll(['--output', (outFile ? outFile : outDir) as String])
 
-        def api = apiLevel.orNull
+        def api = apiLevel.get()
         if (api) args.addAll(['--api-level', api as String])
 
-        if (multiDex.orNull) {
-            if (!multiDexThreaded.orNull) {
+        if (multiDex.get()) {
+            if (!multiDexThreaded.get()) {
                 args.add('--multi-dex')
             } else {
                 args.add('--multi-dex-threaded')
-                def jobs = multiDexJobs.orNull
+                def jobs = multiDexJobs.get()
                 if (jobs) args.addAll(['--multi-dex-jobs', jobs as String])
             }
         }
 
-        def poolSize = maxDexPoolSize.orNull
+        def poolSize = maxDexPoolSize.get()
         if (poolSize) args.addAll(['--max-dex-pool-size', poolSize as String])
 
         def annotations = annotationPackage.orNull
         if (!annotations.is(null)) args.addAll(['--annotations', annotations])
-        if (!constructorAutoIgnore.orNull) args.add('--no-auto-ignore')
-        if (compatDexTag.orNull) args.add('--compat-dextag')
+        if (!constructorAutoIgnore.get()) args.add('--no-auto-ignore')
+        if (compatDexTag.get()) args.add('--compat-dextag')
 
         switch (verbosity.orNull) {
             case Verbosity.QUIET:
@@ -154,11 +154,11 @@ class DexpatcherTask extends AbstractJavaExecTask {
                 throw new AssertionError('Unexpected verbosity', null)
         }
 
-        if (logSourcePath.orNull) args.add('--path')
+        if (logSourcePath.get()) args.add('--path')
         def pathRoot = logSourcePathRoot.orNull
         if (!pathRoot.is(null)) args.addAll(['--path-root', pathRoot])
 
-        if (logStats.orNull) args.add('--stats')
+        if (logStats.get()) args.add('--stats')
 
         addExtraArgsTo args
 
