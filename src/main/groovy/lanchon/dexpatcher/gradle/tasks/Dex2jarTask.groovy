@@ -52,12 +52,12 @@ class Dex2jarTask extends AbstractDex2jarTask {
     @Optional @OutputDirectory final DirectoryProperty outputDir
     @Optional @OutputFile final RegularFileProperty exceptionFile
 
-    @Optional @Input final Property<Boolean> translateCode
-    @Optional @Input final Property<Boolean> translateDebugInfo
-    @Optional @Input final Property<Boolean> optimizeSynchronized
-    @Optional @Input final Property<Boolean> reuseRegisters
-    @Optional @Input final Property<Boolean> topologicalSort
-    @Optional @Input final Property<Boolean> handleExceptions
+    @Input final Property<Boolean> translateCode
+    @Input final Property<Boolean> translateDebugInfo
+    @Input final Property<Boolean> optimizeSynchronized
+    @Input final Property<Boolean> reuseRegisters
+    @Input final Property<Boolean> topologicalSort
+    @Input final Property<Boolean> handleExceptions
 
     Dex2jarTask() {
 

@@ -67,14 +67,14 @@ class DexpatcherTask extends AbstractJavaExecTask {
     @Optional @OutputFile final RegularFileProperty outputFile
     @Optional @OutputDirectory final DirectoryProperty outputDir
 
-    @Optional @Input final Property<Integer> apiLevel
-    @Optional @Input final Property<Boolean> multiDex
-    @Optional @Input final Property<Boolean> multiDexThreaded
-    @Optional @Input final Property<Integer> multiDexJobs
-    @Optional @Input final Property<Integer> maxDexPoolSize
+    @Input final Property<Integer> apiLevel
+    @Input final Property<Boolean> multiDex
+    @Input final Property<Boolean> multiDexThreaded
+    @Input final Property<Integer> multiDexJobs
+    @Input final Property<Integer> maxDexPoolSize
     @Optional @Input final Property<String> annotationPackage
-    @Optional @Input final Property<Boolean> constructorAutoIgnore
-    @Optional @Input final Property<Boolean> compatDexTag
+    @Input final Property<Boolean> constructorAutoIgnore
+    @Input final Property<Boolean> compatDexTag
     @Console final Property<Verbosity> verbosity
     @Console final Property<Boolean> logSourcePath
     @Console final Property<String> logSourcePathRoot

@@ -39,9 +39,9 @@ class BuildApkTask extends AbstractApktoolTask {
     @OutputFile final RegularFileProperty apkFile
 
     @Optional @InputFile final RegularFileProperty aaptFile
-    @Optional @Input final Property<Boolean> copyOriginal
-    @Optional @Input final Property<Boolean> forceDebuggableBuild
-    @Optional @Input final Property<Boolean> forceCleanBuild
+    @Input final Property<Boolean> copyOriginal
+    @Input final Property<Boolean> forceDebuggableBuild
+    @Input final Property<Boolean> forceCleanBuild
 
     BuildApkTask() {
 

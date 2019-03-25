@@ -46,13 +46,13 @@ class DecodeApkTask extends AbstractApktoolTask {
     @OutputDirectory final DirectoryProperty outputDir
 
     @Optional @Input final Property<String> frameworkTag
-    @Optional @Input final Property<Integer> apiLevel
-    @Optional @Input final Property<Boolean> decodeAssets
-    @Optional @Input final Property<Boolean> decodeResources
-    @Optional @Input final Property<Boolean> decodeClasses
-    @Optional @Input final Property<Boolean> keepBrokenResources
-    @Optional @Input final Property<Boolean> stripDebugInfo
-    @Optional @Input final Property<Boolean> matchOriginal
+    @Input final Property<Integer> apiLevel
+    @Input final Property<Boolean> decodeAssets
+    @Input final Property<Boolean> decodeResources
+    @Input final Property<Boolean> decodeClasses
+    @Input final Property<Boolean> keepBrokenResources
+    @Input final Property<Boolean> stripDebugInfo
+    @Input final Property<Boolean> matchOriginal
 
     DecodeApkTask() {
 
