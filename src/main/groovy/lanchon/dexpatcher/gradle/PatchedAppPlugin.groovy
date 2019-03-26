@@ -35,7 +35,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
         super.apply(project)
 
         def subextensions = (dexpatcherConfig as ExtensionAware).extensions
-        patcherExtension = (PatchedAppExtension) subextensions.create(PatchedAppExtension.EXTENSION_NAME,
+        extension = (PatchedAppExtension) subextensions.create(PatchedAppExtension.EXTENSION_NAME,
                 PatchedAppExtension, project, dexpatcherConfig)
 
         project.plugins.apply(AppPlugin)
@@ -57,10 +57,10 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
             androidVariants.all { ApplicationVariant variant ->
                 def patchDexTask = createPatchDexTask(variant)
                 if (variant.buildType.debuggable) {
-                    if (patcherExtension.multiDexThreadedForAllDebugBuilds) {
+                    if (extension.multiDexThreadedForAllDebugBuilds) {
                         patchDexTask.multiDex.set true
                         patchDexTask.multiDexThreaded.set true
-                    } else if (patcherExtension.multiDexThreadedForMultiDexDebugBuilds) {
+                    } else if (extension.multiDexThreadedForMultiDexDebugBuilds) {
                         patchDexTask.multiDexThreaded.set true
                     }
                 }

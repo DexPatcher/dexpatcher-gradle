@@ -70,7 +70,7 @@ abstract class AbstractPatcherPlugin<
 
     }
 
-    protected PE patcherExtension
+    protected PE extension
     protected AE androidExtension
     protected DomainObjectSet<? extends AV> androidVariants
 
@@ -114,7 +114,7 @@ abstract class AbstractPatcherPlugin<
             afterPrepareApkLibrary { PrepareLibraryTask task ->
                 def dedex = dedexFile.get().asFile
                 com.google.common.io.Files.createParentDirs(dedex)
-                if (patcherExtension.importSymbols) {
+                if (extension.importSymbols) {
                     Files.copy(apkLibrary.dedexFile.get().asFile.toPath(), dedex.toPath(),
                             StandardCopyOption.REPLACE_EXISTING)
                 } else {
@@ -213,9 +213,9 @@ abstract class AbstractPatcherPlugin<
 
         project.afterEvaluate {
             androidVariants.all { BaseVariant variant ->
-                //if (!patcherExtension.patchManifest) bypassManifest(variant)
-                //if (!patcherExtension.patchResources) bypassAndroidResources(variant)
-                if (patcherExtension.patchCode) processCode(variant)
+                //if (!extension.patchManifest) bypassManifest(variant)
+                //if (!extension.patchResources) bypassAndroidResources(variant)
+                if (extension.patchCode) processCode(variant)
                 else bypassCode(variant)
             }
         }

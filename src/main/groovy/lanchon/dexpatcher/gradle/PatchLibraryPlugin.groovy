@@ -29,7 +29,7 @@ class PatchLibraryPlugin extends AbstractPatcherPlugin<PatchLibraryExtension, Li
         super.apply(project)
 
         def subextensions = (dexpatcherConfig as ExtensionAware).extensions
-        patcherExtension = (PatchLibraryExtension) subextensions.create(PatchLibraryExtension.EXTENSION_NAME,
+        extension = (PatchLibraryExtension) subextensions.create(PatchLibraryExtension.EXTENSION_NAME,
                 PatchLibraryExtension, project, dexpatcherConfig)
 
         project.plugins.apply(LibraryPlugin)
