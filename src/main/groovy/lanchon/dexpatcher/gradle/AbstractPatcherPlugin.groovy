@@ -45,7 +45,9 @@ import org.gradle.api.provider.Provider
 // TODO: maybe apktool-smali-application
 
 @CompileStatic
-abstract class AbstractPatcherPlugin extends AbstractPlugin {
+abstract class AbstractPatcherPlugin<
+                PE extends AbstractPatcherExtension, AE extends BaseExtension, AV extends BaseVariant
+        > extends AbstractPlugin {
 
     protected static class ApkLibraryPaths {
 
@@ -68,13 +70,13 @@ abstract class AbstractPatcherPlugin extends AbstractPlugin {
 
     }
 
+    protected PE patcherExtension
+    protected AE androidExtension
+    protected DomainObjectSet<? extends AV> androidVariants
+
     protected DirectoryProperty dexpatcherDir
     private DirectoryProperty apkLibRootDirUnchecked
     protected ApkLibraryPaths apkLibrary
-
-    protected abstract AbstractPatcherExtension getPatcherExtension()
-    protected abstract BaseExtension getAndroidExtension()
-    protected abstract DomainObjectSet<? extends BaseVariant> getAndroidVariants()
 
     @Override
     void apply(Project project) {

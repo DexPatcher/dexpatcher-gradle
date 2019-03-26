@@ -13,32 +13,21 @@ package lanchon.dexpatcher.gradle
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
 import lanchon.dexpatcher.gradle.extensions.PatchedAppExtension
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.ApplicationVariant
-import com.android.build.gradle.api.BaseVariant
 import com.google.common.collect.ImmutableSet
-import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.ExtensionAware
 
 @CompileStatic
-class PatchedAppPlugin extends AbstractPatcherPlugin {
+class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExtension, ApplicationVariant> {
 
-    protected PatchedAppExtension patchedAppExtension
-    protected AppExtension appExtension
-    protected DomainObjectSet<ApplicationVariant> appVariants
-
-    @Override protected AbstractPatcherExtension getPatcherExtension() { patchedAppExtension }
-    @Override protected BaseExtension getAndroidExtension() { appExtension }
-    @Override protected DomainObjectSet<? extends BaseVariant> getAndroidVariants() { appVariants }
 
     @Override
     void apply(Project project) {
@@ -46,12 +35,12 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
         super.apply(project)
 
         def subextensions = (dexpatcherConfig as ExtensionAware).extensions
-        patchedAppExtension = (PatchedAppExtension) subextensions.create(PatchedAppExtension.EXTENSION_NAME,
+        patcherExtension = (PatchedAppExtension) subextensions.create(PatchedAppExtension.EXTENSION_NAME,
                 PatchedAppExtension, project, dexpatcherConfig)
 
         project.plugins.apply(AppPlugin)
-        appExtension = project.extensions.getByType(AppExtension)
-        appVariants = appExtension.applicationVariants
+        androidExtension = project.extensions.getByType(AppExtension)
+        androidVariants = androidExtension.applicationVariants
 
         dexpatcherConfig.addLibDependencies(true)
 
@@ -65,13 +54,13 @@ class PatchedAppPlugin extends AbstractPatcherPlugin {
         super.applyAfterAndroid()
 
         project.afterEvaluate {
-            appVariants.all { ApplicationVariant variant ->
+            androidVariants.all { ApplicationVariant variant ->
                 def patchDexTask = createPatchDexTask(variant)
                 if (variant.buildType.debuggable) {
-                    if (patchedAppExtension.multiDexThreadedForAllDebugBuilds) {
+                    if (patcherExtension.multiDexThreadedForAllDebugBuilds) {
                         patchDexTask.multiDex.set true
                         patchDexTask.multiDexThreaded.set true
-                    } else if (patchedAppExtension.multiDexThreadedForMultiDexDebugBuilds) {
+                    } else if (patcherExtension.multiDexThreadedForMultiDexDebugBuilds) {
                         patchDexTask.multiDexThreaded.set true
                     }
                 }
