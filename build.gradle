@@ -21,11 +21,12 @@ sourceCompatibility = '1.7'
 
 repositories {
     jcenter()
+    google()
 }
 
 dependencies {
     compile localGroovy()
-    compileOnly 'com.android.tools.build:gradle:2.1.3'
+    compileOnly 'com.android.tools.build:gradle:3.3.2'
 }
 
 compileGroovy {

@@ -13,65 +13,90 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:gradle:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:gradle-core:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:builder:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.lint:lint:25.1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:gradle:3.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:builder:3.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.analytics-library:tracker:26.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.analytics-library:shared:26.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.analytics-library:crash:26.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.lint:lint-gradle-api:26.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:gradle-api:3.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: androidx.databinding:databinding-compiler-common:3.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:manifest-merger:26.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:sdk-common:26.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:builder-test-api:3.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.ddms:ddmlib:26.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:sdklib:26.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.layoutlib:layoutlib-api:26.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:dvlib:26.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:repository:26.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:common:26.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.21" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:transform-api:2.0.0-deprecated-use-gradle-api" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:gradle-api:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.databinding:compilerCommon:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-commons:5.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.lint:lint-checks:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.lint:lint-api:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-analysis:5.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-tree:5.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm:5.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.sf.proguard:proguard-gradle:5.2.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.jacoco:org.jacoco.core:0.7.6.201602180812" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.antlr:antlr:3.5.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:manifest-merger:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:sdk-common:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:builder-model:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:builder-test-api:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:sdklib:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.ddms:ddmlib:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.layoutlib:layoutlib-api:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:dvlib:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:repository:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:common:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.jack:jack-api:0.10.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.jill:jill-api:0.10.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build.jetifier:jetifier-processor:1.0.0-beta02" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-analysis:6.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-commons:6.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-util:6.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-tree:6.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm:6.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.sf.jopt-simple:jopt-simple:4.9" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.sf.proguard:proguard-gradle:6.0.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:bundletool:0.6.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build.jetifier:jetifier-core:1.0.0-beta02" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:builder-model:3.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.analytics-library:protos:26.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:apkzlib:3.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:apksig:3.3.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.squareup:javawriter:2.5.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.bouncycastle:bcpkix-jdk15on:1.48" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.bouncycastle:bcprov-jdk15on:1.48" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.eclipse.jdt.core.compiler:ecj:4.4.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:annotations:25.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.external.lombok:lombok-ast:0.2.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.guava:guava:17.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.databinding:baseLibrary:2.1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.tunnelvisionlabs:antlr4:4.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.bouncycastle:bcpkix-jdk15on:1.56" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.bouncycastle:bcprov-jdk15on:1.56" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: it.unimi.dsi:fastutil:7.2.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.googlecode.json-simple:json-simple:1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools:annotations:26.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.protobuf:protobuf-java-util:3.4.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.jimfs:jimfs:1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.guava:guava:26.0-jre" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.code.gson:gson:2.8.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.httpcomponents:httpmime:4.5.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.httpcomponents:httpclient:4.5.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.httpcomponents:httpcore:4.4.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.jetbrains.kotlin:kotlin-reflect:1.3.21" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: androidx.databinding:databinding-common:3.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.databinding:baseLibrary:3.3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.antlr:antlr4:4.5.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-io:commons-io:2.4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.googlecode.juniversalchardet:juniversalchardet:1.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.sf.proguard:proguard-base:5.2.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm-debug-all:5.0.4" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.antlr:ST4:4.0.8" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.antlr:antlr-runtime:3.5.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.code.gson:gson:2.2.4" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.commons:commons-compress:1.8.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.httpcomponents:httpclient:4.1.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.httpcomponents:httpmime:4.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.squareup:javapoet:1.8.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.21" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.3.21" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.sf.proguard:proguard-base:6.0.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.auto.value:auto-value:1.5.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.android.tools.build:aapt2-proto:0.3.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.errorprone:error_prone_annotations:2.2.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.protobuf:protobuf-java:3.4.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.jdom:jdom2:2.0.6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.commons:commons-compress:1.12" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: net.sf.kxml:kxml2:2.3.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.tunnelvisionlabs:antlr4-runtime:4.5" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.tunnelvisionlabs:antlr4-annotations:4.5" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.intellij:annotations:12.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.httpcomponents:httpcore:4.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-logging:commons-logging:1.1.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-codec:commons-codec:1.4" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.abego.treelayout:org.abego.treelayout.core:1.0.1" level="project" />
-    <orderEntry type="library" name="Gradle: gradle-api-4.5" level="project" />
-    <orderEntry type="library" name="Gradle: groovy-all-2.4.12" level="project" />
-    <orderEntry type="library" name="Gradle: gradle-installation-beacon-4.5" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: gradle-test-kit-4.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.code.findbugs:jsr305:3.0.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.checkerframework:checker-qual:2.5.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.j2objc:j2objc-annotations:1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.codehaus.mojo:animal-sniffer-annotations:1.14" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-codec:commons-codec:1.9" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.3.21" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.sun.activation:javax.activation:1.2.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.glassfish.jaxb:jaxb-runtime:2.2.11" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.glassfish.jaxb:jaxb-core:2.2.11" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.jvnet.staxex:stax-ex:1.7.7" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.sun.xml.fastinfoset:FastInfoset:1.2.13" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.xml.bind:jaxb-api:2.2.12-b140109.1041" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.glassfish.jaxb:txw2:2.2.11" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.sun.istack:istack-commons-runtime:2.21" level="project" />
+    <orderEntry type="library" name="Gradle: gradle-api-4.10.1" level="project" />
+    <orderEntry type="library" name="Gradle: groovy-all-2.4.15" level="project" />
+    <orderEntry type="library" name="Gradle: gradle-installation-beacon-4.10.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: gradle-test-kit-4.10.1" level="project" />
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
