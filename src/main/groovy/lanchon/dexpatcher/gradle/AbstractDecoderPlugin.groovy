@@ -62,24 +62,6 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             Closure<String> taskNameModifier, Closure<Provider<Directory>> dirModifier,
             Configuration sourceApk, Configuration sourceApkLib, Provider<Boolean> printSourceAppInfo) {
 
-        /*
-        // This had to be moved to afterEvaluate because Gradle checks the inputs of skipped tasks.
-
-        def checkSourceApp = project.tasks.create(taskNameModifier(TASK_CHECK_SOURCE_APP))
-        checkSourceApp.with {
-            description = 'Verifies the availability of a source application.'
-            group = taskGroup
-            doLast {
-                def n = (sourceApk.is(null) ? 0 : sourceApk.files.size()) +
-                        (sourceApkLib.is(null) ? 0 : sourceApkLib.files.size())
-                if (n != 1) {
-                    if (!n) throw new RuntimeException('No source application found')
-                    else throw new RuntimeException('Multiple source applications found')
-                }
-            }
-        }
-        */
-
         def decodedSourceApp = project.tasks.create(taskNameModifier(TASK_DECODED_SOURCE_APP), DecodedSourceAppTask)
         decodedSourceApp.with {
             description = 'Produces the decoded source application.'
@@ -107,13 +89,6 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
                     taskNameModifier(TASK_DECODE_SOURCE_APK), taskGroup,
                     dirModifier(project.layout.buildDirectory.dir(DIR_APKTOOL_FRAMEWORK)),
                     decodedSourceApp.outputDir, sourceApk)
-            /*
-            decodeSourceApk.dependsOn checkSourceApp
-            decodedSourceApp.dependsOn decodeSourceApk
-            decodeSourceApk.onlyIf {
-                sourceApk.files.size()
-            }
-            */
         }
 
         Sync unpackSourceApkLibrary = null
@@ -121,13 +96,6 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             unpackSourceApkLibrary = createUnpackSourceApkLibraryTask(project,
                     taskNameModifier(TASK_UNPACK_SOURCE_APK_LIBRARY), taskGroup,
                     decodedSourceApp.outputDir, sourceApkLib)
-            /*
-            unpackSourceApkLibrary.dependsOn checkSourceApp
-            decodedSourceApp.dependsOn unpackSourceApkLibrary
-            unpackSourceApkLibrary.onlyIf {
-                sourceApkLib.files.size()
-            }
-            */
         }
 
         project.afterEvaluate {
@@ -143,7 +111,6 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             if (printSourceAppInfo.get()) decodedSourceApp.finalizedBy sourceAppInfo
         }
 
-        //decodedSourceApp.extensions.add TASK_CHECK_SOURCE_APP, checkSourceApp
         decodedSourceApp.extensions.add TASK_DECODE_SOURCE_APK, decodeSourceApk
         decodedSourceApp.extensions.add TASK_UNPACK_SOURCE_APK_LIBRARY, unpackSourceApkLibrary
         decodedSourceApp.extensions.add TASK_SOURCE_APP_INFO, sourceAppInfo

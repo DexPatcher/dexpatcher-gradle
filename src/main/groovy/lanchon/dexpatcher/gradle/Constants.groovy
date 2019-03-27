@@ -33,7 +33,6 @@ abstract class Constants {
     static final String EXT_PLUGIN_PATCHED_APPLICATION = 'patchedApplication'
     static final String EXT_PLUGIN_PATCH_LIBRARY = 'patchLibrary'
 
-    //static final String TASK_CHECK_SOURCE_APP = 'checkSourceApp'
     static final String TASK_DECODE_SOURCE_APK = 'decodeSourceApk'
     static final String TASK_UNPACK_SOURCE_APK_LIBRARY = 'unpackSourceApkLibrary'
     static final String TASK_DECODED_SOURCE_APP = 'decodedSourceApp'
