@@ -15,6 +15,7 @@ import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.file.FileCollection
+import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 
 @CompileStatic
@@ -48,6 +49,33 @@ abstract class Utils {
         def jars = Utils.getJars(project, jarDir)
         def dependency = project.dependencies.create(jars)
         configuration.get(project).dependencies.add(dependency)
+    }
+
+    // Horrible Gradle hacks that should not be necessary
+
+    private static <T> Provider<T> getProvider(Project project, T value) {
+        project.<T>provider { value }
+    }
+
+    private static Provider<RegularFile> getRegularFileProvider(Project project, File file) {
+        //project.layout.file(getProvider(project, file))
+        def p = project.layout.fileProperty()
+        p.set file
+        return p
+    }
+
+    private static Provider<Directory> getDirectoryProvider(Project project, File dir) {
+        def p = project.layout.directoryProperty()
+        p.set dir
+        return p
+    }
+
+    static RegularFile getRegularFile(Project project, File file) {
+        getRegularFileProvider(project, file).get()
+    }
+
+    static Provider<Directory> getDirectory(Project project, File dir) {
+        getDirectoryProvider(project, dir)
     }
 
 }

@@ -12,6 +12,7 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.Constants
 import lanchon.dexpatcher.gradle.tasks.AbstractApktoolTask.Verbosity
 
 import org.gradle.api.Project
@@ -22,9 +23,7 @@ import org.gradle.api.provider.Property
 @CompileStatic
 class ApktoolExtension extends AbstractToolExtension {
 
-    static final String EXTENSION_NAME = 'apktool'
-
-    private static final String PREFIX = super.PREFIX + EXTENSION_NAME + '.'
+    private static final String PREFIX = super.PREFIX + Constants.TOOL_APKTOOL + '.'
 
     private static final String DIR_PROPERTY = PREFIX + 'dir'
     private static final String FRAMEWORK_DIR_PROPERTY = PREFIX + 'framework.dir'
@@ -89,6 +88,6 @@ class ApktoolExtension extends AbstractToolExtension {
     }
 
     @Override
-    protected String getName() { EXTENSION_NAME }
+    protected String getName() { Constants.TOOL_APKTOOL }
 
 }

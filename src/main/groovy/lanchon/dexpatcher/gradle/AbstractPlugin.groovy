@@ -16,6 +16,8 @@ import lanchon.dexpatcher.gradle.extensions.DexpatcherConfigExtension
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
+import org.gradle.api.plugins.ExtensionContainer
 
 @CompileStatic
 class AbstractPlugin implements Plugin<Project> {
@@ -23,10 +25,19 @@ class AbstractPlugin implements Plugin<Project> {
     protected Project project
     protected DexpatcherConfigExtension dexpatcherConfig
 
+    protected ExtensionContainer getSubextensions() {
+        (dexpatcherConfig as ExtensionAware).extensions
+    }
+
     void apply(Project project) {
+
         this.project = project
+
         project.plugins.apply(DexpatcherBasePlugin)
         dexpatcherConfig = project.extensions.getByType(DexpatcherConfigExtension)
+
     }
+
+    protected void afterApply() {}
 
 }

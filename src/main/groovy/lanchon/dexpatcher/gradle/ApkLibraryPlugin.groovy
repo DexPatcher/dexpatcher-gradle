@@ -23,7 +23,6 @@ import org.gradle.api.file.Directory
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.file.RegularFile
 import org.gradle.api.plugins.BasePlugin
-import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.bundling.Zip
@@ -33,24 +32,31 @@ import org.gradle.api.tasks.bundling.Zip
 // (But it might only be used by baksmali, which is bypassed.)
 
 @CompileStatic
-class ApkLibraryPlugin extends AbstractPlugin {
+class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
 
-    protected ApkLibraryExtension apkLibrary
-
+    @Override
     void apply(Project project) {
 
         super.apply(project)
 
-        def subextensions = (dexpatcherConfig as ExtensionAware).extensions
-        apkLibrary = (ApkLibraryExtension) subextensions.create(ApkLibraryExtension.EXTENSION_NAME,
-                ApkLibraryExtension, project, dexpatcherConfig)
+        extension = (ApkLibraryExtension) subextensions.create(
+                Constants.EXT_PLUGIN_APK_LIBRARY, ApkLibraryExtension, project, dexpatcherConfig)
 
         project.plugins.apply(BasePlugin)
 
+        afterApply()
+
+    }
+
+    @Override
+    protected void afterApply() {
+
+        super.afterApply()
+
         def apkLibrary = createTaskChain(project, DexpatcherBasePlugin.TASK_GROUP, { it }, { it },
-                apkLibrary.resolvedApkFile)
+                extension.resolvedApkFile)
         project.tasks.getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(apkLibrary)
-        project.artifacts.add(Dependency.DEFAULT_CONFIGURATION, apkLibrary)
+        project.artifacts.add(Dependency.DEFAULT_CONFIGURATION /* TODO: .ARCHIVES_CONFIGURATION instead? */, apkLibrary)
 
         createCleanTasks(DexpatcherBasePlugin.TASK_GROUP)
 
@@ -241,7 +247,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
         }
 
         project.afterEvaluate {
-            if (!apkLibrary.disableClean) clean.dependsOn cleanApkLibrary
+            if (!extension.disableClean) clean.dependsOn cleanApkLibrary
         }
 
     }

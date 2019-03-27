@@ -15,11 +15,11 @@ import java.nio.file.StandardCopyOption
 import java.util.zip.ZipOutputStream
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
+import lanchon.dexpatcher.gradle.extensions.AbstractDecoderExtension
 
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.internal.tasks.PrepareLibraryTask
+//import com.android.build.gradle.internal.tasks.PrepareLibraryTask
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -46,8 +46,8 @@ import org.gradle.api.provider.Provider
 
 @CompileStatic
 abstract class AbstractPatcherPlugin<
-                PE extends AbstractPatcherExtension, AE extends BaseExtension, AV extends BaseVariant
-        > extends AbstractPlugin {
+                E extends AbstractDecoderExtension, AE extends BaseExtension, AV extends BaseVariant
+        > extends AbstractDecoderPlugin<E> {
 
     protected static class ApkLibraryPaths {
 
@@ -70,7 +70,6 @@ abstract class AbstractPatcherPlugin<
 
     }
 
-    protected PE extension
     protected AE androidExtension
     protected DomainObjectSet<? extends AV> androidVariants
 
@@ -79,24 +78,22 @@ abstract class AbstractPatcherPlugin<
     protected ApkLibraryPaths apkLibrary
 
     @Override
-    void apply(Project project) {
+    protected void afterApply() {
 
-        super.apply(project)
+        super.afterApply()
 
         dexpatcherDir = project.layout.directoryProperty(project.layout.buildDirectory.dir('intermediates/dexpatcher'))
         apkLibRootDirUnchecked = project.layout.directoryProperty()
         apkLibrary = new ApkLibraryPaths(project, apkLibRootDirUnchecked)
 
-    }
-
-    protected void applyAfterAndroid() {
-
         // Setup 'apkLibrary' property.
         project.afterEvaluate {
+/*
             afterPrepareApkLibrary { PrepareLibraryTask task ->
                 if (apkLibRootDirUnchecked.orNull) throw new RuntimeException('Multiple apk libraries found')
                 apkLibRootDirUnchecked.set task.explodedDir
             }
+*/
         }
 
         addDedexedClassesAsProvided()
@@ -108,9 +105,10 @@ abstract class AbstractPatcherPlugin<
         // Add a non-existent jar file to the provided configuration.
         def dedexFile = dexpatcherDir.file('dedex/classes.jar')
         def dedexDependency = project.dependencies.create(project.files(dedexFile))
-        Configurations.PROVIDED.get(project).dependencies.add(dedexDependency)
+//        Configurations.PROVIDED.get(project).dependencies.add(dedexDependency)
         // And later copy the dedexed classes of the apk library into that empty slot.
         project.afterEvaluate {
+/*
             afterPrepareApkLibrary { PrepareLibraryTask task ->
                 def dedex = dedexFile.get().asFile
                 com.google.common.io.Files.createParentDirs(dedex)
@@ -121,11 +119,13 @@ abstract class AbstractPatcherPlugin<
                     new ZipOutputStream(new FileOutputStream(dedex)).close();
                 }
             }
+*/
         }
     }
 
     private void workaroundForPublicXmlMergeBug() {
         project.afterEvaluate {
+/*
             // Get 'public.xml' out of the resource merge inputs.
             prepareApkLibraryDoLast { PrepareLibraryTask task ->
                 def fromFile = Utils.getFile(task.explodedDir, 'res/values/public.xml')
@@ -143,12 +143,14 @@ abstract class AbstractPatcherPlugin<
                     Files.copy(fromFile.toPath(), toFile.toPath())
                 }
             }
+*/
         }
     }
 
     // APK Library
 
     protected void prepareApkLibraryDoLast(Closure closure) {
+/*
         project.tasks.withType(PrepareLibraryTask).each { task ->
             task.doLast {
                 if (isPrepareApkLibraryTask(task)) {
@@ -156,9 +158,11 @@ abstract class AbstractPatcherPlugin<
                 }
             }
         }
+*/
     }
 
     protected void afterPrepareApkLibrary(Closure closure) {
+/*
         project.gradle.taskGraph.afterTask { task ->
             if (task instanceof PrepareLibraryTask && task.project.is(project)) {
                 if (isPrepareApkLibraryTask(task)) {
@@ -166,11 +170,14 @@ abstract class AbstractPatcherPlugin<
                 }
             }
         }
+*/
     }
 
+/*
     private boolean isPrepareApkLibraryTask (PrepareLibraryTask task) {
         return Utils.getFile(task.explodedDir, 'dexpatcher').isDirectory()
     }
+*/
 
     // Task Graph
 

@@ -23,7 +23,6 @@ import com.android.build.gradle.api.ApplicationVariant
 import com.google.common.collect.ImmutableSet
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.plugins.ExtensionAware
 
 @CompileStatic
 class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExtension, ApplicationVariant> {
@@ -34,24 +33,23 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
 
         super.apply(project)
 
-        def subextensions = (dexpatcherConfig as ExtensionAware).extensions
-        extension = (PatchedAppExtension) subextensions.create(PatchedAppExtension.EXTENSION_NAME,
-                PatchedAppExtension, project, dexpatcherConfig)
+        extension = (PatchedAppExtension) subextensions.create(
+                Constants.EXT_PLUGIN_PATCHED_APPLICATION, PatchedAppExtension, project, dexpatcherConfig)
 
         project.plugins.apply(AppPlugin)
         androidExtension = project.extensions.getByType(AppExtension)
         androidVariants = androidExtension.applicationVariants
 
-        dexpatcherConfig.addLibDependencies(true)
-
-        applyAfterAndroid()
+        afterApply()
 
     }
 
     @Override
-    protected void applyAfterAndroid() {
+    protected void afterApply() {
 
-        super.applyAfterAndroid()
+        super.afterApply()
+
+//        dexpatcherConfig.addLibDependencies(true)
 
         project.afterEvaluate {
             androidVariants.all { ApplicationVariant variant ->

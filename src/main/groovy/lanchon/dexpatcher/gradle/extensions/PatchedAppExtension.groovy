@@ -18,8 +18,6 @@ import org.gradle.api.provider.Property
 @CompileStatic
 class PatchedAppExtension extends AbstractPatcherExtension {
 
-    static final String EXTENSION_NAME = 'patchedApplication'
-
     final Property<Boolean> multiDexThreadedForMultiDexDebugBuilds
     final Property<Boolean> multiDexThreadedForAllDebugBuilds
 

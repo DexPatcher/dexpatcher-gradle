@@ -20,9 +20,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 
 @CompileStatic
-class ApkLibraryExtension extends AbstractSubextension {
-
-    static final String EXTENSION_NAME = 'apkLibrary'
+class ApkLibraryExtension extends AbstractDecoderExtension {
 
     final Property<FileSystemLocation> apkFileOrDir
     final Property<Boolean> disableClean

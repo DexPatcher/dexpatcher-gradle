@@ -17,8 +17,6 @@ import org.gradle.api.Project
 @CompileStatic
 class PatchLibraryExtension extends AbstractPatcherExtension {
 
-    static final String EXTENSION_NAME = 'patchLibrary'
-
     PatchLibraryExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig)
     }

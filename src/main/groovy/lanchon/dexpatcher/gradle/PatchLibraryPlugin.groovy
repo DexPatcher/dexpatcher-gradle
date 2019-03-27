@@ -18,7 +18,6 @@ import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.LibraryVariant
 import org.gradle.api.Project
-import org.gradle.api.plugins.ExtensionAware
 
 @CompileStatic
 class PatchLibraryPlugin extends AbstractPatcherPlugin<PatchLibraryExtension, LibraryExtension, LibraryVariant> {
@@ -28,24 +27,23 @@ class PatchLibraryPlugin extends AbstractPatcherPlugin<PatchLibraryExtension, Li
 
         super.apply(project)
 
-        def subextensions = (dexpatcherConfig as ExtensionAware).extensions
-        extension = (PatchLibraryExtension) subextensions.create(PatchLibraryExtension.EXTENSION_NAME,
-                PatchLibraryExtension, project, dexpatcherConfig)
+        extension = (PatchLibraryExtension) subextensions.create(
+                Constants.EXT_PLUGIN_PATCH_LIBRARY, PatchLibraryExtension, project, dexpatcherConfig)
 
         project.plugins.apply(LibraryPlugin)
         androidExtension = project.extensions.getByType(LibraryExtension)
         androidVariants = androidExtension.libraryVariants
 
-        dexpatcherConfig.addLibDependencies(false)
-
-        applyAfterAndroid()
+        afterApply()
 
     }
 
     @Override
-    protected void applyAfterAndroid() {
+    protected void afterApply() {
 
-        super.applyAfterAndroid()
+        super.afterApply()
+
+        dexpatcherConfig.addLibDependencies(false)
 
         //project.afterEvaluate {
         //    libraryVariants.all { LibraryVariant variant ->

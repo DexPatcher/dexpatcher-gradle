@@ -24,8 +24,6 @@ import org.gradle.api.provider.Provider
 @CompileStatic
 class DexpatcherConfigExtension extends AbstractExtension {
 
-    static final String EXTENSION_NAME = 'dexpatcherConfig'
-
     private static final String DIR_PROPERTY = PREFIX + 'dir'
     private static final String TOOL_DIR_PROPERTY = PREFIX + 'tool.dir'
     private static final String LIB_DIR_PROPERTY = PREFIX + 'lib.dir'
