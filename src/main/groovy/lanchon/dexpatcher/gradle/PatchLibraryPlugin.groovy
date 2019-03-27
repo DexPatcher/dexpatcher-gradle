@@ -19,6 +19,8 @@ import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.LibraryVariant
 import org.gradle.api.Project
 
+import static lanchon.dexpatcher.gradle.Constants.*
+
 @CompileStatic
 class PatchLibraryPlugin extends AbstractPatcherPlugin<PatchLibraryExtension, LibraryExtension, LibraryVariant> {
 
@@ -28,7 +30,7 @@ class PatchLibraryPlugin extends AbstractPatcherPlugin<PatchLibraryExtension, Li
         super.apply(project)
 
         extension = (PatchLibraryExtension) subextensions.create(
-                Constants.EXT_PLUGIN_PATCH_LIBRARY, PatchLibraryExtension, project, dexpatcherConfig)
+                EXT_PLUGIN_PATCH_LIBRARY, PatchLibraryExtension, project, dexpatcherConfig)
 
         project.plugins.apply(LibraryPlugin)
         androidExtension = project.extensions.getByType(LibraryExtension)

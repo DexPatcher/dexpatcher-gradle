@@ -54,7 +54,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         apklibs.include '*.apklib'
         sourceApkLib.dependencies.add(project.dependencies.create(apklibs))
 
-        decodedSourceApp = registerDecodedSourceAppTaskChain(project, DexpatcherBasePlugin.TASK_GROUP,
+        decodedSourceApp = registerDecodedSourceAppTaskChain(project, TASK_GROUP_DEXPATCHER,
                 { it }, { it }, sourceApk, sourceApkLib, extension.printAppInfo)
 
     }

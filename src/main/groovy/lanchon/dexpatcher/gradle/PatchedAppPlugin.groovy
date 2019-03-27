@@ -24,9 +24,10 @@ import com.google.common.collect.ImmutableSet
 import org.gradle.api.Project
 import org.gradle.api.Task
 
+import static lanchon.dexpatcher.gradle.Constants.*
+
 @CompileStatic
 class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExtension, ApplicationVariant> {
-
 
     @Override
     void apply(Project project) {
@@ -34,7 +35,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
         super.apply(project)
 
         extension = (PatchedAppExtension) subextensions.create(
-                Constants.EXT_PLUGIN_PATCHED_APPLICATION, PatchedAppExtension, project, dexpatcherConfig)
+                EXT_PLUGIN_PATCHED_APPLICATION, PatchedAppExtension, project, dexpatcherConfig)
 
         project.plugins.apply(AppPlugin)
         androidExtension = project.extensions.getByType(AppExtension)
@@ -73,7 +74,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
         def patchDex = project.tasks.create("patch${variant.name.capitalize()}Dex", DexpatcherTask)
         patchDex.with {
             description = "Patches the source dex from an apk library using the just-built patch dex."
-            group = DexpatcherBasePlugin.TASK_GROUP
+            group = TASK_GROUP_DEXPATCHER
             source.set apkLibrary.dexDir
             patch.set patch
             outputDir.set dexpatcherDir.dir("patched-dex/${variant.dirName}")

@@ -27,6 +27,8 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.bundling.Zip
 
+import static lanchon.dexpatcher.gradle.Constants.*
+
 // TODO: Add plugin version to apk libs.
 // TODO: Maybe select apktool decode api level automatically.
 // (But it might only be used by baksmali, which is bypassed.)
@@ -40,7 +42,7 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
         super.apply(project)
 
         extension = (ApkLibraryExtension) subextensions.create(
-                Constants.EXT_PLUGIN_APK_LIBRARY, ApkLibraryExtension, project, dexpatcherConfig)
+                EXT_PLUGIN_APK_LIBRARY, ApkLibraryExtension, project, dexpatcherConfig)
 
         project.plugins.apply(BasePlugin)
 
@@ -53,12 +55,12 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
 
         super.afterApply()
 
-        def apkLibrary = createTaskChain(project, DexpatcherBasePlugin.TASK_GROUP, { it }, { it },
+        def apkLibrary = createTaskChain(project, TASK_GROUP_DEXPATCHER, { it }, { it },
                 extension.resolvedApkFile)
         project.tasks.getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(apkLibrary)
         project.artifacts.add(Dependency.DEFAULT_CONFIGURATION /* TODO: .ARCHIVES_CONFIGURATION instead? */, apkLibrary)
 
-        createCleanTasks(DexpatcherBasePlugin.TASK_GROUP)
+        createCleanTasks(TASK_GROUP_DEXPATCHER)
 
     }
 
