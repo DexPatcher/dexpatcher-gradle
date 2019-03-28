@@ -23,8 +23,8 @@ import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.Sync
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
@@ -146,15 +146,14 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
 
     static class DecodedSourceAppTask extends DefaultTask {
 
-        @Input final DirectoryProperty outputDir
-        @Internal final Provider<RegularFile> apktoolYmlFile
         @Internal final ConfigurableFileCollection sourceApp
+        @OutputDirectory final DirectoryProperty outputDir
         @Internal final Provider<RegularFile> sourceAppFile
+        @Internal final Provider<RegularFile> apktoolYmlFile
 
         DecodedSourceAppTask() {
-            outputDir = project.layout.directoryProperty()
-            apktoolYmlFile = outputDir.file(ApkLib.FILE_APKTOOL_YML)
             sourceApp = project.files()
+            outputDir = project.layout.directoryProperty()
             sourceAppFile = project.<RegularFile>provider {
                 def files = sourceApp.files
                 def n = files.size()
@@ -163,6 +162,10 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
                     else throw new RuntimeException('Multiple source applications found')
                 }
                 return Utils.getRegularFile(project, files[0])
+            }
+            apktoolYmlFile = outputDir.file(ApkLib.FILE_APKTOOL_YML)
+            outputs.upToDateWhen {
+                false
             }
         }
 
