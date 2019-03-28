@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dexpatcher-gradle.iml" filepath="$PROJECT_DIR$/.idea/modules/dexpatcher-gradle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dexpatcher-gradle.iml" filepath="$PROJECT_DIR$/.idea/modules/dexpatcher-gradle.iml" group="dexpatcher-gradle" />
     </modules>
   </component>
 </project>
