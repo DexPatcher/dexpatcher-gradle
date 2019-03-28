@@ -33,17 +33,17 @@ abstract class Constants {
     static final String EXT_PLUGIN_PATCHED_APPLICATION = 'patchedApplication'
     static final String EXT_PLUGIN_PATCH_LIBRARY = 'patchLibrary'
 
-    static final String TASK_GROUP_DEXPATCHER = 'DexPatcher'
+    static final String GROUP_DEXPATCHER = 'DexPatcher'
 
     static final String TASK_DECODE_SOURCE_APK = 'decodeSourceApk'
     static final String TASK_UNPACK_SOURCE_APK_LIBRARY = 'unpackSourceApkLibrary'
     static final String TASK_DECODED_SOURCE_APP = 'decodedSourceApp'
     static final String TASK_SOURCE_APP_INFO = 'sourceAppInfo'
 
-    static final String DIR_INTERMEDIATES = 'intermediates/dexpatcher'
-    static final String DIR_DECODED_SOURCE_APP = DIR_INTERMEDIATES + '/decoded-source-app'
-    static final String DIR_APKTOOL_FRAMEWORK = DIR_INTERMEDIATES + '/apktool-framework'
+    static final String DIR_BUILD_INTERMEDIATES = 'intermediates/dexpatcher'
+    static final String DIR_BUILD_DECODED_SOURCE_APP = DIR_BUILD_INTERMEDIATES + '/decoded-source-app'
+    static final String DIR_BUILD_APKTOOL_FRAMEWORK = DIR_BUILD_INTERMEDIATES + '/apktool-framework'
 
-    static final String FILE_APKTOOL_YML = 'apktool.yml'
+    static final String FILENAME_APKTOOL_YML = 'apktool.yml'
 
 }
