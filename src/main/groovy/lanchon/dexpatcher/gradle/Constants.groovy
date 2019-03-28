@@ -44,6 +44,10 @@ abstract class Constants {
     static final String DIR_BUILD_DECODED_SOURCE_APP = DIR_BUILD_INTERMEDIATES + '/decoded-source-app'
     static final String DIR_BUILD_APKTOOL_FRAMEWORK = DIR_BUILD_INTERMEDIATES + '/apktool-framework'
 
-    static final String FILENAME_APKTOOL_YML = 'apktool.yml'
+    static abstract class ApkLib {
+
+        static final String FILE_APKTOOL_YML = 'apktool.yml'
+
+    }
 
 }

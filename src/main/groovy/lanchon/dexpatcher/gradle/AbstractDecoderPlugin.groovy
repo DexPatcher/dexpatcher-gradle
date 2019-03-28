@@ -153,7 +153,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
 
         DecodedSourceAppTask() {
             outputDir = project.layout.directoryProperty()
-            apktoolYmlFile = outputDir.file(FILENAME_APKTOOL_YML)
+            apktoolYmlFile = outputDir.file(ApkLib.FILE_APKTOOL_YML)
             sourceApp = project.files()
             sourceAppFile = project.<RegularFile>provider {
                 def files = sourceApp.files
@@ -170,7 +170,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         void run() {
             sourceAppFile.get()
             if (!apktoolYmlFile.get().asFile.isFile()) {
-                throw new RuntimeException("Cannot find '$FILENAME_APKTOOL_YML' file in decoded application")
+                throw new RuntimeException("Cannot find '$ApkLib.FILE_APKTOOL_YML' file in decoded application")
             }
         }
 
