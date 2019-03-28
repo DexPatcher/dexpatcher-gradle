@@ -18,6 +18,7 @@ import lanchon.dexpatcher.gradle.tasks.DecodeApkTask
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
@@ -61,16 +62,14 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
 
     static TaskProvider<DecodedSourceAppTask> registerDecodedSourceAppTaskChain(Project project, String taskGroup,
             Closure<String> taskNameModifier, Closure<Provider<Directory>> dirModifier,
-            Configuration sourceApk, Configuration sourceApkLib, Provider<Boolean> printSourceAppInfo) {
+            Configuration sourceApk, Configuration sourceApkLib, Provider<Boolean> printAppInfo) {
 
         def decodedSourceApp = project.tasks.register(taskNameModifier(TASK_DECODED_SOURCE_APP), DecodedSourceAppTask) {
             it.description = 'Produces the decoded source application.'
             it.group = taskGroup
             it.outputDir.set dirModifier(project.layout.buildDirectory.dir(DIR_DECODED_SOURCE_APP))
-        }
-
-        def outputDir = project.<Directory>provider {
-            decodedSourceApp.get().outputDir.get()
+            if (!sourceApk.is(null)) it.sourceApp.from sourceApk
+            if (!sourceApkLib.is(null)) it.sourceApp.from sourceApkLib
         }
 
         def sourceAppInfo = project.tasks.register(taskNameModifier(TASK_SOURCE_APP_INFO)) {
@@ -78,7 +77,6 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             it.group = taskGroup
             it.dependsOn decodedSourceApp
             it.doLast {
-                //decodedSourceApp.check()
                 def pattern = ~/^\s\s(minSdkVersion|targetSdkVersion|versionCode|versionName):/
                 decodedSourceApp.get().apktoolYmlFile.get().asFile.eachLine { line ->
                     if (pattern.matcher(line).find()) System.out.println line.substring(2)
@@ -86,38 +84,60 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             }
         }
 
+        def outputDir = project.<Directory>provider {
+            decodedSourceApp.get().outputDir.get()
+        }
+
+        def sourceAppFile = project.<RegularFile>provider {
+            decodedSourceApp.get().sourceAppFile.get()
+        }
+
         TaskProvider<DecodeApkTask> decodeSourceApk = null
         if (!sourceApk.is(null)) {
             decodeSourceApk = registerDecodeSourceApkTask(project,
                     taskNameModifier(TASK_DECODE_SOURCE_APK), taskGroup,
                     dirModifier(project.layout.buildDirectory.dir(DIR_APKTOOL_FRAMEWORK)),
-                    outputDir, sourceApk)
+                    outputDir, sourceAppFile)
+            decodeSourceApk.configure {
+                it.dependsOn sourceApk, decodedSourceApp.get().sourceApp
+                it.onlyIf {
+                    sourceApk.files.size()
+                }
+            }
+            decodedSourceApp.configure {
+                it.dependsOn decodeSourceApk
+            }
         }
 
         TaskProvider<Sync> unpackSourceApkLibrary = null
         if (!sourceApkLib.is(null)) {
             unpackSourceApkLibrary = registerUnpackSourceApkLibraryTask(project,
                     taskNameModifier(TASK_UNPACK_SOURCE_APK_LIBRARY), taskGroup,
-                    outputDir, sourceApkLib)
+                    outputDir, sourceAppFile)
+            unpackSourceApkLibrary.configure {
+                it.dependsOn sourceApkLib, decodedSourceApp.get().sourceApp
+                it.onlyIf {
+                    sourceApkLib.files.size()
+                }
+            }
+            decodedSourceApp.configure {
+                it.dependsOn unpackSourceApkLibrary
+            }
         }
 
         project.afterEvaluate {
-            def nApk = sourceApk.is(null) ? 0 : sourceApk.files.size()
-            def nApkLib = sourceApkLib.is(null) ? 0 : sourceApkLib.files.size()
-            def n = nApk + nApkLib
-            if (n != 1) {
-                if (!n) throw new RuntimeException('No source application found')
-                else throw new RuntimeException('Multiple source applications found')
+            if (printAppInfo.get()) {
+                decodedSourceApp.configure {
+                    it.finalizedBy sourceAppInfo
+                }
             }
-            if (nApk) decodedSourceApp.configure { it.dependsOn decodeSourceApk; return }
-            if (nApkLib) decodedSourceApp.configure { it.dependsOn unpackSourceApkLibrary; return }
-            if (printSourceAppInfo.get()) decodedSourceApp.configure { it.finalizedBy sourceAppInfo; return }
         }
 
         decodedSourceApp.configure {
-            it.extensions.add TASK_DECODE_SOURCE_APK, decodeSourceApk
-            it.extensions.add TASK_UNPACK_SOURCE_APK_LIBRARY, unpackSourceApkLibrary
-            it.extensions.add TASK_SOURCE_APP_INFO, sourceAppInfo
+            def extensions = it.extensions
+            if (!sourceApk.is(null)) extensions.add TASK_DECODE_SOURCE_APK, decodeSourceApk
+            if (!sourceApkLib.is(null)) extensions.add TASK_UNPACK_SOURCE_APK_LIBRARY, unpackSourceApkLibrary
+            extensions.add TASK_SOURCE_APP_INFO, sourceAppInfo
         }
 
         return decodedSourceApp
@@ -128,16 +148,28 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
 
         @Input final DirectoryProperty outputDir
         @Internal final Provider<RegularFile> apktoolYmlFile
+        @Internal final ConfigurableFileCollection sourceApp
+        @Internal final Provider<RegularFile> sourceAppFile
 
         DecodedSourceAppTask() {
             outputDir = project.layout.directoryProperty()
             apktoolYmlFile = outputDir.file(FILE_APKTOOL_YML)
+            sourceApp = project.files()
+            sourceAppFile = project.<RegularFile>provider {
+                def files = sourceApp.files
+                def n = files.size()
+                if (n != 1) {
+                    if (!n) throw new RuntimeException('No source application found')
+                    else throw new RuntimeException('Multiple source applications found')
+                }
+                return Utils.getRegularFile(project, files[0])
+            }
         }
 
         @TaskAction
-        void check() {
-            def apktoolYmlFile = apktoolYmlFile.get().asFile
-            if (!apktoolYmlFile.isFile()) {
+        void run() {
+            sourceAppFile.get()
+            if (!apktoolYmlFile.get().asFile.isFile()) {
                 throw new RuntimeException("Cannot find '$FILE_APKTOOL_YML' file in decoded application")
             }
         }
@@ -145,14 +177,11 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
     }
 
     static TaskProvider<DecodeApkTask> registerDecodeSourceApkTask(Project project, String taskName, String taskGroup,
-            Provider<Directory> frameworkOutDir, Provider<Directory> outputDir, Configuration sourceApk) {
+            Provider<Directory> frameworkOutDir, Provider<Directory> outputDir, Provider<RegularFile> apkFile) {
         def decodeSourceApk = project.tasks.register(taskName, DecodeApkTask) {
             it.description = 'Unpacks an Android APK and decodes its manifest and resources.'
             it.group = taskGroup
-            it.dependsOn sourceApk
-            it.apkFile.set project.<RegularFile> provider {
-                Utils.getRegularFile(project, sourceApk.singleFile)
-            }
+            it.apkFile.set apkFile
             it.frameworkDir.set((Directory) null)
             it.frameworkDirAsInput.set((Directory) null)
             it.frameworkDirAsOutput.set frameworkOutDir
@@ -164,13 +193,12 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
     }
 
     static TaskProvider<Sync> registerUnpackSourceApkLibraryTask(Project project, String taskName, String taskGroup,
-            Provider<Directory> outputDir, Configuration sourceApkLib) {
+            Provider<Directory> outputDir, Provider<RegularFile> apkLibFile) {
         def unpackSourceApkLibrary = project.tasks.register(taskName, Sync) {
             it.description = 'Unpacks a DexPatcher APK library.'
             it.group = taskGroup
-            it.dependsOn sourceApkLib
             it.from {
-                project.zipTree(sourceApkLib.singleFile)
+                project.zipTree(apkLibFile)
             }
             it.into outputDir
         }
