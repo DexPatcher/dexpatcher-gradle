@@ -45,7 +45,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         this.project = project
         setExtensions()
 
-        project.tasks.withType(DexpatcherTask) { DexpatcherTask task ->
+        project.tasks.withType(DexpatcherTask).configureEach { DexpatcherTask task ->
             setupToolTask task, dexpatcher
             task.apiLevel.set dexpatcher.apiLevel
             task.multiDex.set dexpatcher.multiDex
@@ -61,14 +61,14 @@ class DexpatcherBasePlugin implements Plugin<Project> {
             task.logStats.set dexpatcher.logStats
         }
 
-        project.tasks.withType(AbstractApktoolTask) { AbstractApktoolTask task ->
+        project.tasks.withType(AbstractApktoolTask).configureEach { AbstractApktoolTask task ->
             setupToolTask task, apktool
             task.verbosity.set apktool.verbosity
             task.frameworkDir.set apktool.frameworkDir
             task.frameworkDirAsInput.set apktool.frameworkDirAsInput
             task.frameworkDirAsOutput.set apktool.frameworkDirAsOutput
         }
-        project.tasks.withType(DecodeApkTask) { DecodeApkTask task ->
+        project.tasks.withType(DecodeApkTask).configureEach { DecodeApkTask task ->
             task.frameworkTag.set apktool.frameworkTag
             task.apiLevel.set apktool.apiLevel
             task.decodeAssets.set apktool.decodeAssets
@@ -79,17 +79,17 @@ class DexpatcherBasePlugin implements Plugin<Project> {
             task.matchOriginal.set apktool.matchOriginal
             task.apiLevel.set apktool.apiLevel
         }
-        project.tasks.withType(BuildApkTask) { BuildApkTask task ->
+        project.tasks.withType(BuildApkTask).configureEach { BuildApkTask task ->
             task.aaptFile.set apktool.aaptFile
             task.copyOriginal.set apktool.copyOriginal
             task.forceDebuggableBuild.set apktool.forceDebuggableBuild
             task.forceCleanBuild.set apktool.forceCleanBuild
         }
 
-        project.tasks.withType(AbstractDex2jarTask) { AbstractDex2jarTask task ->
+        project.tasks.withType(AbstractDex2jarTask).configureEach { AbstractDex2jarTask task ->
             setupToolTask task, dex2jar
         }
-        project.tasks.withType(Dex2jarTask) { Dex2jarTask task ->
+        project.tasks.withType(Dex2jarTask).configureEach { Dex2jarTask task ->
             task.translateCode.set dex2jar.translateCode
             task.translateDebugInfo.set dex2jar.translateDebugInfo
             task.optimizeSynchronized.set dex2jar.optimizeSynchronized
