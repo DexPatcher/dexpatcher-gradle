@@ -45,57 +45,57 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         this.project = project
         setExtensions()
 
-        project.tasks.withType(DexpatcherTask).configureEach { DexpatcherTask task ->
-            setupToolTask task, dexpatcher
-            task.apiLevel.set dexpatcher.apiLevel
-            task.multiDex.set dexpatcher.multiDex
-            task.multiDexThreaded.set dexpatcher.multiDexThreaded
-            task.multiDexJobs.set dexpatcher.multiDexJobs
-            task.maxDexPoolSize.set dexpatcher.maxDexPoolSize
-            task.annotationPackage.set dexpatcher.annotationPackage
-            task.constructorAutoIgnore.set dexpatcher.constructorAutoIgnore
-            task.compatDexTag.set dexpatcher.compatDexTag
-            task.verbosity.set dexpatcher.verbosity
-            task.logSourcePath.set dexpatcher.logSourcePath
-            task.logSourcePathRoot.set dexpatcher.logSourcePathRoot
-            task.logStats.set dexpatcher.logStats
+        project.tasks.withType(DexpatcherTask).configureEach {
+            setupToolTask it, dexpatcher
+            it.apiLevel.set dexpatcher.apiLevel
+            it.multiDex.set dexpatcher.multiDex
+            it.multiDexThreaded.set dexpatcher.multiDexThreaded
+            it.multiDexJobs.set dexpatcher.multiDexJobs
+            it.maxDexPoolSize.set dexpatcher.maxDexPoolSize
+            it.annotationPackage.set dexpatcher.annotationPackage
+            it.constructorAutoIgnore.set dexpatcher.constructorAutoIgnore
+            it.compatDexTag.set dexpatcher.compatDexTag
+            it.verbosity.set dexpatcher.verbosity
+            it.logSourcePath.set dexpatcher.logSourcePath
+            it.logSourcePathRoot.set dexpatcher.logSourcePathRoot
+            it.logStats.set dexpatcher.logStats
         }
 
-        project.tasks.withType(AbstractApktoolTask).configureEach { AbstractApktoolTask task ->
-            setupToolTask task, apktool
-            task.verbosity.set apktool.verbosity
-            task.frameworkDir.set apktool.frameworkDir
-            task.frameworkDirAsInput.set apktool.frameworkDirAsInput
-            task.frameworkDirAsOutput.set apktool.frameworkDirAsOutput
+        project.tasks.withType(AbstractApktoolTask).configureEach {
+            setupToolTask it, apktool
+            it.verbosity.set apktool.verbosity
+            it.frameworkDir.set apktool.frameworkDir
+            it.frameworkDirAsInput.set apktool.frameworkDirAsInput
+            it.frameworkDirAsOutput.set apktool.frameworkDirAsOutput
         }
-        project.tasks.withType(DecodeApkTask).configureEach { DecodeApkTask task ->
-            task.frameworkTag.set apktool.frameworkTag
-            task.apiLevel.set apktool.apiLevel
-            task.decodeAssets.set apktool.decodeAssets
-            task.decodeResources.set apktool.decodeResources
-            task.decodeClasses.set apktool.decodeClasses
-            task.keepBrokenResources.set apktool.keepBrokenResources
-            task.stripDebugInfo.set apktool.stripDebugInfo
-            task.matchOriginal.set apktool.matchOriginal
-            task.apiLevel.set apktool.apiLevel
+        project.tasks.withType(DecodeApkTask).configureEach {
+            it.frameworkTag.set apktool.frameworkTag
+            it.apiLevel.set apktool.apiLevel
+            it.decodeAssets.set apktool.decodeAssets
+            it.decodeResources.set apktool.decodeResources
+            it.decodeClasses.set apktool.decodeClasses
+            it.keepBrokenResources.set apktool.keepBrokenResources
+            it.stripDebugInfo.set apktool.stripDebugInfo
+            it.matchOriginal.set apktool.matchOriginal
+            it.apiLevel.set apktool.apiLevel
         }
-        project.tasks.withType(BuildApkTask).configureEach { BuildApkTask task ->
-            task.aaptFile.set apktool.aaptFile
-            task.copyOriginal.set apktool.copyOriginal
-            task.forceDebuggableBuild.set apktool.forceDebuggableBuild
-            task.forceCleanBuild.set apktool.forceCleanBuild
+        project.tasks.withType(BuildApkTask).configureEach {
+            it.aaptFile.set apktool.aaptFile
+            it.copyOriginal.set apktool.copyOriginal
+            it.forceDebuggableBuild.set apktool.forceDebuggableBuild
+            it.forceCleanBuild.set apktool.forceCleanBuild
         }
 
-        project.tasks.withType(AbstractDex2jarTask).configureEach { AbstractDex2jarTask task ->
-            setupToolTask task, dex2jar
+        project.tasks.withType(AbstractDex2jarTask).configureEach {
+            setupToolTask it, dex2jar
         }
-        project.tasks.withType(Dex2jarTask).configureEach { Dex2jarTask task ->
-            task.translateCode.set dex2jar.translateCode
-            task.translateDebugInfo.set dex2jar.translateDebugInfo
-            task.optimizeSynchronized.set dex2jar.optimizeSynchronized
-            task.reuseRegisters.set dex2jar.reuseRegisters
-            task.topologicalSort.set dex2jar.topologicalSort
-            task.handleExceptions.set dex2jar.handleExceptions
+        project.tasks.withType(Dex2jarTask).configureEach {
+            it.translateCode.set dex2jar.translateCode
+            it.translateDebugInfo.set dex2jar.translateDebugInfo
+            it.optimizeSynchronized.set dex2jar.optimizeSynchronized
+            it.reuseRegisters.set dex2jar.reuseRegisters
+            it.topologicalSort.set dex2jar.topologicalSort
+            it.handleExceptions.set dex2jar.handleExceptions
         }
 
     }
