@@ -12,7 +12,6 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Configurations
 import lanchon.dexpatcher.gradle.ProjectProperties
 import lanchon.dexpatcher.gradle.Utils
 
@@ -76,12 +75,6 @@ class DexpatcherConfigExtension extends AbstractExtension {
         resolvedCompileLibDir = Utils.getResolvedDir(project, compileLibDir, resolvedLibDir, DEFAULT_COMPILE_SUBDIR_NAME)
         resolvedRuntimeLibDir = Utils.getResolvedDir(project, runtimeLibDir, resolvedLibDir, DEFAULT_RUNTIME_SUBDIR_NAME)
 
-    }
-
-    void addLibDependencies(boolean bundleLibs) {
-        Utils.addJarDependency project, Configurations.PROVIDED, resolvedProvidedLibDir.get()
-        Utils.addJarDependency project, bundleLibs ? Configurations.COMPILE : Configurations.PROVIDED, resolvedCompileLibDir.get()
-        if (bundleLibs) Utils.addJarDependency project, Configurations.RUNTIME, resolvedRuntimeLibDir.get()
     }
 
 }

@@ -45,7 +45,7 @@ class PatchLibraryPlugin extends AbstractPatcherPlugin<PatchLibraryExtension, Li
 
         super.afterApply()
 
-        dexpatcherConfig.addLibDependencies(false)
+//        dexpatcherConfig.addLibDependencies(false)
 
         //project.afterEvaluate {
         //    libraryVariants.all { LibraryVariant variant ->

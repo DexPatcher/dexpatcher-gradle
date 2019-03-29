@@ -38,12 +38,6 @@ abstract class Utils {
         return jars
     }
 
-    static void addJarDependency(Project project, Configurations configuration, Directory jarDir) {
-        def jars = Utils.getJars(project, jarDir)
-        def dependency = project.dependencies.create(jars)
-        configuration.get(project).dependencies.add(dependency)
-    }
-
     // Horrible Gradle hacks that should not be necessary
 
     private static Provider<RegularFile> getRegularFileProvider(Project project, File file) {
