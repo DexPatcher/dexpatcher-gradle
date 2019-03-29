@@ -52,6 +52,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
 
 //        dexpatcherConfig.addLibDependencies(true)
 
+        /*
         project.afterEvaluate {
             androidVariants.all { ApplicationVariant variant ->
                 def patchDexTask = createPatchDexTask(variant)
@@ -65,6 +66,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                 }
             }
         }
+        */
 
     }
 

@@ -32,17 +32,10 @@ abstract class Utils {
         }
     }
 
-    static FileCollection getJars(Project project, Directory rootDir) {
+    static FileCollection getJars(Project project, def rootDir) {
         def jars = project.fileTree(rootDir)
         jars.include '**/*.jar'
         return jars
-    }
-
-    static Provider<FileCollection> getJars(Project project, Provider<Directory> rootDir) {
-        project.providers.<FileCollection>provider {
-            Directory dir = rootDir.orNull
-            return !dir.is(null) ? getJars(project, dir) : null
-        }
     }
 
     static void addJarDependency(Project project, Configurations configuration, Directory jarDir) {
@@ -52,10 +45,6 @@ abstract class Utils {
     }
 
     // Horrible Gradle hacks that should not be necessary
-
-    private static <T> Provider<T> getProvider(Project project, T value) {
-        project.<T>provider { value }
-    }
 
     private static Provider<RegularFile> getRegularFileProvider(Project project, File file) {
         //project.layout.file(getProvider(project, file))
