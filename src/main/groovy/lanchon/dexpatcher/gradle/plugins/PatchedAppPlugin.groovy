@@ -8,7 +8,7 @@
  * or (at your option) any later version.
  */
 
-package lanchon.dexpatcher.gradle
+package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic

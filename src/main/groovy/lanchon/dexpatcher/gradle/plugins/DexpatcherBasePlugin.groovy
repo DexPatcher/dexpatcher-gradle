@@ -8,10 +8,11 @@
  * or (at your option) any later version.
  */
 
-package lanchon.dexpatcher.gradle
+package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.Utils
 import lanchon.dexpatcher.gradle.extensions.AbstractToolExtension
 import lanchon.dexpatcher.gradle.extensions.ApktoolExtension
 import lanchon.dexpatcher.gradle.extensions.Dex2jarExtension

@@ -8,13 +8,14 @@
  * or (at your option) any later version.
  */
 
-package lanchon.dexpatcher.gradle
+package lanchon.dexpatcher.gradle.plugins
 
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.util.zip.ZipOutputStream
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.Utils
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
 
