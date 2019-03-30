@@ -27,6 +27,10 @@ dependencies {
     compileOnly 'com.android.tools.build:gradle:3.3.2'
 }
 
+processResources {
+    from 'LICENSE.txt', 'NOTICE.txt'
+}
+
 compileGroovy {
     options.compilerArgs << '-proc:none'
 }
