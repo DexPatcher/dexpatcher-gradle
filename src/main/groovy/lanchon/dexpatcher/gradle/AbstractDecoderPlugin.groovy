@@ -14,19 +14,14 @@ import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.extensions.AbstractDecoderExtension
 import lanchon.dexpatcher.gradle.tasks.DecodeApkTask
+import lanchon.dexpatcher.gradle.tasks.DecodedSourceAppTask
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.Directory
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
-import org.gradle.api.tasks.Internal
-import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.Sync
-import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 
 import static lanchon.dexpatcher.gradle.Constants.*
@@ -141,41 +136,6 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         }
 
         return decodedSourceApp
-
-    }
-
-    static class DecodedSourceAppTask extends DefaultTask {
-
-        @Internal final ConfigurableFileCollection sourceApp
-        @OutputDirectory final DirectoryProperty outputDir
-        @Internal final Provider<RegularFile> sourceAppFile
-        @Internal final Provider<RegularFile> apktoolYmlFile
-
-        DecodedSourceAppTask() {
-            sourceApp = project.files()
-            outputDir = project.layout.directoryProperty()
-            sourceAppFile = project.<RegularFile>provider {
-                def files = sourceApp.files
-                def n = files.size()
-                if (n != 1) {
-                    if (!n) throw new RuntimeException('No source application found')
-                    else throw new RuntimeException('Multiple source applications found')
-                }
-                return Utils.getRegularFile(project, files[0])
-            }
-            apktoolYmlFile = outputDir.file(ApkLib.FILE_APKTOOL_YML)
-            outputs.upToDateWhen {
-                false
-            }
-        }
-
-        @TaskAction
-        void check() {
-            sourceAppFile.get()
-            if (!apktoolYmlFile.get().asFile.isFile()) {
-                throw new RuntimeException("Cannot find '$ApkLib.FILE_APKTOOL_YML' file in decoded application")
-            }
-        }
 
     }
 
