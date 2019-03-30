@@ -11,7 +11,7 @@
 plugins {
     id 'groovy'
     id 'java-gradle-plugin'
-    id 'com.gradle.plugin-publish' version '0.9.7'
+    id 'com.gradle.plugin-publish' version '0.10.1'
 }
 
 group = 'com.github.lanchon.dexpatcher'
@@ -55,10 +55,20 @@ pluginBundle {
 
     tags = ['android', 'application', 'apk', 'dexpatcher', 'apktool', 'dex2jar', 'patch', 'modify', 'reverse']
 
+    mavenCoordinates {
+        groupId = 'com.github.lanchon.dexpatcher'
+        artifactId = 'dexpatcher-gradle'
+    }
+
+}
+
+gradlePlugin {
+
     plugins {
 
         basePlugin {
             id = 'com.github.lanchon.dexpatcher.base'
+            implementationClass = 'lanchon.dexpatcher.gradle.plugins.DexpatcherBasePlugin'
             displayName = 'DexPatcher Base'
             description = 'The DexPatcher Base plugin provides basic DexPatcher, Apktool and dex2jar tasks. ' +
                     'DexPatcher is free software. (GPLv3+)'
@@ -66,6 +76,7 @@ pluginBundle {
 
         apkLibraryPlugin {
             id = 'com.github.lanchon.dexpatcher.apk-library'
+            implementationClass = 'lanchon.dexpatcher.gradle.plugins.ApkLibraryPlugin'
             displayName = 'DexPatcher APK Library'
             description = 'The DexPatcher APK Library plugin processes an Android application (APK) file and produces ' +
                     'a DexPatcher APK library file that can be used to create modified versions of the source application. ' +
@@ -76,6 +87,7 @@ pluginBundle {
 
         patchedAppPlugin {
             id = 'com.github.lanchon.dexpatcher.patched-application'
+            implementationClass = 'lanchon.dexpatcher.gradle.plugins.PatchedAppPlugin'
             displayName = 'DexPatcher Patched Application'
             description = 'The DexPatcher Patched Application plugin produces a modified Android application by applying ' +
                     'changes and additions to code and resources of a source application imported as a DexPatcher APK library. ' +
@@ -84,6 +96,7 @@ pluginBundle {
 
         patchLibraryPlugin {
             id = 'com.github.lanchon.dexpatcher.patch-library'
+            implementationClass = 'lanchon.dexpatcher.gradle.plugins.PatchLibraryPlugin'
             displayName = 'DexPatcher Patch Library'
             description = 'The DexPatcher Patch Library plugin produces a DexPatcher patch library file that bundles compiled ' +
                     'changes and additions to code and resources of a source application imported as a DexPatcher APK library, ' +
@@ -94,11 +107,6 @@ pluginBundle {
                     'and Patched Application plugins. DexPatcher is free software. (GPLv3+)'
         }
 
-    }
-
-    mavenCoordinates {
-        groupId = 'com.github.lanchon.dexpatcher'
-        artifactId = 'dexpatcher-gradle'
     }
 
 }
