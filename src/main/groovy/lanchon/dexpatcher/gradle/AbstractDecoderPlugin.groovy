@@ -170,7 +170,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         }
 
         @TaskAction
-        void run() {
+        void check() {
             sourceAppFile.get()
             if (!apktoolYmlFile.get().asFile.isFile()) {
                 throw new RuntimeException("Cannot find '$ApkLib.FILE_APKTOOL_YML' file in decoded application")
