@@ -82,10 +82,9 @@ gradlePlugin {
             id = 'com.github.lanchon.dexpatcher.apk-library'
             implementationClass = 'lanchon.dexpatcher.gradle.plugins.ApkLibraryPlugin'
             displayName = 'DexPatcher APK Library'
-            description = 'The DexPatcher APK Library plugin processes an Android application (APK) file and produces ' +
-                    'a DexPatcher APK library file that can be used to create modified versions of the source application. ' +
-                    'The file is similar in structure to an Android library (AAR) file. It includes the decoded Android ' +
-                    'resources of the application and its Dalvik bytecode translated into Java bytecode among other things. ' +
+            description = 'The DexPatcher APK Library plugin processes a source application provided as an Android APK ' +
+                    'and produces a DexPatcher APK library. The library is used to create modified versions of the ' +
+                    'source application and includes its Dalvik bytecode and decoded manifest and resources. ' +
                     'DexPatcher is free software. (GPLv3+)'
         }
 
@@ -94,21 +93,21 @@ gradlePlugin {
             implementationClass = 'lanchon.dexpatcher.gradle.plugins.PatchedAppPlugin'
             displayName = 'DexPatcher Patched Application'
             description = 'The DexPatcher Patched Application plugin produces a modified Android application by applying ' +
-                    'changes and additions to code and resources of a source application imported as a DexPatcher APK library. ' +
-                    'DexPatcher is free software. (GPLv3+)'
+                    'changes to code, manifest and resources of a source application provided as an Android APK or ' +
+                    'a DexPatcher APK library. DexPatcher is free software. (GPLv3+)'
         }
 
         patchLibraryPlugin {
             id = 'com.github.lanchon.dexpatcher.patch-library'
             implementationClass = 'lanchon.dexpatcher.gradle.plugins.PatchLibraryPlugin'
             displayName = 'DexPatcher Patch Library'
-            description = 'The DexPatcher Patch Library plugin produces a DexPatcher patch library file that bundles compiled ' +
-                    'changes and additions to code and resources of a source application imported as a DexPatcher APK library, ' +
-                    'without bundling any part of the source application itself. The file is similar in structure to an ' +
-                    'Android library (AAR) file. The changes bundled in a patch library can be applied to the source ' +
-                    'application using the DexPatcher Patched Application plugin. Several patch libraries can be applied ' +
-                    'in the same step, or their application can be serialized though the cyclic use of the APK Library ' +
-                    'and Patched Application plugins. DexPatcher is free software. (GPLv3+)'
+            description = 'The DexPatcher Patch Library plugin produces a DexPatcher patch library that bundles compiled ' +
+                    'changes to code, manifest and resources of a source application without bundling any part of the '  +
+                    'application itself. The source application is provided as an Android APK or a DexPatcher APK library. ' +
+                    'DexPatcher patch libraries are similar in structure to Android libraries (AAR files). ' +
+                    'The changes bundled in a patch library are applied to its source application using the DexPatcher ' +
+                    'Patched Application plugin. Several patch libraries can be applied in the same step or their ' +
+                    'application can be serialized and chained. DexPatcher is free software. (GPLv3+)'
         }
 
     }
