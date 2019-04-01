@@ -39,12 +39,16 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         super.afterApply()
 
         def sourceApk = project.configurations.create(CONFIG_SOURCE_APK)
+        sourceApk.canBeResolved = true
+        sourceApk.canBeConsumed = false
         sourceApk.transitive = false
         def apks = project.fileTree(DIR_SOURCE_APK)
         apks.include '*.apk', '*.jar', '*.zip'
         sourceApk.dependencies.add(project.dependencies.create(apks))
 
         def sourceApkLib = project.configurations.create(CONFIG_SOURCE_APK_LIBRARY)
+        sourceApkLib.canBeResolved = true
+        sourceApkLib.canBeConsumed = false
         sourceApkLib.transitive = false
         def apkLibs = project.fileTree(DIR_SOURCE_APK_LIBRARY)
         apkLibs.include '*.apklib'
