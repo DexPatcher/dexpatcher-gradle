@@ -35,14 +35,14 @@ abstract class Constants {
 
     static final String GROUP_DEXPATCHER = 'DexPatcher'
 
-    static final String TASK_DECODE_SOURCE_APK = 'decodeSourceApk'
-    static final String TASK_UNPACK_SOURCE_APK_LIBRARY = 'unpackSourceApkLibrary'
-    static final String TASK_DECODED_SOURCE_APP = 'decodedSourceApp'
+    static final String TASK_DECODE_APK = 'decodeApk'
+    static final String TASK_UNPACK_APK_LIBRARY = 'unpackApkLibrary'
+    static final String TASK_SOURCE_APP = 'sourceApp'
     static final String TASK_SOURCE_APP_INFO = 'sourceAppInfo'
-    static final String TASK_DEDEX_SOURCE_CLASSES = 'dedexSourceClasses'
+    static final String TASK_DEDEX_CLASSES = 'dedexClasses'
 
     static final String DIR_BUILD_INTERMEDIATES = 'intermediates/dexpatcher'
-    static final String DIR_BUILD_DECODED_SOURCE_APP = DIR_BUILD_INTERMEDIATES + '/decoded-source-app'
+    static final String DIR_BUILD_SOURCE_APP = DIR_BUILD_INTERMEDIATES + '/source-app'
     static final String DIR_BUILD_APKTOOL_FRAMEWORK = DIR_BUILD_INTERMEDIATES + '/apktool-framework'
     static final String FILE_BUILD_DEDEXED_CLASSES = DIR_BUILD_INTERMEDIATES + '/dedexed-classes/classes.jar'
     static final String FILE_BUILD_DEX2JAR_EXCEPTIONS = DIR_BUILD_INTERMEDIATES + '/dedexed-classes/dex2jar-exceptions.zip'

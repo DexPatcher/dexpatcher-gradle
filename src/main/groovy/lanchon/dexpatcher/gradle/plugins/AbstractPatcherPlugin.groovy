@@ -90,11 +90,11 @@ abstract class AbstractPatcherPlugin<
         apkLibRootDirUnchecked = project.layout.directoryProperty()
         apkLibrary = new ApkLibraryPaths(project, apkLibRootDirUnchecked)
 
-        def dedexSourceClasses = project.tasks.register(TASK_DEDEX_SOURCE_CLASSES, Dex2jarTask) {
+        def dedexClasses = project.tasks.register(TASK_DEDEX_CLASSES, Dex2jarTask) {
             it.description = "Translates the Dalvik bytecode of the source application to Java bytecode."
             it.group = GROUP_DEXPATCHER
-            it.dependsOn decodedSourceApp
-            it.dexFiles.from decodedSourceApp.get().sourceAppFile
+            it.dependsOn sourceApp
+            it.dexFiles.from sourceApp.get().sourceAppFile
             it.outputFile.set project.layout.buildDirectory.file(FILE_BUILD_DEDEXED_CLASSES)
             it.exceptionFile.set project.layout.buildDirectory.file(FILE_BUILD_DEX2JAR_EXCEPTIONS)
         }
@@ -107,8 +107,8 @@ abstract class AbstractPatcherPlugin<
         // Conditionally add the dedexed source classes as a compile-only dependency.
         project.afterEvaluate {
             if (((AbstractPatcherExtension) extension).importSymbols.get()) {
-                def symbolLib = project.files(dedexSourceClasses.get().outputFile)
-                symbolLib.builtBy dedexSourceClasses
+                def symbolLib = project.files(dedexClasses.get().outputFile)
+                symbolLib.builtBy dedexClasses
                 def config = project.configurations.getByName(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME)
                 config.dependencies.add(project.dependencies.create(symbolLib))
             }

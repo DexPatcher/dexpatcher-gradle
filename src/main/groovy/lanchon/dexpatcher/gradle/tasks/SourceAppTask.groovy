@@ -25,18 +25,18 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 
 @CompileStatic
-class DecodedSourceAppTask extends DefaultTask {
+class SourceAppTask extends DefaultTask {
 
-    @Internal final ConfigurableFileCollection sourceApp
+    @Internal final ConfigurableFileCollection sourceAppFiles
     @OutputDirectory final DirectoryProperty outputDir
     @Internal final Provider<RegularFile> sourceAppFile
     @Internal final Provider<RegularFile> apktoolYmlFile
 
-    DecodedSourceAppTask() {
-        sourceApp = project.files()
+    SourceAppTask() {
+        sourceAppFiles = project.files()
         outputDir = project.layout.directoryProperty()
         sourceAppFile = project.<RegularFile>provider {
-            def files = sourceApp.files
+            def files = sourceAppFiles.files
             def n = files.size()
             if (n != 1) {
                 if (!n) throw new RuntimeException('No source application found')

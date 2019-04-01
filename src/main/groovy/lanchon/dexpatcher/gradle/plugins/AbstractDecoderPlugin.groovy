@@ -14,7 +14,7 @@ import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.extensions.AbstractDecoderExtension
 import lanchon.dexpatcher.gradle.tasks.DecodeApkTask
-import lanchon.dexpatcher.gradle.tasks.DecodedSourceAppTask
+import lanchon.dexpatcher.gradle.tasks.SourceAppTask
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -31,7 +31,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
 
     protected E extension
 
-    protected TaskProvider<DecodedSourceAppTask> decodedSourceApp
+    protected TaskProvider<SourceAppTask> sourceApp
 
     @Override
     protected void afterApply() {
@@ -54,100 +54,100 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         apkLibs.include '*.apklib'
         sourceApkLib.dependencies.add(project.dependencies.create(apkLibs))
 
-        decodedSourceApp = registerDecodedSourceAppTaskChain(project, GROUP_DEXPATCHER,
+        sourceApp = registerSourceAppTaskChain(project, GROUP_DEXPATCHER,
                 { String it -> it }, { Provider<Directory> it -> it },
                 sourceApk, sourceApkLib, extension.printAppInfo)
 
     }
 
-    static TaskProvider<DecodedSourceAppTask> registerDecodedSourceAppTaskChain(Project project, String taskGroup,
+    static TaskProvider<SourceAppTask> registerSourceAppTaskChain(Project project, String taskGroup,
             Closure<String> taskNameModifier, Closure<Provider<Directory>> dirModifier,
             Configuration sourceApk, Configuration sourceApkLib, Provider<Boolean> printAppInfo) {
 
-        def decodedSourceApp = project.tasks.register(taskNameModifier(TASK_DECODED_SOURCE_APP), DecodedSourceAppTask) {
+        def sourceApp = project.tasks.register(taskNameModifier(TASK_SOURCE_APP), SourceAppTask) {
             it.description = 'Produces the decoded source application.'
             it.group = taskGroup
-            it.outputDir.set dirModifier(project.layout.buildDirectory.dir(DIR_BUILD_DECODED_SOURCE_APP))
-            if (!sourceApk.is(null)) it.sourceApp.from sourceApk
-            if (!sourceApkLib.is(null)) it.sourceApp.from sourceApkLib
+            it.outputDir.set dirModifier(project.layout.buildDirectory.dir(DIR_BUILD_SOURCE_APP))
+            if (!sourceApk.is(null)) it.sourceAppFiles.from sourceApk
+            if (!sourceApkLib.is(null)) it.sourceAppFiles.from sourceApkLib
             return
         }
 
         def sourceAppInfo = project.tasks.register(taskNameModifier(TASK_SOURCE_APP_INFO)) {
             it.description = 'Displays package and version information of the source application.'
             it.group = taskGroup
-            it.dependsOn decodedSourceApp
+            it.dependsOn sourceApp
             it.doLast {
                 def pattern = ~/^\s\s(minSdkVersion|targetSdkVersion|versionCode|versionName):/
-                decodedSourceApp.get().apktoolYmlFile.get().asFile.eachLine { line ->
+                sourceApp.get().apktoolYmlFile.get().asFile.eachLine { line ->
                     if (pattern.matcher(line).find()) println line.substring(2)
                 }
             }
         }
 
         def outputDir = project.<Directory>provider {
-            decodedSourceApp.get().outputDir.get()
+            sourceApp.get().outputDir.get()
         }
 
         def sourceAppFile = project.<RegularFile>provider {
-            decodedSourceApp.get().sourceAppFile.get()
+            sourceApp.get().sourceAppFile.get()
         }
 
-        TaskProvider<DecodeApkTask> decodeSourceApk = null
+        TaskProvider<DecodeApkTask> decodeApk = null
         if (!sourceApk.is(null)) {
-            decodeSourceApk = registerDecodeSourceApkTask(project,
-                    taskNameModifier(TASK_DECODE_SOURCE_APK), taskGroup,
+            decodeApk = registerDecodeApkTask(project,
+                    taskNameModifier(TASK_DECODE_APK), taskGroup,
                     dirModifier(project.layout.buildDirectory.dir(DIR_BUILD_APKTOOL_FRAMEWORK)),
                     outputDir, sourceAppFile)
-            decodeSourceApk.configure {
-                it.dependsOn sourceApk, decodedSourceApp.get().sourceApp
+            decodeApk.configure {
+                it.dependsOn sourceApk, sourceApp.get().sourceAppFiles
                 it.onlyIf {
                     sourceApk.files.size()
                 }
             }
-            decodedSourceApp.configure {
-                it.dependsOn decodeSourceApk
+            sourceApp.configure {
+                it.dependsOn decodeApk
             }
         }
 
-        TaskProvider<Sync> unpackSourceApkLibrary = null
+        TaskProvider<Sync> unpackApkLibrary = null
         if (!sourceApkLib.is(null)) {
-            unpackSourceApkLibrary = registerUnpackSourceApkLibraryTask(project,
-                    taskNameModifier(TASK_UNPACK_SOURCE_APK_LIBRARY), taskGroup,
+            unpackApkLibrary = registerUnpackApkLibraryTask(project,
+                    taskNameModifier(TASK_UNPACK_APK_LIBRARY), taskGroup,
                     outputDir, sourceAppFile)
-            unpackSourceApkLibrary.configure {
-                it.dependsOn sourceApkLib, decodedSourceApp.get().sourceApp
+            unpackApkLibrary.configure {
+                it.dependsOn sourceApkLib, sourceApp.get().sourceAppFiles
                 it.onlyIf {
                     sourceApkLib.files.size()
                 }
             }
-            decodedSourceApp.configure {
-                it.dependsOn unpackSourceApkLibrary
+            sourceApp.configure {
+                it.dependsOn unpackApkLibrary
             }
         }
 
         project.afterEvaluate {
             if (printAppInfo.get()) {
-                decodedSourceApp.configure {
+                sourceApp.configure {
                     it.finalizedBy sourceAppInfo
                 }
             }
         }
 
-        decodedSourceApp.configure {
+        sourceApp.configure {
             def extensions = it.extensions
-            if (!sourceApk.is(null)) extensions.add TASK_DECODE_SOURCE_APK, decodeSourceApk
-            if (!sourceApkLib.is(null)) extensions.add TASK_UNPACK_SOURCE_APK_LIBRARY, unpackSourceApkLibrary
+            if (!sourceApk.is(null)) extensions.add TASK_DECODE_APK, decodeApk
+            if (!sourceApkLib.is(null)) extensions.add TASK_UNPACK_APK_LIBRARY, unpackApkLibrary
             extensions.add TASK_SOURCE_APP_INFO, sourceAppInfo
         }
 
-        return decodedSourceApp
+        return sourceApp
 
     }
 
-    static TaskProvider<DecodeApkTask> registerDecodeSourceApkTask(Project project, String taskName, String taskGroup,
+    static TaskProvider<DecodeApkTask> registerDecodeApkTask(Project project, String taskName, String taskGroup,
             Provider<Directory> frameworkOutDir, Provider<Directory> outputDir, Provider<RegularFile> apkFile) {
-        def decodeSourceApk = project.tasks.register(taskName, DecodeApkTask) {
+        def decodeApk = project.tasks.register(taskName, DecodeApkTask) {
             it.description = 'Unpacks an Android APK and decodes its manifest and resources.'
             it.group = taskGroup
             it.apkFile.set apkFile
@@ -158,12 +158,12 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             it.decodeClasses.set false
             //it.keepBrokenResources.set true
         }
-        return decodeSourceApk
+        return decodeApk
     }
 
-    static TaskProvider<Sync> registerUnpackSourceApkLibraryTask(Project project, String taskName, String taskGroup,
+    static TaskProvider<Sync> registerUnpackApkLibraryTask(Project project, String taskName, String taskGroup,
             Provider<Directory> outputDir, Provider<RegularFile> apkLibFile) {
-        def unpackSourceApkLibrary = project.tasks.register(taskName, Sync) {
+        def unpackApkLibrary = project.tasks.register(taskName, Sync) {
             it.description = 'Unpacks a DexPatcher APK library.'
             it.group = taskGroup
             it.from {
@@ -172,7 +172,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             it.into outputDir
             return
         }
-        return unpackSourceApkLibrary
+        return unpackApkLibrary
     }
 
 }
