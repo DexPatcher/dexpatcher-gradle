@@ -78,7 +78,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             it.doLast {
                 def pattern = ~/^\s\s(minSdkVersion|targetSdkVersion|versionCode|versionName):/
                 decodedSourceApp.get().apktoolYmlFile.get().asFile.eachLine { line ->
-                    if (pattern.matcher(line).find()) System.out.println line.substring(2)
+                    if (pattern.matcher(line).find()) println line.substring(2)
                 }
             }
         }
