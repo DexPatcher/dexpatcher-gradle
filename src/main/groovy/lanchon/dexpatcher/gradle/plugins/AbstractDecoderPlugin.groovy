@@ -46,9 +46,9 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
 
         def sourceApkLib = project.configurations.create(CONFIG_SOURCE_APK_LIBRARY)
         sourceApkLib.transitive = false
-        def apklibs = project.fileTree(DIR_SOURCE_APK_LIBRARY)
-        apklibs.include '*.apklib'
-        sourceApkLib.dependencies.add(project.dependencies.create(apklibs))
+        def apkLibs = project.fileTree(DIR_SOURCE_APK_LIBRARY)
+        apkLibs.include '*.apklib'
+        sourceApkLib.dependencies.add(project.dependencies.create(apkLibs))
 
         decodedSourceApp = registerDecodedSourceAppTaskChain(project, GROUP_DEXPATCHER,
                 { it }, { it }, sourceApk, sourceApkLib, extension.printAppInfo)
