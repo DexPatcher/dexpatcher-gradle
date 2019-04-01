@@ -108,7 +108,7 @@ class DexpatcherTask extends AbstractJavaExecTask {
 
     @Override List<String> getArgs() {
 
-        ArrayList<String> args = new ArrayList()
+        def args = new ArrayList<String>()
 
         def outFile = outputFile.orNull
         def outDir = outputDir.orNull

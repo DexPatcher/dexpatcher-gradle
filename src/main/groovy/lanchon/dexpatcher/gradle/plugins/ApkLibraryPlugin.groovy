@@ -55,10 +55,10 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
 
         super.afterApply()
 
-        def apkLibrary = createTaskChain(project, GROUP_DEXPATCHER, { it }, { it },
-                extension.resolvedApkFile)
-        project.tasks.getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(apkLibrary)
-        project.artifacts.add(Dependency.DEFAULT_CONFIGURATION /* TODO: .ARCHIVES_CONFIGURATION instead? */, apkLibrary)
+//        def apkLibrary = createTaskChain(project, GROUP_DEXPATCHER, { it }, { it },
+//                extension.resolvedApkFile)
+//        project.tasks.getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(apkLibrary)
+//        project.artifacts.add(Dependency.DEFAULT_CONFIGURATION /* TODO: .ARCHIVES_CONFIGURATION instead? */, apkLibrary)
 
     }
 

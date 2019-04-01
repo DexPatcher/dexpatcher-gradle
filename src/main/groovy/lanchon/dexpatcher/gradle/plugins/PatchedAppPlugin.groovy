@@ -73,7 +73,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
     private DexpatcherTask createPatchDexTask(ApplicationVariant variant) {
 
         def patch = project.layout.directoryProperty()
-        def patchDex = project.tasks.create("patch${variant.name.capitalize()}Dex", DexpatcherTask)
+        def patchDex = project.tasks.create("patch${variant.name.capitalize()}Dex".toString(), DexpatcherTask)
         patchDex.with {
             description = "Patches the source dex from an apk library using the just-built patch dex."
             group = GROUP_DEXPATCHER

@@ -110,7 +110,7 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
 
     @Override List<String> getArgs() {
 
-        ArrayList<String> args = new ArrayList()
+        def args = new ArrayList<String>()
 
         switch (verbosity.orNull) {
             case Verbosity.QUIET:

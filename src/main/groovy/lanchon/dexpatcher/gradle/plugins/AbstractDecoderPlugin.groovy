@@ -55,7 +55,8 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         sourceApkLib.dependencies.add(project.dependencies.create(apkLibs))
 
         decodedSourceApp = registerDecodedSourceAppTaskChain(project, GROUP_DEXPATCHER,
-                { it }, { it }, sourceApk, sourceApkLib, extension.printAppInfo)
+                { String it -> it }, { Provider<Directory> it -> it },
+                sourceApk, sourceApkLib, extension.printAppInfo)
 
     }
 
@@ -69,6 +70,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             it.outputDir.set dirModifier(project.layout.buildDirectory.dir(DIR_BUILD_DECODED_SOURCE_APP))
             if (!sourceApk.is(null)) it.sourceApp.from sourceApk
             if (!sourceApkLib.is(null)) it.sourceApp.from sourceApkLib
+            return
         }
 
         def sourceAppInfo = project.tasks.register(taskNameModifier(TASK_SOURCE_APP_INFO)) {
@@ -168,6 +170,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
                 project.zipTree(apkLibFile)
             }
             it.into outputDir
+            return
         }
         return unpackSourceApkLibrary
     }

@@ -81,7 +81,7 @@ class Dex2jarTask extends AbstractDex2jarTask {
 
     @Override List<String> getArgs() {
 
-        ArrayList<String> args = new ArrayList()
+        def args = new ArrayList<String>()
 
         def outFile = outputFile.orNull
         def outDir = outputDir.orNull
