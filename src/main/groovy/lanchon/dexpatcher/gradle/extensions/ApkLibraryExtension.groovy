@@ -31,7 +31,6 @@ class ApkLibraryExtension extends AbstractDecoderExtension {
 
         apkFileOrDir = project.objects.property(FileSystemLocation)
         apkFileOrDir.set project.layout.projectDirectory.dir('apk')
-        disableClean = project.objects.property(Boolean)
 
     }
 

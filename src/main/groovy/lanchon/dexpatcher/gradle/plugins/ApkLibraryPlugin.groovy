@@ -60,8 +60,6 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
         project.tasks.getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(apkLibrary)
         project.artifacts.add(Dependency.DEFAULT_CONFIGURATION /* TODO: .ARCHIVES_CONFIGURATION instead? */, apkLibrary)
 
-        createCleanTasks(GROUP_DEXPATCHER)
-
     }
 
     static Zip createTaskChain(Project project, String taskGroup, Closure<String> taskNameModifier,
@@ -219,37 +217,6 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
 
         }
         return apkLibrary
-
-    }
-
-    private void createCleanTasks(String taskGroup) {
-
-        def clean = (Delete) project.tasks.getByName(BasePlugin.CLEAN_TASK_NAME)
-        clean.actions.clear()
-
-        def cleanApkLibrary = project.tasks.create('cleanApkLibrary', Delete)
-        cleanApkLibrary.with {
-            description = "Deletes the build directory of an apk library project."
-            group = taskGroup
-            dependsOn { clean.dependsOn - cleanApkLibrary }
-            delete { clean.delete }
-        }
-
-        clean.mustRunAfter cleanApkLibrary
-
-        def cleanAll = project.tasks.create('cleanAll')
-        cleanAll.with {
-            description = "Cleans all projects, including the apk library project."
-            group = BasePlugin.BUILD_GROUP
-            dependsOn {
-                project.rootProject.allprojects.findResults { it.tasks.findByName(BasePlugin.CLEAN_TASK_NAME) }
-            }
-            dependsOn cleanApkLibrary
-        }
-
-        project.afterEvaluate {
-            if (!extension.disableClean) clean.dependsOn cleanApkLibrary
-        }
 
     }
 
