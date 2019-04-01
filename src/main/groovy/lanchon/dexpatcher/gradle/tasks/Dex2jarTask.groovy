@@ -113,10 +113,6 @@ class Dex2jarTask extends AbstractDex2jarTask {
 
     }
 
-    @Override protected boolean defaultAddBlankLines() {
-        false
-    }
-
     @Override protected void beforeExec() {
         deleteOutputFileOrDir outputFile.orNull
         deleteOutputDirContents outputDir.orNull

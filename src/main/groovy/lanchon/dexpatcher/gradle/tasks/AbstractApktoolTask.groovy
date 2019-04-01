@@ -135,19 +135,4 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
 
     }
 
-    @Override protected boolean defaultAddBlankLines() {
-        switch (verbosity.orNull) {
-            case Verbosity.QUIET:
-                return false
-                break
-            case Verbosity.NORMAL:
-            case null:
-            case Verbosity.VERBOSE:
-                return true
-                break
-            default:
-                throw new AssertionError('Unexpected verbosity', null)
-        }
-    }
-
 }

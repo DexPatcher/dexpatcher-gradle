@@ -174,24 +174,6 @@ class DexpatcherTask extends AbstractJavaExecTask {
 
     }
 
-    @Override protected boolean defaultAddBlankLines() {
-        def alwaysNeedsBlankLines = true
-        if (alwaysNeedsBlankLines) return true;
-        switch (verbosity.orNull) {
-            case Verbosity.QUIET:
-            case Verbosity.NORMAL:
-            case null:
-                return false
-                break
-            case Verbosity.VERBOSE:
-            case Verbosity.DEBUG:
-                return true
-                break
-            default:
-                throw new AssertionError('Unexpected verbosity', null)
-        }
-    }
-
     @Override protected void beforeExec() {
         deleteOutputFileOrDir outputFile.orNull
         deleteOutputDirContents outputDir.orNull

@@ -144,7 +144,6 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
             apktoolYmlFile.eachLine { line ->
                 if (pattern.matcher(line).find()) println line
             }
-            if (task.resolvedAddBlankLines.get()) println()
         }
     }
 
