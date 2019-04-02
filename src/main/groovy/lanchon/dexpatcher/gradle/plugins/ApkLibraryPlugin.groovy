@@ -13,28 +13,23 @@ package lanchon.dexpatcher.gradle.plugins
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.extensions.ApkLibraryExtension
-import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
+import lanchon.dexpatcher.gradle.tasks.LazyZipTask
 import lanchon.dexpatcher.gradle.tasks.SourceAppTask
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
-import org.gradle.api.file.CopySpec
-import org.gradle.api.file.Directory
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.file.RegularFile
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.provider.Provider
-import org.gradle.api.tasks.Delete
-import org.gradle.api.tasks.bundling.Zip
+import org.gradle.api.tasks.TaskProvider
 
 import static lanchon.dexpatcher.gradle.Constants.*
 
-// TODO: Add plugin version to apk libs.
-// TODO: Maybe select apktool decode api level automatically.
-// (But it might only be used by baksmali, which is bypassed.)
-
 @CompileStatic
 class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
+
+    protected TaskProvider<LazyZipTask> apkLibrary
 
     @Override
     void apply(Project project) {
@@ -55,13 +50,49 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
 
         super.afterApply()
 
-//        def apkLibrary = createTaskChain(project, GROUP_DEXPATCHER, { it }, { it },
-//                extension.resolvedApkFile)
-//        project.tasks.getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn(apkLibrary)
-//        project.artifacts.add(Dependency.DEFAULT_CONFIGURATION /* TODO: .ARCHIVES_CONFIGURATION instead? */, apkLibrary)
+        def apkLibFile = project.<RegularFile>provider {
+            def name = project.name ?: 'source'
+            def files = sourceApp.get().sourceAppFiles.files
+            if (files.size() == 1) {
+                def newName = files[0].name
+                if (newName) {
+                    def lc = newName.toLowerCase()
+                    if (lc.endsWith('.apk')) newName = newName.substring(0, newName.length() - 4)
+                    else if (lc.endsWith('.apklib')) newName = newName.substring(0, newName.length() - 7)
+                    if (newName) name = newName
+                }
+            }
+            name += '.apklib'
+            return project.layout.buildDirectory.get().file(DIR_BUILD_APK_LIBRARY + '/' + name)
+        }
+
+        apkLibrary = registerApkLibraryTask(project, TASK_APK_LIBRARY, GROUP_DEXPATCHER, sourceApp, apkLibFile)
+        project.artifacts.add(Dependency.DEFAULT_CONFIGURATION, apkLibrary)
+
+        project.tasks.named(BasePlugin.ASSEMBLE_TASK_NAME).configure {
+            it.dependsOn apkLibrary
+        }
 
     }
 
+    static TaskProvider<LazyZipTask> registerApkLibraryTask(Project project, String taskName, String taskGroup,
+            TaskProvider<SourceAppTask> sourceApp, Provider<RegularFile> apkLibFile) {
+        def apkLibrary = project.tasks.register(taskName, LazyZipTask) {
+            it.description = 'Packs the decoded source application as a DexPatcher APK library.'
+            it.group = taskGroup
+            it.extension = 'apklib'
+            it.zip64 = true
+            it.reproducibleFileOrder = true
+            it.preserveFileTimestamps = false
+            it.duplicatesStrategy = DuplicatesStrategy.FAIL
+            //it.dependsOn sourceApp
+            it.from sourceApp
+            it.archiveFile.set apkLibFile
+        }
+        return apkLibrary
+    }
+
+    /*
     static Zip createTaskChain(Project project, String taskGroup, Closure<String> taskNameModifier,
             Closure<Directory> dirModifier, Provider<RegularFile> theApkFile) {
 
@@ -88,9 +119,6 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
             frameworkDirAsOutput.set apktoolFrameworkDir
             decodeClasses.set false
             //keepBrokenResources.set true
-        }
-        decodeApk.doLast {
-            printApkInfo decodeApk
         }
 
         def dex2jar = project.tasks.create(taskNameModifier('dex2jar'), Dex2jarTask)
@@ -134,17 +162,6 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
 
     }
 
-    private static void printApkInfo(DecodeApkTask task) {
-        def apktoolYmlFile = task.outputDir.get().file('apktool.yml').asFile
-        if (apktoolYmlFile.isFile()) {
-            def pattern = ~/^\s*(minSdkVersion|targetSdkVersion|versionCode|versionName):/
-            println 'APK information:'
-            apktoolYmlFile.eachLine { line ->
-                if (pattern.matcher(line).find()) println line
-            }
-        }
-    }
-
     static Zip createResourcesTask(Project project, String name, Directory apktoolDir) {
         def resources = project.tasks.create(name, Zip)
         resources.with {
@@ -164,10 +181,11 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
         def apkLibrary = project.tasks.create(name, Zip)
         apkLibrary.with {
 
-            duplicatesStrategy = DuplicatesStrategy.FAIL
             extension = 'apk.aar'
+            it.zip64 = true
+            duplicatesStrategy = DuplicatesStrategy.FAIL
 
-            /*
+            / *
             AAR Format:
                 /AndroidManifest.xml (mandatory)
                 /classes.jar (mandatory)
@@ -178,7 +196,7 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
                 /jni/<abi>/*.so (optional)
                 /proguard.txt (optional)
                 /lint.jar (optional)
-            */
+            * /
 
             from(apktoolDir) { CopySpec spec ->
                 spec.with {
@@ -219,5 +237,6 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
         return apkLibrary
 
     }
+    */
 
 }

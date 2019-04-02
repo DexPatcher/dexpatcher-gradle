@@ -39,6 +39,7 @@ abstract class Constants {
     static final String TASK_UNPACK_APK_LIBRARY = 'unpackApkLibrary'
     static final String TASK_SOURCE_APP = 'sourceApp'
     static final String TASK_SOURCE_APP_INFO = 'sourceAppInfo'
+    static final String TASK_APK_LIBRARY = 'apkLibrary'
     static final String TASK_DEDEX_CLASSES = 'dedexClasses'
 
     static final String DIR_BUILD_INTERMEDIATES = 'intermediates/dexpatcher'
@@ -46,6 +47,9 @@ abstract class Constants {
     static final String DIR_BUILD_APKTOOL_FRAMEWORK = DIR_BUILD_INTERMEDIATES + '/apktool-framework'
     static final String FILE_BUILD_DEDEXED_CLASSES = DIR_BUILD_INTERMEDIATES + '/dedexed-classes/classes.jar'
     static final String FILE_BUILD_DEX2JAR_EXCEPTIONS = DIR_BUILD_INTERMEDIATES + '/dedexed-classes/dex2jar-exceptions.zip'
+
+    static final String DIR_BUILD_OUTPUTS = 'outputs'
+    static final String DIR_BUILD_APK_LIBRARY = DIR_BUILD_OUTPUTS + '/apk-library'
 
     static abstract class ApkLib {
 

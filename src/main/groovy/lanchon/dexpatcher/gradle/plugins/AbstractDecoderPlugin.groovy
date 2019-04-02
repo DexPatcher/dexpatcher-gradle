@@ -26,6 +26,9 @@ import org.gradle.api.tasks.TaskProvider
 
 import static lanchon.dexpatcher.gradle.Constants.*
 
+// TODO: Maybe select apktool decode api level automatically.
+// (But it might only be used by baksmali, which is bypassed.)
+
 @CompileStatic
 abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends AbstractPlugin {
 
