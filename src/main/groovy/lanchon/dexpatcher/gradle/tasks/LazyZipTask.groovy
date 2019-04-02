@@ -20,6 +20,9 @@ import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.bundling.Zip
 
+// FIXME: This hack apparently does not work on Gradle 5.1 or later.
+// (See: https://github.com/gradle/gradle/issues/8401)
+
 @CompileStatic
 class LazyZipTask extends Zip {
 
