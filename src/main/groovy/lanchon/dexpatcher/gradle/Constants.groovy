@@ -21,6 +21,10 @@ abstract class Constants {
     static final String DIR_SOURCE_APK = 'apk'
     static final String DIR_SOURCE_APK_LIBRARY = 'apklib'
 
+    static final String FILE_EXT_APK_LIBRARY = '.apklib'
+    static final List<String> FILE_EXTS_SOURCE_APK = ['.apk', '.jar', '.zip'].asImmutable()
+    static final List<String> FILE_EXTS_SOURCE_APP = (FILE_EXTS_SOURCE_APK + FILE_EXT_APK_LIBRARY).asImmutable()
+
     static final String TOOL_DEXPATCHER = 'dexpatcher'
     static final String TOOL_APKTOOL = 'apktool'
     static final String TOOL_DEX2JAR = 'dex2jar'

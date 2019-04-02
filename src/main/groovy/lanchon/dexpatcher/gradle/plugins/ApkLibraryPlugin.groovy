@@ -56,13 +56,11 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
             if (files.size() == 1) {
                 def newName = files[0].name
                 if (newName) {
-                    def lc = newName.toLowerCase()
-                    if (lc.endsWith('.apk')) newName = newName.substring(0, newName.length() - 4)
-                    else if (lc.endsWith('.apklib')) newName = newName.substring(0, newName.length() - 7)
+                    newName = removeExtensions(newName, FILE_EXTS_SOURCE_APP)
                     if (newName) name = newName
                 }
             }
-            name += '.apklib'
+            name += FILE_EXT_APK_LIBRARY
             return project.layout.buildDirectory.get().file(DIR_BUILD_APK_LIBRARY + '/' + name)
         }
 
@@ -75,12 +73,21 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
 
     }
 
+    private static String removeExtensions(String name, Iterable<String> extensions) {
+        for (def it in extensions) {
+            if (name.endsWith(it)) {
+                return name.substring(0, name.length() - it.length())
+            }
+        }
+        return name
+    }
+
     static TaskProvider<LazyZipTask> registerApkLibraryTask(Project project, String taskName, String taskGroup,
             TaskProvider<SourceAppTask> sourceApp, Provider<RegularFile> apkLibFile) {
         def apkLibrary = project.tasks.register(taskName, LazyZipTask) {
             it.description = 'Packs the decoded source application as a DexPatcher APK library.'
             it.group = taskGroup
-            it.extension = 'apklib'
+            it.extension = FILE_EXT_APK_LIBRARY.substring(1)
             it.zip64 = true
             it.reproducibleFileOrder = true
             it.preserveFileTimestamps = false

@@ -46,7 +46,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         sourceApk.canBeConsumed = false
         sourceApk.transitive = false
         def apks = project.fileTree(DIR_SOURCE_APK)
-        apks.include '*.apk', '*.jar', '*.zip'
+        apks.include FILE_EXTS_SOURCE_APK.collect { '*' + it }
         sourceApk.dependencies.add project.dependencies.create(apks)
 
         def sourceApkLib = project.configurations.create(CONFIG_SOURCE_APK_LIBRARY)
@@ -54,7 +54,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         sourceApkLib.canBeConsumed = false
         sourceApkLib.transitive = false
         def apkLibs = project.fileTree(DIR_SOURCE_APK_LIBRARY)
-        apkLibs.include '*.apklib'
+        apkLibs.include '*' + FILE_EXT_APK_LIBRARY
         sourceApkLib.dependencies.add project.dependencies.create(apkLibs)
 
         sourceApp = registerSourceAppTaskChain(project, GROUP_DEXPATCHER,
