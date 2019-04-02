@@ -101,16 +101,14 @@ abstract class AbstractPatcherPlugin<
 
         // Add the DexPatcher annotations as a compile-only dependency.
         def providedLibs = Utils.getJars(project, dexpatcherConfig.resolvedProvidedLibDir)
-        def compileOnlyConfig = project.configurations.getByName(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME)
-        compileOnlyConfig.dependencies.add(project.dependencies.create(providedLibs))
+        project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, providedLibs
 
         // Conditionally add the dedexed source classes as a compile-only dependency.
         project.afterEvaluate {
             if (((AbstractPatcherExtension) extension).importSymbols.get()) {
                 def symbolLib = project.files(dedexClasses.get().outputFile)
                 symbolLib.builtBy dedexClasses
-                def config = project.configurations.getByName(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME)
-                config.dependencies.add(project.dependencies.create(symbolLib))
+                project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, symbolLib
             }
         }
 

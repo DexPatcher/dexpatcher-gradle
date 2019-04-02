@@ -47,7 +47,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         sourceApk.transitive = false
         def apks = project.fileTree(DIR_SOURCE_APK)
         apks.include '*.apk', '*.jar', '*.zip'
-        sourceApk.dependencies.add(project.dependencies.create(apks))
+        sourceApk.dependencies.add project.dependencies.create(apks)
 
         def sourceApkLib = project.configurations.create(CONFIG_SOURCE_APK_LIBRARY)
         sourceApkLib.canBeResolved = true
@@ -55,7 +55,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         sourceApkLib.transitive = false
         def apkLibs = project.fileTree(DIR_SOURCE_APK_LIBRARY)
         apkLibs.include '*.apklib'
-        sourceApkLib.dependencies.add(project.dependencies.create(apkLibs))
+        sourceApkLib.dependencies.add project.dependencies.create(apkLibs)
 
         sourceApp = registerSourceAppTaskChain(project, GROUP_DEXPATCHER,
                 { String it -> it }, { Provider<Directory> it -> it },
