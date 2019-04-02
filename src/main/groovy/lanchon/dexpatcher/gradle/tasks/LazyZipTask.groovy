@@ -35,8 +35,7 @@ class LazyZipTask extends Zip {
         }
     }
 
-    @Internal
-    public File getArchivePath() {
+    @Internal @Override public File getArchivePath() {
         return archiveFile.get().asFile;
     }
 
