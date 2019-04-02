@@ -57,8 +57,8 @@ abstract class Utils {
         getRegularFileProvider(project, file).get()
     }
 
-    static Provider<Directory> getDirectory(Project project, File dir) {
-        getDirectoryProvider(project, dir)
+    static Directory getDirectory(Project project, File dir) {
+        getDirectoryProvider(project, dir).get()
     }
 
 }
