@@ -54,6 +54,7 @@ abstract class Constants {
 
     static final String DIR_BUILD_OUTPUTS = 'outputs'
     static final String DIR_BUILD_APK_LIBRARY = DIR_BUILD_OUTPUTS + '/apk-library'
+    static final String FILENAME_APK_LIBRARY_DEFAULT_BASE = 'source'
 
     static abstract class ApkLib {
 
