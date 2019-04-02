@@ -12,12 +12,9 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Utils
-
-import org.gradle.api.file.RegularFile
-import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
-import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.bundling.Zip
 
 // FIXME: This hack apparently does not work on Gradle 5.1 or later.
@@ -26,17 +23,28 @@ import org.gradle.api.tasks.bundling.Zip
 @CompileStatic
 class LazyZipTask extends Zip {
 
-    @OutputFile final RegularFileProperty archiveFile
+    @Internal final Property<String> lazyArchiveFileName
+    @Internal final DirectoryProperty lazyDestinationDirectory
 
     LazyZipTask() {
-        archiveFile = project.layout.fileProperty()
-        archiveFile.set project.<RegularFile>provider {
-            Utils.getRegularFile(project, super.getArchivePath())
+        lazyArchiveFileName = project.objects.property(String)
+        lazyArchiveFileName.set project.<String>provider {
+            super.getArchiveName()
         }
+        lazyDestinationDirectory = project.layout.directoryProperty()
+        //lazyDestinationDirectory.set project.<Directory>provider {
+        //    Utils.getDirectory(project, super.getDestinationDir())
+        //}
     }
 
-    @Internal @Override public File getArchivePath() {
-        return archiveFile.get().asFile;
+    @Override @Internal public String getArchiveName() {
+        return lazyArchiveFileName.get()
+    }
+
+    @Override @Internal public File getDestinationDir() {
+        //return lazyDestinationDirectory.get().asFile
+        super.destinationDir = lazyDestinationDirectory.get().asFile
+        return super.getDestinationDir()
     }
 
 }

@@ -18,8 +18,8 @@ import lanchon.dexpatcher.gradle.tasks.SourceAppTask
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
+import org.gradle.api.file.Directory
 import org.gradle.api.file.DuplicatesStrategy
-import org.gradle.api.file.RegularFile
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
@@ -50,7 +50,7 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
 
         super.afterApply()
 
-        def apkLibFile = project.<RegularFile>provider {
+        def apkLibFileName = project.<String>provider {
             def name = project.name ?: FILENAME_APK_LIBRARY_DEFAULT_BASE
             def files = sourceApp.get().sourceAppFiles.files
             if (files.size() == 1) {
@@ -61,10 +61,12 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
                 }
             }
             name += FILE_EXT_APK_LIBRARY
-            return project.layout.buildDirectory.get().file(DIR_BUILD_APK_LIBRARY + '/' + name)
+            name
         }
 
-        apkLibrary = registerApkLibraryTask(project, TASK_APK_LIBRARY, GROUP_DEXPATCHER, sourceApp, apkLibFile)
+        apkLibrary = registerApkLibraryTask(project, TASK_APK_LIBRARY, GROUP_DEXPATCHER, sourceApp,
+                apkLibFileName, project.layout.buildDirectory.dir(DIR_BUILD_APK_LIBRARY))
+
         project.artifacts.add(Dependency.DEFAULT_CONFIGURATION, apkLibrary)
 
         project.tasks.named(BasePlugin.ASSEMBLE_TASK_NAME).configure {
@@ -83,7 +85,7 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
     }
 
     static TaskProvider<LazyZipTask> registerApkLibraryTask(Project project, String taskName, String taskGroup,
-            TaskProvider<SourceAppTask> sourceApp, Provider<RegularFile> apkLibFile) {
+            TaskProvider<SourceAppTask> sourceApp, Provider<String> apkLibFileName, Provider<Directory> apkLibDirectory) {
         def apkLibrary = project.tasks.register(taskName, LazyZipTask) {
             it.description = 'Packs the decoded source application as a DexPatcher APK library.'
             it.group = taskGroup
@@ -94,7 +96,8 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
             it.duplicatesStrategy = DuplicatesStrategy.FAIL
             //it.dependsOn sourceApp
             it.from sourceApp
-            it.archiveFile.set apkLibFile
+            it.lazyArchiveFileName.set apkLibFileName
+            it.lazyDestinationDirectory.set apkLibDirectory
         }
         return apkLibrary
     }
