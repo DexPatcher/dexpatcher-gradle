@@ -114,7 +114,7 @@ abstract class AbstractPatcherPlugin<
             }
         }
 
-        def packExtraResources = project.tasks.register(TaskNames.PACK_EXTRA_RESOURCES, LazyZipTask) {
+        def packExtraAppResources = project.tasks.register(TaskNames.PACK_EXTRA_APP_RESOURCES, LazyZipTask) {
             it.description = "Packs extra resources of the source application."
             it.group = TASK_GROUP_NAME
             it.zip64 = true

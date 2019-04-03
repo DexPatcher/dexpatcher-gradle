@@ -40,7 +40,7 @@ abstract class Constants {
         static final String SOURCE_APP_INFO = 'sourceAppInfo'
         static final String CREATE_APK_LIBRARY = 'createApkLibrary'
         static final String DEDEX_APP_CLASSES = 'dedexAppClasses'
-        static final String PACK_EXTRA_RESOURCES = 'packExtraResources'
+        static final String PACK_EXTRA_APP_RESOURCES = 'packExtraAppResources'
     }
 
     static abstract class ConfigurationNames {
