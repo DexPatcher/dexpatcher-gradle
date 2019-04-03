@@ -122,7 +122,7 @@ abstract class AbstractPatcherPlugin<
             it.preserveFileTimestamps = false
             it.duplicatesStrategy = DuplicatesStrategy.FAIL
             it.entryCompression = ZipEntryCompression.STORED
-            it.lazyArchiveFileName.set AppAar.FILE_CLASSES_JAR
+            it.lazyArchiveFileName.set BuildDir.FILENAME_EXTRA_RESOURCES
             it.lazyDestinationDirectory.set project.layout.buildDirectory.dir(BuildDir.DIR_EXTRA_RESOURCES)
             it.dependsOn provideDecodedApp
             it.from(provideDecodedApp.get().outputDir.dir(ApkLib.DIR_UNKNOWN))

@@ -69,6 +69,7 @@ abstract class Constants {
         static final String FILE_DEDEXED_CLASSES = DIR_INTERMEDIATES + '/dedexed-classes/app-classes.jar'
         static final String FILE_DEX2JAR_EXCEPTIONS = DIR_INTERMEDIATES + '/dedexed-classes/dex2jar-exceptions.zip'
         static final String DIR_EXTRA_RESOURCES = DIR_INTERMEDIATES + '/extra-resources'
+        static final String FILENAME_EXTRA_RESOURCES = ComponentLib.FILE_CLASSES_JAR
         // Outputs:
         static final String DIR_OUTPUTS = 'outputs'
         static final String DIR_APK_LIBRARY = DIR_OUTPUTS + '/apk-library'
@@ -82,7 +83,7 @@ abstract class Constants {
         static final String DIR_UNKNOWN = 'unknown'
     }
 
-    static abstract class AppAar {
+    static abstract class ComponentLib {
         static final String FILE_CLASSES_JAR = 'classes.jar'
     }
 
