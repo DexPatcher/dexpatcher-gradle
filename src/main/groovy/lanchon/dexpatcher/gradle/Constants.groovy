@@ -79,7 +79,7 @@ abstract class Constants {
     static abstract class ApkLib {
         static final String FILE_APKTOOL_YML = 'apktool.yml'
         static final String DIR_ORIGINAL = 'original'
-        static final String DIR_META_INF = DIR_ORIGINAL + '/' + FileNames.META_INF
+        static final String DIR_ORIGINAL_META_INF = DIR_ORIGINAL + '/' + FileNames.META_INF
         static final String DIR_UNKNOWN = 'unknown'
     }
 

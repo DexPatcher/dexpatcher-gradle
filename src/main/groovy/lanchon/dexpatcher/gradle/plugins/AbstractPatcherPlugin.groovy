@@ -126,7 +126,7 @@ abstract class AbstractPatcherPlugin<
             it.lazyDestinationDirectory.set project.layout.buildDirectory.dir(BuildDir.DIR_EXTRA_RESOURCES)
             it.dependsOn provideDecodedApp
             it.from(provideDecodedApp.get().outputDir.dir(ApkLib.DIR_UNKNOWN))
-            it.from(provideDecodedApp.get().outputDir.dir(ApkLib.DIR_META_INF)) { CopySpec spec ->
+            it.from(provideDecodedApp.get().outputDir.dir(ApkLib.DIR_ORIGINAL_META_INF)) { CopySpec spec ->
                 spec.into FileNames.META_INF
             }
             return
