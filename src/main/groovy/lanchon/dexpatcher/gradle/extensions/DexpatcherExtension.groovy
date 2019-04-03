@@ -12,16 +12,17 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Constants
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask.Verbosity
 
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 
+import static lanchon.dexpatcher.gradle.Constants.*
+
 @CompileStatic
 class DexpatcherExtension extends AbstractToolExtension {
 
-    private static final String PREFIX = super.PREFIX + Constants.TOOL_DEXPATCHER + '.'
+    private static final String PREFIX = super.PREFIX + TOOL_DEXPATCHER + '.'
 
     private static final String DIR_PROPERTY = PREFIX + 'dir'
 
@@ -66,6 +67,6 @@ class DexpatcherExtension extends AbstractToolExtension {
     }
 
     @Override
-    protected String getName() { Constants.TOOL_DEXPATCHER }
+    protected String getName() { TOOL_DEXPATCHER }
 
 }

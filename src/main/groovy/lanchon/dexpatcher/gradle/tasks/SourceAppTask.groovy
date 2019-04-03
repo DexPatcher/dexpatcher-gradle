@@ -12,7 +12,6 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Constants
 import lanchon.dexpatcher.gradle.Utils
 
 import org.gradle.api.DefaultTask
@@ -23,6 +22,8 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+
+import static lanchon.dexpatcher.gradle.Constants.*
 
 @CompileStatic
 class SourceAppTask extends DefaultTask {
@@ -44,7 +45,7 @@ class SourceAppTask extends DefaultTask {
             }
             return Utils.getRegularFile(project, files[0])
         }
-        apktoolYmlFile = outputDir.file(Constants.ApkLib.FILE_APKTOOL_YML)
+        apktoolYmlFile = outputDir.file(ApkLib.FILE_APKTOOL_YML)
         outputs.upToDateWhen {
             false
         }
@@ -54,7 +55,7 @@ class SourceAppTask extends DefaultTask {
     void check() {
         sourceAppFile.get()
         if (!apktoolYmlFile.get().asFile.isFile()) {
-            throw new RuntimeException("Cannot find '$Constants.ApkLib.FILE_APKTOOL_YML' file in decoded application")
+            throw new RuntimeException("Cannot find '$ApkLib.FILE_APKTOOL_YML' file in decoded application")
         }
     }
 
