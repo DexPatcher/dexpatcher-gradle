@@ -88,7 +88,7 @@ abstract class AbstractPatcherPlugin<
 
         super.afterApply()
 
-        dexpatcherDir = project.layout.directoryProperty(project.layout.buildDirectory.dir(DIR_BUILD_INTERMEDIATES))
+        dexpatcherDir = project.layout.directoryProperty(project.layout.buildDirectory.dir(BuildDir.DIR_INTERMEDIATES))
         apkLibRootDirUnchecked = project.layout.directoryProperty()
         apkLibrary = new ApkLibraryPaths(project, apkLibRootDirUnchecked)
 
@@ -96,13 +96,13 @@ abstract class AbstractPatcherPlugin<
         def providedLibs = Utils.getJars(project, dexpatcherConfig.resolvedProvidedLibDir)
         project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, providedLibs
 
-        def dedexClasses = project.tasks.register(TASK_DEDEX_CLASSES, Dex2jarTask) {
+        def dedexClasses = project.tasks.register(TaskNames.DEDEX_CLASSES, Dex2jarTask) {
             it.description = "Translates the Dalvik bytecode of the source application to Java bytecode."
-            it.group = GROUP_DEXPATCHER
+            it.group = TASK_GROUP_NAME
             it.dependsOn sourceApp
             it.dexFiles.from sourceApp.get().sourceAppFile
-            it.outputFile.set project.layout.buildDirectory.file(FILE_BUILD_DEDEXED_CLASSES)
-            it.exceptionFile.set project.layout.buildDirectory.file(FILE_BUILD_DEX2JAR_EXCEPTIONS)
+            it.outputFile.set project.layout.buildDirectory.file(BuildDir.FILE_DEDEXED_CLASSES)
+            it.exceptionFile.set project.layout.buildDirectory.file(BuildDir.FILE_DEX2JAR_EXCEPTIONS)
         }
 
         // Conditionally add the dedexed source classes as a compile-only dependency.
@@ -114,20 +114,20 @@ abstract class AbstractPatcherPlugin<
             }
         }
 
-        def packExtraResources = project.tasks.register(TASK_PACK_EXTRA_RESOURCES, LazyZipTask) {
+        def packExtraResources = project.tasks.register(TaskNames.PACK_EXTRA_RESOURCES, LazyZipTask) {
             it.description = "Packs extra resources of the source application."
-            it.group = GROUP_DEXPATCHER
+            it.group = TASK_GROUP_NAME
             it.zip64 = true
             it.reproducibleFileOrder = true
             it.preserveFileTimestamps = false
             it.duplicatesStrategy = DuplicatesStrategy.FAIL
             it.entryCompression = ZipEntryCompression.STORED
             it.lazyArchiveFileName.set AppAar.FILE_CLASSES_JAR
-            it.lazyDestinationDirectory.set project.layout.buildDirectory.dir(DIR_BUILD_EXTRA_RESOURCES)
+            it.lazyDestinationDirectory.set project.layout.buildDirectory.dir(BuildDir.DIR_EXTRA_RESOURCES)
             it.dependsOn sourceApp
             it.from(sourceApp.get().outputDir.dir(ApkLib.DIR_UNKNOWN))
             it.from(sourceApp.get().outputDir.dir(ApkLib.DIR_META_INF)) { CopySpec spec ->
-                spec.into DIRNAME_META_INF
+                spec.into FileNames.META_INF
             }
             return
         }

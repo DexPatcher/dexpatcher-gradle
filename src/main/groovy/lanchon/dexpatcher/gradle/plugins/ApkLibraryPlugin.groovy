@@ -37,7 +37,7 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
         super.apply(project)
 
         extension = (ApkLibraryExtension) subextensions.create(
-                EXT_PLUGIN_APK_LIBRARY, ApkLibraryExtension, project, dexpatcherConfig)
+                ExtensionNames.PLUGIN_APK_LIBRARY, ApkLibraryExtension, project, dexpatcherConfig)
 
         project.plugins.apply(BasePlugin)
 
@@ -51,21 +51,21 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
         super.afterApply()
 
         def apkLibFileName = project.<String>provider {
-            def name = project.name ?: FILENAME_APK_LIBRARY_DEFAULT_BASE
+            def name = project.name ?: FileNames.BASE_APK_LIBRARY_DEFAULT
             def files = sourceApp.get().sourceAppFiles.files
             if (files.size() == 1) {
                 def newName = files[0].name
                 if (newName) {
-                    newName = removeExtensions(newName, FILE_EXTS_SOURCE_APP)
+                    newName = removeExtensions(newName, FileNames.EXTS_SOURCE_APP)
                     if (newName) name = newName
                 }
             }
-            name += FILE_EXT_APK_LIBRARY
+            name += FileNames.EXT_APK_LIBRARY
             name
         }
 
-        apkLibrary = registerApkLibraryTask(project, TASK_APK_LIBRARY, GROUP_DEXPATCHER, sourceApp,
-                apkLibFileName, project.layout.buildDirectory.dir(DIR_BUILD_APK_LIBRARY))
+        apkLibrary = registerApkLibraryTask(project, TaskNames.APK_LIBRARY, TASK_GROUP_NAME, sourceApp,
+                apkLibFileName, project.layout.buildDirectory.dir(BuildDir.DIR_APK_LIBRARY))
 
         project.artifacts.add(Dependency.DEFAULT_CONFIGURATION, apkLibrary)
 
@@ -89,7 +89,7 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
         def apkLibrary = project.tasks.register(taskName, LazyZipTask) {
             it.description = 'Packs the decoded source application as a DexPatcher APK library.'
             it.group = taskGroup
-            it.extension = FILE_EXT_APK_LIBRARY.substring(1)
+            it.extension = FileNames.EXT_APK_LIBRARY.substring(1)
             it.zip64 = true
             it.reproducibleFileOrder = true
             it.preserveFileTimestamps = false

@@ -22,7 +22,7 @@ import static lanchon.dexpatcher.gradle.Constants.*
 @CompileStatic
 class DexpatcherExtension extends AbstractToolExtension {
 
-    private static final String PREFIX = super.PREFIX + TOOL_DEXPATCHER + '.'
+    private static final String PREFIX = super.PREFIX + ToolNames.DEXPATCHER + '.'
 
     private static final String DIR_PROPERTY = PREFIX + 'dir'
 
@@ -67,6 +67,6 @@ class DexpatcherExtension extends AbstractToolExtension {
     }
 
     @Override
-    protected String getName() { TOOL_DEXPATCHER }
+    protected String getName() { ToolNames.DEXPATCHER }
 
 }

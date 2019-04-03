@@ -24,7 +24,7 @@ import static lanchon.dexpatcher.gradle.Constants.*
 @CompileStatic
 class ApktoolExtension extends AbstractToolExtension {
 
-    private static final String PREFIX = super.PREFIX + TOOL_APKTOOL + '.'
+    private static final String PREFIX = super.PREFIX + ToolNames.APKTOOL + '.'
 
     private static final String DIR_PROPERTY = PREFIX + 'dir'
     private static final String FRAMEWORK_DIR_PROPERTY = PREFIX + 'framework.dir'
@@ -89,6 +89,6 @@ class ApktoolExtension extends AbstractToolExtension {
     }
 
     @Override
-    protected String getName() { TOOL_APKTOOL }
+    protected String getName() { ToolNames.APKTOOL }
 
 }

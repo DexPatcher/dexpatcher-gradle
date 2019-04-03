@@ -107,11 +107,11 @@ class DexpatcherBasePlugin implements Plugin<Project> {
     }
 
     private void setExtensions() {
-        dexpatcherConfig = project.extensions.create(EXT_DEXPATCHER_CONFIG, DexpatcherConfigExtension, project)
+        dexpatcherConfig = project.extensions.create(ExtensionNames.DEXPATCHER_CONFIG, DexpatcherConfigExtension, project)
         def subextensions = (dexpatcherConfig as ExtensionAware).extensions
-        dexpatcher = subextensions.create(EXT_TOOL_DEXPATCHER, DexpatcherExtension, project, dexpatcherConfig)
-        apktool = subextensions.create(EXT_TOOL_APKTOOL, ApktoolExtension, project, dexpatcherConfig)
-        dex2jar = subextensions.create(EXT_TOOL_DEX2JAR, Dex2jarExtension, project, dexpatcherConfig)
+        dexpatcher = subextensions.create(ExtensionNames.TOOL_DEXPATCHER, DexpatcherExtension, project, dexpatcherConfig)
+        apktool = subextensions.create(ExtensionNames.TOOL_APKTOOL, ApktoolExtension, project, dexpatcherConfig)
+        dex2jar = subextensions.create(ExtensionNames.TOOL_DEX2JAR, Dex2jarExtension, project, dexpatcherConfig)
     }
 
 }
