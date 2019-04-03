@@ -45,20 +45,33 @@ abstract class Constants {
     static final String TASK_SOURCE_APP_INFO = 'sourceAppInfo'
     static final String TASK_APK_LIBRARY = 'apkLibrary'
     static final String TASK_DEDEX_CLASSES = 'dedexClasses'
+    static final String TASK_PACK_EXTRA_RESOURCES = 'packExtraResources'
 
     static final String DIR_BUILD_INTERMEDIATES = 'intermediates/dexpatcher'
     static final String DIR_BUILD_SOURCE_APP = DIR_BUILD_INTERMEDIATES + '/source-app'
     static final String DIR_BUILD_APKTOOL_FRAMEWORK = DIR_BUILD_INTERMEDIATES + '/apktool-framework'
     static final String FILE_BUILD_DEDEXED_CLASSES = DIR_BUILD_INTERMEDIATES + '/dedexed-classes/classes.jar'
     static final String FILE_BUILD_DEX2JAR_EXCEPTIONS = DIR_BUILD_INTERMEDIATES + '/dedexed-classes/dex2jar-exceptions.zip'
+    static final String DIR_BUILD_EXTRA_RESOURCES = DIR_BUILD_INTERMEDIATES + '/extra-resources'
 
     static final String DIR_BUILD_OUTPUTS = 'outputs'
     static final String DIR_BUILD_APK_LIBRARY = DIR_BUILD_OUTPUTS + '/apk-library'
     static final String FILENAME_APK_LIBRARY_DEFAULT_BASE = 'source'
 
+    static final String DIRNAME_META_INF = 'META-INF'
+
     static abstract class ApkLib {
 
         static final String FILE_APKTOOL_YML = 'apktool.yml'
+        static final String DIR_ORIGINAL = 'original'
+        static final String DIR_META_INF = DIR_ORIGINAL + '/' + DIRNAME_META_INF
+        static final String DIR_UNKNOWN = 'unknown'
+
+    }
+
+    static abstract class AppAar {
+
+        static final String FILE_CLASSES_JAR = 'classes.jar'
 
     }
 

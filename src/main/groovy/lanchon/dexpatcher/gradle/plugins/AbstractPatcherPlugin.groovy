@@ -10,25 +10,27 @@
 
 package lanchon.dexpatcher.gradle.plugins
 
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
-import java.util.zip.ZipOutputStream
+
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.Utils
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
+import lanchon.dexpatcher.gradle.tasks.LazyZipTask
 
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.file.CopySpec
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.bundling.ZipEntryCompression
 
 import static lanchon.dexpatcher.gradle.Constants.*
 
@@ -90,6 +92,10 @@ abstract class AbstractPatcherPlugin<
         apkLibRootDirUnchecked = project.layout.directoryProperty()
         apkLibrary = new ApkLibraryPaths(project, apkLibRootDirUnchecked)
 
+        // Add the DexPatcher annotations as a compile-only dependency.
+        def providedLibs = Utils.getJars(project, dexpatcherConfig.resolvedProvidedLibDir)
+        project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, providedLibs
+
         def dedexClasses = project.tasks.register(TASK_DEDEX_CLASSES, Dex2jarTask) {
             it.description = "Translates the Dalvik bytecode of the source application to Java bytecode."
             it.group = GROUP_DEXPATCHER
@@ -99,10 +105,6 @@ abstract class AbstractPatcherPlugin<
             it.exceptionFile.set project.layout.buildDirectory.file(FILE_BUILD_DEX2JAR_EXCEPTIONS)
         }
 
-        // Add the DexPatcher annotations as a compile-only dependency.
-        def providedLibs = Utils.getJars(project, dexpatcherConfig.resolvedProvidedLibDir)
-        project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, providedLibs
-
         // Conditionally add the dedexed source classes as a compile-only dependency.
         project.afterEvaluate {
             if (((AbstractPatcherExtension) extension).importSymbols.get()) {
@@ -111,6 +113,121 @@ abstract class AbstractPatcherPlugin<
                 project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, symbolLib
             }
         }
+
+        def packExtraResources = project.tasks.register(TASK_PACK_EXTRA_RESOURCES, LazyZipTask) {
+            it.description = "Packs extra resources of the source application."
+            it.group = GROUP_DEXPATCHER
+            it.zip64 = true
+            it.reproducibleFileOrder = true
+            it.preserveFileTimestamps = false
+            it.duplicatesStrategy = DuplicatesStrategy.FAIL
+            it.entryCompression = ZipEntryCompression.STORED
+            it.lazyArchiveFileName.set AppAar.FILE_CLASSES_JAR
+            it.lazyDestinationDirectory.set project.layout.buildDirectory.dir(DIR_BUILD_EXTRA_RESOURCES)
+            it.dependsOn sourceApp
+            it.from(sourceApp.get().outputDir.dir(ApkLib.DIR_UNKNOWN))
+            it.from(sourceApp.get().outputDir.dir(ApkLib.DIR_META_INF)) { CopySpec spec ->
+                spec.into DIRNAME_META_INF
+            }
+            return
+        }
+
+
+
+/*
+        def apkLibrary = createApkLibraryTask(project, taskNameModifier('apkLibrary'), apktoolDir, dex2jarFile,
+                dex2jarExceptionFile, resourcesDir)
+        apkLibrary.with {
+            description = "Packs the processed application into an apk library."
+            group = taskGroup
+            dependsOn decodeApk, dex2jar, resources
+            destinationDir = libraryDir.asFile
+            extension = 'aar'
+            // WARNING: archiveName is set eagerly.
+            def apkName = decodeApk.apkFile.orNull?.asFile?.name ?: project.name ?: 'source'
+            if (!apkName.toLowerCase(Locale.ENGLISH).endsWith('.apk')) apkName += '.apk'
+            archiveName = apkName + '.' + extension
+        }
+
+
+        static Zip createApkLibraryTask(Project project, String name, Directory apktoolDir, RegularFile dex2jarFile,
+                RegularFile dex2jarExceptionFile, Directory resourcesDir) {
+
+            def apkLibrary = project.tasks.create(name, Zip)
+            apkLibrary.with {
+
+                extension = 'apk.aar'
+                it.zip64 = true
+                duplicatesStrategy = DuplicatesStrategy.FAIL
+
+                /*
+                AAR Format:
+                    /AndroidManifest.xml (mandatory)
+                /classes.jar (mandatory)
+                    /res/ (mandatory)
+                /R.txt (mandatory)
+                    /assets/ (optional)
+                /libs/*.jar (optional)
+                /jni/<abi>/*.so (optional)
+                    /proguard.txt (optional)
+                    /lint.jar (optional)
+                * /
+
+                from(apktoolDir) { CopySpec spec ->
+                    spec.with {
+                        include 'AndroidManifest.xml'
+                        include 'res/'
+                        include 'assets/'
+                    }
+                }
+                from(apktoolDir.dir('lib')) { CopySpec spec ->
+                    spec.into 'jni'
+                }
+                from(apktoolDir) { CopySpec spec ->
+                    spec.with {
+                        include '*.dex'
+                        into 'dexpatcher/dex'
+                    }
+                }
+                from(apktoolDir) { CopySpec spec ->
+                    spec.with {
+                        exclude 'AndroidManifest.xml'
+                        exclude 'res'
+                        exclude 'assets'
+                        exclude 'lib'
+                        exclude 'unknown'
+                        exclude '*.dex'
+                        into 'dexpatcher/apktool'
+                    }
+                }
+                from(dex2jarFile) { CopySpec spec ->
+                    spec.into 'dexpatcher/dedex'
+                }
+                from(dex2jarExceptionFile) { CopySpec spec ->
+                    spec.into 'dexpatcher/dex2jar'
+                }
+                from(resourcesDir)
+
+            }
+            return apkLibrary
+
+        }
+
+*/
+
+        /*
+        def decodedSourceAppDir = project.files {
+            sourceApp.get().outputDir.get().asFile
+        }
+        //def config = project.configurations.detachedConfiguration(project.dependencies.create(file))
+        Dependency aar = project.dependencies.create(decodedSourceAppDir)
+        def config = project.configurations.create('testExplodedAar')
+        config.dependencies.add aar
+        //config.attributes.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage, Usage.JAVA_RUNTIME))
+        config.attributes.attribute(ARTIFACT_FORMAT, AndroidArtifacts.ArtifactType.EXPLODED_AAR.getType())
+        def implementationConfig = project.configurations.getByName(JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME)
+        implementationConfig.extendsFrom config
+        */
 
         // Setup 'apkLibrary' property.
 /*
@@ -126,6 +243,21 @@ abstract class AbstractPatcherPlugin<
         //workaroundForPublicXmlMergeBug()
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void workaroundForPublicXmlMergeBug() {
 /*
@@ -150,6 +282,11 @@ abstract class AbstractPatcherPlugin<
         }
 */
     }
+
+
+
+
+
 
     // APK Library
 
