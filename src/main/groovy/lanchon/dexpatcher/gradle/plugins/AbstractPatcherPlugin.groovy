@@ -96,7 +96,7 @@ abstract class AbstractPatcherPlugin<
         def providedLibs = Utils.getJars(project, dexpatcherConfig.resolvedProvidedLibDir)
         project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, providedLibs
 
-        def dedexClasses = project.tasks.register(TaskNames.DEDEX_CLASSES, Dex2jarTask) {
+        def dedexAppClasses = project.tasks.register(TaskNames.DEDEX_APP_CLASSES, Dex2jarTask) {
             it.description = "Translates the Dalvik bytecode of the source application to Java bytecode."
             it.group = TASK_GROUP_NAME
             it.dependsOn provideDecodedApp
@@ -108,8 +108,8 @@ abstract class AbstractPatcherPlugin<
         // Conditionally add the dedexed source classes as a compile-only dependency.
         project.afterEvaluate {
             if (((AbstractPatcherExtension) extension).importSymbols.get()) {
-                def symbolLib = project.files(dedexClasses.get().outputFile)
-                symbolLib.builtBy dedexClasses
+                def symbolLib = project.files(dedexAppClasses.get().outputFile)
+                symbolLib.builtBy dedexAppClasses
                 project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, symbolLib
             }
         }
