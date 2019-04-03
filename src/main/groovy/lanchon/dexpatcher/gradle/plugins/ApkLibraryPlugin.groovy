@@ -94,7 +94,6 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
             it.reproducibleFileOrder = true
             it.preserveFileTimestamps = false
             it.duplicatesStrategy = DuplicatesStrategy.FAIL
-            //it.dependsOn sourceApp
             it.from sourceApp
             it.lazyArchiveFileName.set apkLibFileName
             it.lazyDestinationDirectory.set apkLibDirectory
