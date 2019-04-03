@@ -26,14 +26,14 @@ import org.gradle.api.tasks.TaskAction
 import static lanchon.dexpatcher.gradle.Constants.*
 
 @CompileStatic
-class SourceAppTask extends DefaultTask {
+class ProvideDecodedAppTask extends DefaultTask {
 
     @Internal final ConfigurableFileCollection sourceAppFiles
     @OutputDirectory final DirectoryProperty outputDir
     @Internal final Provider<RegularFile> sourceAppFile
     @Internal final Provider<RegularFile> apktoolYmlFile
 
-    SourceAppTask() {
+    ProvideDecodedAppTask() {
         sourceAppFiles = project.files()
         outputDir = project.layout.directoryProperty()
         sourceAppFile = project.<RegularFile>provider {
@@ -52,7 +52,7 @@ class SourceAppTask extends DefaultTask {
     }
 
     @TaskAction
-    void check() {
+    void exec() {
         sourceAppFile.get()
         if (!apktoolYmlFile.get().asFile.isFile()) {
             throw new RuntimeException("Cannot find '$ApkLib.FILE_APKTOOL_YML' file in decoded application")

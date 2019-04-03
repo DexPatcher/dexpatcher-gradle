@@ -14,7 +14,7 @@ import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.extensions.AbstractDecoderExtension
 import lanchon.dexpatcher.gradle.tasks.DecodeApkTask
-import lanchon.dexpatcher.gradle.tasks.SourceAppTask
+import lanchon.dexpatcher.gradle.tasks.ProvideDecodedAppTask
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -34,7 +34,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
 
     protected E extension
 
-    protected TaskProvider<SourceAppTask> sourceApp
+    protected TaskProvider<ProvideDecodedAppTask> provideDecodedApp
 
     @Override
     protected void afterApply() {
@@ -57,20 +57,20 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         apkLibs.include '*' + FileNames.EXT_APK_LIBRARY
         sourceApkLib.dependencies.add project.dependencies.create(apkLibs)
 
-        sourceApp = registerSourceAppTaskChain(project, TASK_GROUP_NAME,
+        provideDecodedApp = registerProvideDecodedAppTaskChain(project, TASK_GROUP_NAME,
                 { String it -> it }, { Provider<Directory> it -> it },
                 sourceApk, sourceApkLib, extension.printAppInfo)
 
     }
 
-    static TaskProvider<SourceAppTask> registerSourceAppTaskChain(Project project, String taskGroup,
+    static TaskProvider<ProvideDecodedAppTask> registerProvideDecodedAppTaskChain(Project project, String taskGroup,
             Closure<String> taskNameModifier, Closure<Provider<Directory>> dirModifier,
             Configuration sourceApk, Configuration sourceApkLib, Provider<Boolean> printAppInfo) {
 
-        def sourceApp = project.tasks.register(taskNameModifier(TaskNames.SOURCE_APP), SourceAppTask) {
-            it.description = 'Produces the decoded source application.'
+        def provideDecodedApp = project.tasks.register(taskNameModifier(TaskNames.PROVIDE_DECODED_APP), ProvideDecodedAppTask) {
+            it.description = 'Provides the decoded source application.'
             it.group = taskGroup
-            it.outputDir.set dirModifier(project.layout.buildDirectory.dir(BuildDir.DIR_SOURCE_APP))
+            it.outputDir.set dirModifier(project.layout.buildDirectory.dir(BuildDir.DIR_DECODED_APP))
             if (!sourceApk.is(null)) it.sourceAppFiles.from sourceApk
             if (!sourceApkLib.is(null)) it.sourceAppFiles.from sourceApkLib
             return
@@ -79,21 +79,21 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         def sourceAppInfo = project.tasks.register(taskNameModifier(TaskNames.SOURCE_APP_INFO)) {
             it.description = 'Displays package and version information of the source application.'
             it.group = taskGroup
-            it.dependsOn sourceApp
+            it.dependsOn provideDecodedApp
             it.doLast {
                 def pattern = ~/^\s\s(minSdkVersion|targetSdkVersion|versionCode|versionName):/
-                sourceApp.get().apktoolYmlFile.get().asFile.eachLine { line ->
+                provideDecodedApp.get().apktoolYmlFile.get().asFile.eachLine { line ->
                     if (pattern.matcher(line).find()) println line.substring(2)
                 }
             }
         }
 
         def outputDir = project.<Directory>provider {
-            sourceApp.get().outputDir.get()
+            provideDecodedApp.get().outputDir.get()
         }
 
         def sourceAppFile = project.<RegularFile>provider {
-            sourceApp.get().sourceAppFile.get()
+            provideDecodedApp.get().sourceAppFile.get()
         }
 
         TaskProvider<DecodeApkTask> decodeApk = null
@@ -103,12 +103,12 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
                     dirModifier(project.layout.buildDirectory.dir(BuildDir.DIR_APKTOOL_FRAMEWORK)),
                     outputDir, sourceAppFile)
             decodeApk.configure {
-                it.dependsOn sourceApk, sourceApp.get().sourceAppFiles
+                it.dependsOn sourceApk, provideDecodedApp.get().sourceAppFiles
                 it.onlyIf {
                     sourceApk.files.size()
                 }
             }
-            sourceApp.configure {
+            provideDecodedApp.configure {
                 it.dependsOn decodeApk
             }
         }
@@ -119,32 +119,32 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
                     taskNameModifier(TaskNames.UNPACK_APK_LIBRARY), taskGroup,
                     outputDir, sourceAppFile)
             unpackApkLibrary.configure {
-                it.dependsOn sourceApkLib, sourceApp.get().sourceAppFiles
+                it.dependsOn sourceApkLib, provideDecodedApp.get().sourceAppFiles
                 it.onlyIf {
                     sourceApkLib.files.size()
                 }
             }
-            sourceApp.configure {
+            provideDecodedApp.configure {
                 it.dependsOn unpackApkLibrary
             }
         }
 
         project.afterEvaluate {
             if (printAppInfo.get()) {
-                sourceApp.configure {
+                provideDecodedApp.configure {
                     it.finalizedBy sourceAppInfo
                 }
             }
         }
 
-        sourceApp.configure {
+        provideDecodedApp.configure {
             def extensions = it.extensions
             if (!sourceApk.is(null)) extensions.add TaskNames.DECODE_APK, decodeApk
             if (!sourceApkLib.is(null)) extensions.add TaskNames.UNPACK_APK_LIBRARY, unpackApkLibrary
             extensions.add TaskNames.SOURCE_APP_INFO, sourceAppInfo
         }
 
-        return sourceApp
+        return provideDecodedApp
 
     }
 

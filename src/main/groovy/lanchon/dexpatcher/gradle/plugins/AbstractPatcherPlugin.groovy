@@ -99,8 +99,8 @@ abstract class AbstractPatcherPlugin<
         def dedexClasses = project.tasks.register(TaskNames.DEDEX_CLASSES, Dex2jarTask) {
             it.description = "Translates the Dalvik bytecode of the source application to Java bytecode."
             it.group = TASK_GROUP_NAME
-            it.dependsOn sourceApp
-            it.dexFiles.from sourceApp.get().sourceAppFile
+            it.dependsOn provideDecodedApp
+            it.dexFiles.from provideDecodedApp.get().sourceAppFile
             it.outputFile.set project.layout.buildDirectory.file(BuildDir.FILE_DEDEXED_CLASSES)
             it.exceptionFile.set project.layout.buildDirectory.file(BuildDir.FILE_DEX2JAR_EXCEPTIONS)
         }
@@ -124,9 +124,9 @@ abstract class AbstractPatcherPlugin<
             it.entryCompression = ZipEntryCompression.STORED
             it.lazyArchiveFileName.set AppAar.FILE_CLASSES_JAR
             it.lazyDestinationDirectory.set project.layout.buildDirectory.dir(BuildDir.DIR_EXTRA_RESOURCES)
-            it.dependsOn sourceApp
-            it.from(sourceApp.get().outputDir.dir(ApkLib.DIR_UNKNOWN))
-            it.from(sourceApp.get().outputDir.dir(ApkLib.DIR_META_INF)) { CopySpec spec ->
+            it.dependsOn provideDecodedApp
+            it.from(provideDecodedApp.get().outputDir.dir(ApkLib.DIR_UNKNOWN))
+            it.from(provideDecodedApp.get().outputDir.dir(ApkLib.DIR_META_INF)) { CopySpec spec ->
                 spec.into FileNames.META_INF
             }
             return
