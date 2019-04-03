@@ -51,7 +51,7 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
         super.afterApply()
 
         def apkLibFileName = project.<String>provider {
-            def name = project.name ?: FileNames.BASE_APK_LIBRARY_DEFAULT
+            def name = project.name ?: BuildDir.FILENAME_APK_LIBRARY_DEFAULT_BASE
             def files = provideDecodedApp.get().sourceAppFiles.files
             if (files.size() == 1) {
                 def newName = files[0].name
