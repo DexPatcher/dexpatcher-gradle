@@ -49,11 +49,12 @@ abstract class Constants {
     }
 
     static abstract class FileNames {
+        static final String LOCAL_PROPERTIES = 'local.properties'
+        static final String META_INF = 'META-INF'
+        static final String BASE_APK_LIBRARY_DEFAULT = 'source'
         static final String EXT_APK_LIBRARY = '.apklib'
         static final List<String> EXTS_SOURCE_APK = ['.apk', '.jar', '.zip'].asImmutable()
         static final List<String> EXTS_SOURCE_APP = (EXTS_SOURCE_APK + EXT_APK_LIBRARY).asImmutable()
-        static final String BASE_APK_LIBRARY_DEFAULT = 'source'
-        static final String META_INF = 'META-INF'
     }
 
     static abstract class ProjectDir {

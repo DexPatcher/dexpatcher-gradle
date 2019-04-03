@@ -16,25 +16,24 @@ import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
 
+import static lanchon.dexpatcher.gradle.Constants.*
+
+// NOTE: File properties resolve against the root project, not the current project.
+
 @CompileStatic
 class ProjectProperties {
-
-    private static final String LOCAL_PROPERTIES = 'local.properties'
 
     protected final Project project
     protected final Properties localProperties
 
     ProjectProperties(Project project) {
         this.project = project
-        localProperties = getPropertiesRecursive(project, LOCAL_PROPERTIES)
+        localProperties = getPropertiesRecursive(project, FileNames.LOCAL_PROPERTIES)
     }
 
     String get(String key) {
         project.properties.get(key) ?: localProperties.getProperty(key)
     }
-
-    // TODO: Decide whether to resolve file properties against the current project instead of the root project
-    // (This would be a backwards-breaking change.)
 
     Directory getAsDirectory(String key) {
         String value = get(key)
