@@ -80,7 +80,7 @@ class LazyZipTask extends Zip {
             if (!DESTINATION_DIR_WORKAROUND) {
                 return lazyDestinationDirectory.get().asFile
             } else {
-                super.destinationDir = lazyDestinationDirectory.get().asFile
+                destinationDir = lazyDestinationDirectory.get().asFile
                 return super.getDestinationDir()
             }
         }
