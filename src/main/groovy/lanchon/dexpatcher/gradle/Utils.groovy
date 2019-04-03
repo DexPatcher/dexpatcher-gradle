@@ -41,7 +41,7 @@ abstract class Utils {
     // Horrible Gradle hacks that should not be necessary
 
     private static Provider<RegularFile> getRegularFileProvider(Project project, File file) {
-        //project.layout.file(getProvider(project, file))
+        //project.layout.file(project.<File>provider(file))
         def p = project.layout.fileProperty()
         p.set file
         return p
