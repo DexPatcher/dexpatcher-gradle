@@ -13,14 +13,15 @@ package lanchon.dexpatcher.gradle.tasks
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Utils
-
-import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.util.GradleVersion
+
+// WARNING: getDestinationDir() should not be used by client code as it will not reflect the
+// actual destination directory if it has been set via the lazyDestinationDirectory property.
 
 @CompileStatic
 class LazyZipTask extends Zip {
@@ -28,10 +29,6 @@ class LazyZipTask extends Zip {
     // Conditionally enable workaround for Gradle 5.1 bug (https://github.com/gradle/gradle/issues/8401).
     private static final boolean GRADLE_5_1 = (GradleVersion.current() >= GradleVersion.version('5.1'))
 
-    // Enable workaround for Gradle < 5.1 unexpected behavior seemingly related to convention implementation.
-    private static final boolean DESTINATION_DIR_WORKAROUND = true
-
-    // Client must configure the output archive only using these properties:
     @Internal final Property<String> lazyArchiveFileName
     @Internal final DirectoryProperty lazyDestinationDirectory
 
@@ -43,15 +40,7 @@ class LazyZipTask extends Zip {
         } else {
             // On Gradle < 5.1 create new properties and override existing getters.
             lazyArchiveFileName = project.objects.property(String)
-            lazyArchiveFileName.set project.<String> provider {
-                super.getArchiveName()
-            }
             lazyDestinationDirectory = project.layout.directoryProperty()
-            if (!DESTINATION_DIR_WORKAROUND) {
-                lazyDestinationDirectory.set project.<Directory> provider {
-                    Utils.getDirectory(project, super.getDestinationDir())
-                }
-            }
         }
     }
 
@@ -69,20 +58,15 @@ class LazyZipTask extends Zip {
         if (GRADLE_5_1) {
             return super.getArchiveName()
         } else {
-            return lazyArchiveFileName.get()
+            return lazyArchiveFileName.orNull ?: super.getArchiveName()
         }
     }
 
-    @Override @Internal public File getDestinationDir() {
+    @Override @OutputFile public File getArchivePath() {
         if (GRADLE_5_1) {
-            return super.getDestinationDir()
+            return super.getArchivePath()
         } else {
-            if (!DESTINATION_DIR_WORKAROUND) {
-                return lazyDestinationDirectory.get().asFile
-            } else {
-                destinationDir = lazyDestinationDirectory.get().asFile
-                return super.getDestinationDir()
-            }
+            return new File((lazyDestinationDirectory.orNull?.asFile) ?: getDestinationDir(), getArchiveName());
         }
     }
 
