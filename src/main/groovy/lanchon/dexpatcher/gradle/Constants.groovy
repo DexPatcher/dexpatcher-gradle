@@ -38,7 +38,7 @@ abstract class Constants {
         static final String UNPACK_APK_LIBRARY = 'unpackApkLibrary'
         static final String SOURCE_APP = 'sourceApp'
         static final String SOURCE_APP_INFO = 'sourceAppInfo'
-        static final String APK_LIBRARY = 'apkLibrary'
+        static final String CREATE_APK_LIBRARY = 'createApkLibrary'
         static final String DEDEX_CLASSES = 'dedexClasses'
         static final String PACK_EXTRA_RESOURCES = 'packExtraResources'
     }

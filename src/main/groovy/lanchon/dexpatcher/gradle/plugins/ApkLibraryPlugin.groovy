@@ -29,7 +29,7 @@ import static lanchon.dexpatcher.gradle.Constants.*
 @CompileStatic
 class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
 
-    protected TaskProvider<LazyZipTask> apkLibrary
+    protected TaskProvider<LazyZipTask> createApkLibrary
 
     @Override
     void apply(Project project) {
@@ -64,13 +64,13 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
             name
         }
 
-        apkLibrary = registerApkLibraryTask(project, TaskNames.APK_LIBRARY, TASK_GROUP_NAME, sourceApp,
-                apkLibFileName, project.layout.buildDirectory.dir(BuildDir.DIR_APK_LIBRARY))
+        createApkLibrary = registerCreateApkLibraryTask(project, TaskNames.CREATE_APK_LIBRARY, TASK_GROUP_NAME,
+                sourceApp, apkLibFileName, project.layout.buildDirectory.dir(BuildDir.DIR_APK_LIBRARY))
 
-        project.artifacts.add(Dependency.DEFAULT_CONFIGURATION, apkLibrary)
+        project.artifacts.add(Dependency.DEFAULT_CONFIGURATION, createApkLibrary)
 
         project.tasks.named(BasePlugin.ASSEMBLE_TASK_NAME).configure {
-            it.dependsOn apkLibrary
+            it.dependsOn createApkLibrary
         }
 
     }
@@ -84,7 +84,7 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
         return name
     }
 
-    static TaskProvider<LazyZipTask> registerApkLibraryTask(Project project, String taskName, String taskGroup,
+    static TaskProvider<LazyZipTask> registerCreateApkLibraryTask(Project project, String taskName, String taskGroup,
             TaskProvider<SourceAppTask> sourceApp, Provider<String> apkLibFileName, Provider<Directory> apkLibDirectory) {
         def apkLibrary = project.tasks.register(taskName, LazyZipTask) {
             it.description = 'Packs the decoded source application as a DexPatcher APK library.'
