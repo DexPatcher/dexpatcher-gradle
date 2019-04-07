@@ -50,9 +50,9 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
 
         super.afterApply()
 
-//        dexpatcherConfig.addLibDependencies(true)
+        //dexpatcherConfig.addLibDependencies(true)
 
-        /*
+/*
         project.afterEvaluate {
             androidVariants.all { ApplicationVariant variant ->
                 def patchDexTask = createPatchDexTask(variant)
@@ -66,10 +66,11 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                 }
             }
         }
-        */
+*/
 
     }
 
+/*
     private DexpatcherTask createPatchDexTask(ApplicationVariant variant) {
 
         def patch = project.layout.directoryProperty()
@@ -160,8 +161,9 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
         dexFoldersField.accessible = true
         dexFoldersField.set(packageTask, dexFolders)
     }
+*/
 
-    /*
+/*
     // BYPASS PROCESSING
 
     // Code
@@ -203,6 +205,6 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
         variant.assemble.extensions.add 'importDex', importDex
         return importDex
     }
-    */
+*/
 
 }

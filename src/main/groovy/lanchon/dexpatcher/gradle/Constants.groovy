@@ -41,6 +41,7 @@ abstract class Constants {
         static final String CREATE_APK_LIBRARY = 'createApkLibrary'
         static final String DEDEX_APP_CLASSES = 'dedexAppClasses'
         static final String PACK_EXTRA_APP_RESOURCES = 'packExtraAppResources'
+        static final String PACK_APP_COMPONENTS = 'packAppComponents'
     }
 
     static abstract class ConfigurationNames {
@@ -70,6 +71,8 @@ abstract class Constants {
         static final String FILE_DEX2JAR_EXCEPTIONS = DIR_INTERMEDIATES + '/dedexed-classes/dex2jar-exceptions.zip'
         static final String DIR_EXTRA_RESOURCES = DIR_INTERMEDIATES + '/extra-resources'
         static final String FILENAME_EXTRA_RESOURCES = ComponentLib.FILE_CLASSES_JAR
+        static final String DIR_COMPONENT_LIBRARY = DIR_INTERMEDIATES + '/component-library'
+        static final String FILENAME_COMPONENT_LIBRARY = 'app-components.aar'
         // Outputs:
         static final String DIR_OUTPUTS = 'outputs'
         static final String DIR_APK_LIBRARY = DIR_OUTPUTS + '/apk-library'
@@ -78,13 +81,21 @@ abstract class Constants {
 
     static abstract class ApkLib {
         static final String FILE_APKTOOL_YML = 'apktool.yml'
+        static final String FILE_ANDROID_MANIFEST_XML = 'AndroidManifest.xml'
         static final String DIR_ORIGINAL = 'original'
         static final String DIR_ORIGINAL_META_INF = DIR_ORIGINAL + '/META-INF'
+        static final String DIR_LIB = 'lib'
+        static final String DIR_LIBS = 'libs'
+        static final String DIR_RES = 'res'
+        static final String FILE_PUBLIC_XML = DIR_RES + '/values/public.xml'
+        static final String DIR_ASSETS = 'assets'
+        static final String DIR_KOTLIN = 'kotlin'
         static final String DIR_UNKNOWN = 'unknown'
     }
 
     static abstract class ComponentLib {
         static final String FILE_CLASSES_JAR = 'classes.jar'
+        static final String DIR_JNI = 'jni'
     }
 
 }
