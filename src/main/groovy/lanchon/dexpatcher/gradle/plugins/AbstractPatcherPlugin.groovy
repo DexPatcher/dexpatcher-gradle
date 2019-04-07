@@ -161,7 +161,7 @@ abstract class AbstractPatcherPlugin<
             return
         }
 
-        // Add the app component library as an implementation dependency.
+        // Add the source app component library as an implementation dependency.
         def componentLib = project.files(packAppComponents)
         componentLib.builtBy packAppComponents
         project.dependencies.add JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME, componentLib
