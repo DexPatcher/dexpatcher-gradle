@@ -54,7 +54,7 @@ class LazyZipTask extends Zip {
         return this.getDestinationDirectory()
     }
 
-    @Override @Internal public String getArchiveName() {
+    @Override @Internal String getArchiveName() {
         if (GRADLE_5_1) {
             return super.getArchiveName()
         } else {
@@ -62,7 +62,7 @@ class LazyZipTask extends Zip {
         }
     }
 
-    @Override @OutputFile public File getArchivePath() {
+    @Override @OutputFile File getArchivePath() {
         if (GRADLE_5_1) {
             return super.getArchivePath()
         } else {
