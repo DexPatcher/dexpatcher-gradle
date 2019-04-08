@@ -10,6 +10,7 @@
 
 package lanchon.dexpatcher.gradle.plugins
 
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.ExistingTaskProvider
@@ -171,7 +172,6 @@ abstract class AbstractPatcherPlugin<
         // Android's resource merger build step ignores existing resource ID mappings ('public.xml' files),
         // so the ID mappings of the source app must be processed and added the the output of the merger.
         androidVariants.all { BaseVariant variant ->
-            // FIXME: make this work under AAPT1
             def mergeResources = getMergeResources(variant)
 
             // Copy (AAPT1) or compile (AAPT2) the source app resource ID mapping file.
@@ -182,10 +182,17 @@ abstract class AbstractPatcherPlugin<
                 it.group = TASK_GROUP_NAME
                 it.dependsOn provideDecodedApp
                 it.publicXmlFile.set provideDecodedApp.get().outputDir.file(ApkLib.FILE_PUBLIC_XML)
-                it.processResources.set project.<Boolean>provider { mergeResources.get().processResources }
-                it.outputDir.set project.layout.buildDirectory.dir(BuildDir.DIR_RESOURCE_ID_MAPPINGS + '/' + variant.name)
-                it.aapt2FromMaven.from { mergeResources.get().aapt2FromMaven }
-                it.androidBuilder.set project.<AndroidBuilder>provider { getAndroidBuilder(mergeResources.get()) }
+                it.processResources.set project.<Boolean>provider {
+                    mergeResources.get().processResources && !isUsingAapt1(mergeResources.get())
+                }
+                it.outputDir.set project.layout.buildDirectory.dir(
+                        BuildDir.DIR_RESOURCE_ID_MAPPINGS + '/' + variant.name)
+                it.aapt2FromMaven.from {
+                    mergeResources.get().aapt2FromMaven
+                }
+                it.androidBuilder.set project.<AndroidBuilder>provider {
+                    getAndroidBuilder(mergeResources.get())
+                }
                 return
             }
             getAssemble(variant).configure {
@@ -229,6 +236,16 @@ abstract class AbstractPatcherPlugin<
             return variant.assembleProvider
         } catch (NoSuchMethodError e) {
             return new ExistingTaskProvider<Task>(project, variant.assemble)
+        }
+    }
+
+    @CompileDynamic
+    private boolean isUsingAapt1(MergeResources task) {
+        // FIXME: what happens on Android Gradle plugins earlier than 3.2.0?
+        try {
+            return task.aaptGeneration == 'AAPT_V1'
+        } catch (MissingPropertyException e) {
+            return false
         }
     }
 
