@@ -12,6 +12,7 @@ package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.ExistingTaskProvider
 import lanchon.dexpatcher.gradle.Utils
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
@@ -21,12 +22,15 @@ import lanchon.dexpatcher.gradle.tasks.ProcessIdMappingsTask
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.AndroidBuilderTask
+import com.android.build.gradle.tasks.MergeResources
 import com.android.builder.core.AndroidBuilder
 import com.android.utils.StringHelper
 import org.gradle.api.DomainObjectSet
+import org.gradle.api.Task
 import org.gradle.api.file.CopySpec
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.ZipEntryCompression
 
 import static lanchon.dexpatcher.gradle.Constants.*
@@ -168,7 +172,7 @@ abstract class AbstractPatcherPlugin<
         // so the ID mappings of the source app must be processed and added the the output of the merger.
         androidVariants.all { BaseVariant variant ->
             // FIXME: make this work under AAPT1
-            def mergeResources = variant.mergeResourcesProvider
+            def mergeResources = getMergeResources(variant)
 
             // Copy (AAPT1) or compile (AAPT2) the source app resource ID mapping file.
             def processIdMappings = project.tasks.register(StringHelper.appendCapitalized(
@@ -184,7 +188,7 @@ abstract class AbstractPatcherPlugin<
                 it.androidBuilder.set project.<AndroidBuilder>provider { getAndroidBuilder(mergeResources.get()) }
                 return
             }
-            variant.assembleProvider.configure {
+            getAssemble(variant).configure {
                 it.extensions.add TaskNames.PROCESS_ID_MAPPINGS_TAG, processIdMappings
                 return
             }
@@ -208,6 +212,24 @@ abstract class AbstractPatcherPlugin<
         def getBuilder = AndroidBuilderTask.class.getDeclaredMethod('getBuilder')
         getBuilder.setAccessible true
         return (AndroidBuilder) getBuilder.invoke(task)
+    }
+
+    // Adapters for Android Gradle plugins earlier than 3.3.0
+
+    private TaskProvider<MergeResources> getMergeResources(BaseVariant variant) {
+        try {
+            return variant.mergeResourcesProvider
+        } catch (NoSuchMethodError e) {
+            return new ExistingTaskProvider<MergeResources>(project, variant.mergeResources)
+        }
+    }
+
+    private TaskProvider<Task> getAssemble(BaseVariant variant) {
+        try {
+            return variant.assembleProvider
+        } catch (NoSuchMethodError e) {
+            return new ExistingTaskProvider<Task>(project, variant.assemble)
+        }
     }
 
 }
