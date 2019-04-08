@@ -10,25 +10,23 @@
 
 package lanchon.dexpatcher.gradle.plugins
 
-
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.Utils
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
 import lanchon.dexpatcher.gradle.tasks.LazyZipTask
+import lanchon.dexpatcher.gradle.tasks.ProcessIdMappingsTask
 
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.tasks.AndroidBuilderTask
+import com.android.builder.core.AndroidBuilder
+import com.android.utils.StringHelper
 import org.gradle.api.DomainObjectSet
-import org.gradle.api.Project
 import org.gradle.api.file.CopySpec
-import org.gradle.api.file.Directory
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.DuplicatesStrategy
-import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.bundling.ZipEntryCompression
 
 import static lanchon.dexpatcher.gradle.Constants.*
@@ -166,15 +164,62 @@ abstract class AbstractPatcherPlugin<
         componentLib.builtBy packAppComponents
         project.dependencies.add JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME, componentLib
 
-/*
-        // Inject FILE_PUBLIC_XML
+        // Android's resource merger build step ignores existing resource ID mappings ('public.xml' files),
+        // so the ID mappings of the source app must be processed and added the the output of the merger.
+        androidVariants.all { BaseVariant variant ->
+            // FIXME: make this work under AAPT1
+            def mergeResources = variant.mergeResourcesProvider
 
-        project.afterEvaluate {
-            androidExtension.sourceSets.getByName('main').res.srcDirs project.files( {
-                provideDecodedApp.get().outputDir.file(ApkLib.FILE_PUBLIC_XML)
-            })
+            // Copy (AAPT1) or compile (AAPT2) the source app resource ID mapping file.
+            def processIdMappings = project.tasks.register(StringHelper.appendCapitalized(
+                    TaskNames.PROCESS_ID_MAPPINGS_PREFIX, variant.name, TaskNames.PROCESS_ID_MAPPINGS_SUFFIX),
+                    ProcessIdMappingsTask) {
+                it.description = "Compiles the resource ID mappings of the source application."
+                it.group = TASK_GROUP_NAME
+                it.dependsOn provideDecodedApp
+                it.publicXmlFile.set provideDecodedApp.get().outputDir.file(ApkLib.FILE_PUBLIC_XML)
+                it.processResources.set project.<Boolean>provider { mergeResources.get().processResources }
+                it.outputDir.set project.layout.buildDirectory.dir(BuildDir.DIR_RESOURCE_ID_MAPPINGS + '/' + variant.name)
+                it.aapt2FromMaven.from { mergeResources.get().aapt2FromMaven }
+                it.androidBuilder.set project.<AndroidBuilder>provider { getAndroidBuilder(mergeResources.get()) }
+                return
+            }
+            variant.assembleProvider.configure {
+                it.extensions.add TaskNames.PROCESS_ID_MAPPINGS_TAG, processIdMappings
+                return
+            }
+
+            // Inject the processed ID mappings into the output of the resource merger task.
+            mergeResources.configure {
+                it.dependsOn processIdMappings
+                it.doLast {
+                    project.copy { CopySpec spec ->
+                        spec.from processIdMappings
+                        spec.into mergeResources.get().outputDir
+                    }
+                }
+                return
+            }
         }
-*/
+
+    }
+
+    private static AndroidBuilder getAndroidBuilder(AndroidBuilderTask task) {
+        def getBuilder = AndroidBuilderTask.class.getDeclaredMethod('getBuilder')
+        getBuilder.setAccessible true
+        return (AndroidBuilder) getBuilder.invoke(task)
+    }
+
+}
+
+
+
+
+
+
+
+
+
 
 /*
         // Inject EXPLODED_AAR
@@ -191,17 +236,6 @@ abstract class AbstractPatcherPlugin<
         def implementationConfig = project.configurations.getByName(JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME)
         implementationConfig.extendsFrom config
 */
-
-    }
-
-
-
-
-
-
-
-
-
 
 /*
     private void workaroundForPublicXmlMergeBug() {
@@ -342,5 +376,3 @@ abstract class AbstractPatcherPlugin<
         variant.javaCompiler.enabled = false
     }
 */
-
-}

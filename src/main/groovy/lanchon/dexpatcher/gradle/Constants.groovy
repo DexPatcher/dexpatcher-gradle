@@ -42,6 +42,9 @@ abstract class Constants {
         static final String DEDEX_APP_CLASSES = 'dedexAppClasses'
         static final String PACK_EXTRA_APP_RESOURCES = 'packExtraAppResources'
         static final String PACK_APP_COMPONENTS = 'packAppComponents'
+        static final String PROCESS_ID_MAPPINGS_TAG = 'processIdMappings'
+        static final String PROCESS_ID_MAPPINGS_PREFIX = 'process'
+        static final String PROCESS_ID_MAPPINGS_SUFFIX = 'IdMappings'
     }
 
     static abstract class ConfigurationNames {
@@ -73,6 +76,7 @@ abstract class Constants {
         static final String FILENAME_EXTRA_RESOURCES = ComponentLib.FILE_CLASSES_JAR
         static final String DIR_COMPONENT_LIBRARY = DIR_INTERMEDIATES + '/component-library'
         static final String FILENAME_COMPONENT_LIBRARY = 'app-components.aar'
+        static final String DIR_RESOURCE_ID_MAPPINGS = DIR_INTERMEDIATES + '/resource-id-mappings'
         // Outputs:
         static final String DIR_OUTPUTS = 'outputs'
         static final String DIR_APK_LIBRARY = DIR_OUTPUTS + '/apk-library'
