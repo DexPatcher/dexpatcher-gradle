@@ -306,15 +306,6 @@ abstract class AbstractPatcherPlugin<
 
 }
 
-
-
-
-
-
-
-
-
-
 /*
         // Inject EXPLODED_AAR
 
@@ -329,30 +320,6 @@ abstract class AbstractPatcherPlugin<
         config.attributes.attribute(ARTIFACT_FORMAT, AndroidArtifacts.ArtifactType.EXPLODED_AAR.getType())
         def implementationConfig = project.configurations.getByName(JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME)
         implementationConfig.extendsFrom config
-*/
-
-/*
-    private void workaroundForPublicXmlMergeBug() {
-        project.afterEvaluate {
-            // Get 'public.xml' out of the resource merge inputs.
-            prepareApkLibraryDoLast { PrepareLibraryTask task ->
-                def fromFile = Utils.getFile(task.explodedDir, 'res/values/public.xml')
-                def toFile = Utils.getFile(task.explodedDir, ApkLibraryPaths.PUBLIC_XML_FILE)
-                com.google.common.io.Files.createParentDirs(toFile)
-                Files.move(fromFile.toPath(), toFile.toPath())
-            }
-            // And later add a copy to the output of the merge.
-            androidVariants.all { BaseVariant variant ->
-                def task = variant.mergeResources
-                task.doLast {
-                    def fromFile = apkLibrary.rootDir.get().file(ApkLibraryPaths.PUBLIC_XML_FILE).asFile
-                    def toFile = Utils.getFile(task.outputDir, 'values/dexpatcher-public.xml')
-                    com.google.common.io.Files.createParentDirs(toFile)
-                    Files.copy(fromFile.toPath(), toFile.toPath())
-                }
-            }
-        }
-    }
 */
 
 /*
