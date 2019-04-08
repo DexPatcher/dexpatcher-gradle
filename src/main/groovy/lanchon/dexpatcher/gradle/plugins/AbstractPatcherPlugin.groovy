@@ -189,7 +189,7 @@ abstract class AbstractPatcherPlugin<
                     mergeResources.get().processResources && !isUsingAapt1(mergeResources.get())
                 }
                 it.outputDir.set project.layout.buildDirectory.dir(
-                        BuildDir.DIR_RESOURCE_ID_MAPPINGS + '/' + variant.name)
+                        BuildDir.DIR_RESOURCE_ID_MAPPINGS + '/' + variant.dirName)
                 it.aapt2FromMaven.from {
                     mergeResources.get().aapt2FromMaven
                 }
