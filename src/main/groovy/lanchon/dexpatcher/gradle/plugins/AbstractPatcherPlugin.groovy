@@ -22,14 +22,17 @@ import lanchon.dexpatcher.gradle.tasks.ProcessIdMappingsTask
 
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.api.BaseVariantOutput
 import com.android.build.gradle.internal.tasks.AndroidBuilderTask
 import com.android.build.gradle.tasks.MergeResources
+import com.android.build.gradle.tasks.ProcessAndroidResources
 import com.android.builder.core.AndroidBuilder
 import com.android.utils.StringHelper
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Task
 import org.gradle.api.file.CopySpec
 import org.gradle.api.file.DuplicatesStrategy
+import org.gradle.api.logging.LogLevel
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.ZipEntryCompression
@@ -213,12 +216,56 @@ abstract class AbstractPatcherPlugin<
             }
         }
 
+        // Remove empty 'R.java' files generated from the source app component library.
+        androidVariants.all { BaseVariant variant ->
+            variant.outputs.all { BaseVariantOutput output ->
+                getProcessResources(output).configure {
+                    it.doLast { task ->
+                        removeEmptyRFiles it.sourceOutputDir
+                    }
+                }
+            }
+        }
+
     }
 
     private static AndroidBuilder getAndroidBuilder(AndroidBuilderTask task) {
         def getBuilder = AndroidBuilderTask.class.getDeclaredMethod('getBuilder')
         getBuilder.setAccessible true
         return (AndroidBuilder) getBuilder.invoke(task)
+    }
+
+    private void removeEmptyRFiles(File sourceTreeDir) {
+        def rFiles = project.fileTree(sourceTreeDir)
+        rFiles.include '**/R.java'
+        for (def rFile : rFiles) {
+            if (isEmptyRFile(rFile)) {
+                if (project.logger.isEnabled(LogLevel.DEBUG)) {
+                    project.logger.debug("Removing empty R file '$rFile' containing:\n" + rFile.text)
+                }
+                project.delete rFile
+            }
+        }
+    }
+
+    private boolean isEmptyRFile(File rFile) {
+        def reader = new BufferedReader(new FileReader(rFile))
+        try {
+            for (;;) {
+                def line = reader.readLine()
+                if (line.is(null)) break
+                line = line.trim()
+                def prefix = 'public static '
+                if (line.startsWith(prefix)) {
+                    String rest = line.substring(prefix.length())
+                    if (rest.startsWith('class ') || rest.startsWith('final class ')) continue
+                    return false
+                }
+            }
+        } finally {
+            reader.close()
+        }
+        return true
     }
 
     // Adapters for Android Gradle plugins earlier than 3.3.0
@@ -236,6 +283,14 @@ abstract class AbstractPatcherPlugin<
             return variant.assembleProvider
         } catch (NoSuchMethodError e) {
             return new ExistingTaskProvider<Task>(project, variant.assemble)
+        }
+    }
+
+    private TaskProvider<ProcessAndroidResources> getProcessResources(BaseVariantOutput output) {
+        try {
+            return output.processResourcesProvider
+        } catch (NoSuchMethodError e) {
+            return new ExistingTaskProvider<ProcessAndroidResources>(project, output.processResources)
         }
     }
 
