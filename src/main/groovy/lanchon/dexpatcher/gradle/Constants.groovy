@@ -42,9 +42,9 @@ abstract class Constants {
         static final String DEDEX_APP_CLASSES = 'dedexAppClasses'
         static final String PACK_EXTRA_APP_RESOURCES = 'packExtraAppResources'
         static final String PACK_APP_COMPONENTS = 'packAppComponents'
-        static final String PROCESS_ID_MAPPINGS_TAG = 'processIdMappings'
         static final String PROCESS_ID_MAPPINGS_PREFIX = 'process'
         static final String PROCESS_ID_MAPPINGS_SUFFIX = 'IdMappings'
+        static final String PROCESS_ID_MAPPINGS_TAG = PROCESS_ID_MAPPINGS_PREFIX + PROCESS_ID_MAPPINGS_SUFFIX
     }
 
     static abstract class ConfigurationNames {
