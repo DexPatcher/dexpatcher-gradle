@@ -13,8 +13,8 @@ package lanchon.dexpatcher.gradle.plugins
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.ExistingTaskProvider
 import lanchon.dexpatcher.gradle.Utils
+import lanchon.dexpatcher.gradle.VariantHelper
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
 import lanchon.dexpatcher.gradle.tasks.LazyZipTask
@@ -25,16 +25,13 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.BaseVariantOutput
 import com.android.build.gradle.internal.tasks.AndroidBuilderTask
 import com.android.build.gradle.tasks.MergeResources
-import com.android.build.gradle.tasks.ProcessAndroidResources
 import com.android.builder.core.AndroidBuilder
 import com.android.utils.StringHelper
 import org.gradle.api.DomainObjectSet
-import org.gradle.api.Task
 import org.gradle.api.file.CopySpec
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.ZipEntryCompression
 
 import static lanchon.dexpatcher.gradle.Constants.*
@@ -175,7 +172,7 @@ abstract class AbstractPatcherPlugin<
         // Android's resource merger build step ignores existing resource ID mappings ('public.xml' files),
         // so the ID mappings of the source app must be processed and added the the output of the merger.
         androidVariants.all { BaseVariant variant ->
-            def mergeResources = getMergeResources(variant)
+            def mergeResources = VariantHelper.getMergeResources(variant)
 
             // Copy (AAPT1) or compile (AAPT2) the source app resource ID mapping file.
             def processIdMappings = project.tasks.register(StringHelper.appendCapitalized(
@@ -198,7 +195,7 @@ abstract class AbstractPatcherPlugin<
                 }
                 return
             }
-            getAssemble(variant).configure {
+            VariantHelper.getAssemble(variant).configure {
                 it.extensions.add TaskNames.PROCESS_ID_MAPPINGS_TAG, processIdMappings
                 return
             }
@@ -219,7 +216,7 @@ abstract class AbstractPatcherPlugin<
         // Remove empty 'R.java' files generated from the source app component library.
         androidVariants.all { BaseVariant variant ->
             variant.outputs.all { BaseVariantOutput output ->
-                getProcessResources(output).configure {
+                VariantHelper.getProcessResources(output).configure {
                     it.doLast { task ->
                         removeEmptyRFiles it.sourceOutputDir
                     }
@@ -266,32 +263,6 @@ abstract class AbstractPatcherPlugin<
             reader.close()
         }
         return true
-    }
-
-    // Adapters for Android Gradle plugins earlier than 3.3.0
-
-    private TaskProvider<MergeResources> getMergeResources(BaseVariant variant) {
-        try {
-            return variant.mergeResourcesProvider
-        } catch (NoSuchMethodError e) {
-            return new ExistingTaskProvider<MergeResources>(project, variant.mergeResources)
-        }
-    }
-
-    private TaskProvider<Task> getAssemble(BaseVariant variant) {
-        try {
-            return variant.assembleProvider
-        } catch (NoSuchMethodError e) {
-            return new ExistingTaskProvider<Task>(project, variant.assemble)
-        }
-    }
-
-    private TaskProvider<ProcessAndroidResources> getProcessResources(BaseVariantOutput output) {
-        try {
-            return output.processResourcesProvider
-        } catch (NoSuchMethodError e) {
-            return new ExistingTaskProvider<ProcessAndroidResources>(project, output.processResources)
-        }
     }
 
     @CompileDynamic

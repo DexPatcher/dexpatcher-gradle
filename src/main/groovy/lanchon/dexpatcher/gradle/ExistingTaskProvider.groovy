@@ -25,6 +25,12 @@ class ExistingTaskProvider<T extends Task> implements TaskProvider<T> {
     private final T task
     private final Provider<T> provider
 
+    ExistingTaskProvider(T task) {
+        //this(task.project, task)
+        this.task = task;
+        provider = task.project.<T>provider { task }
+    }
+
     ExistingTaskProvider(Project project, T task) {
         this.task = task;
         provider = project.<T>provider { task }
