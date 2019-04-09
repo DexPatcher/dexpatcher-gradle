@@ -23,6 +23,7 @@ import com.android.build.gradle.api.ApplicationVariant
 import com.android.utils.StringHelper
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.tasks.TaskProvider
 
 import static lanchon.dexpatcher.gradle.Constants.*
 
@@ -94,6 +95,25 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                 patchDex.get()      // patchDex must configure first
                 ((ConfigurableFileCollection) it.dexFolders).setFrom patchDex
                 return
+            }
+        }
+
+        project.afterEvaluate {
+            androidVariants.all { ApplicationVariant variant ->
+                VariantHelper.getPackageApplication(variant).configure { pack ->
+                    def patch = ((TaskProvider<DexpatcherTask>) VariantHelper.getAssemble(variant).get().
+                            extensions.getByName(TaskNames.PATCH_DEX_TAG)).get()
+
+                    // Configure multi-dex of debuggable variants.
+                    if (variant.buildType.debuggable) {
+                        if (extension.multiDexThreadedForAllDebugBuilds.get()) {
+                            patch.multiDex.set true
+                            patch.multiDexThreaded.set true
+                        } else if (extension.multiDexThreadedForMultiDexDebugBuilds.get()) {
+                            patch.multiDexThreaded.set true
+                        }
+                    }
+                }
             }
         }
 
