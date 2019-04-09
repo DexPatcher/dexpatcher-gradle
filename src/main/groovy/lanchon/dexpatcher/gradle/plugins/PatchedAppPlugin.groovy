@@ -65,6 +65,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                 if (pack.inInstantRunMode) error("Instant Run is not supported, please disable it")
 
                 // Find the variant's main dex output and its builder task(s).
+                // FIXME: Make this work on Android Gradle plugin 3.2.0.
                 def dexFolders = pack.dexFolders.files
                 if (dexFolders.size() == 0) error("Dex folder not found")
                 if (dexFolders.size() != 1) error("Multiple dex folders found")

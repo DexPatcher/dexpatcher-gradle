@@ -36,21 +36,16 @@ import org.gradle.api.tasks.bundling.ZipEntryCompression
 
 import static lanchon.dexpatcher.gradle.Constants.*
 
-// TODO: Locate apk lib based on bundle extension at afterEvaluate time.
-
-// TODO: Warn on outdated apk lib based on plugin version that created it.
 // TODO: Warn on incorrect android defaultConfig info.
-
 // Parsing of 'apktool.yml' (contains defaultConfig info):
 // http://yaml.org/
 // https://bitbucket.org/asomov/snakeyaml
 // https://github.com/iBotPeaches/Apktool/blob/master/brut.apktool/apktool-lib/src/main/java/brut/androlib/Androlib.java#L243
 
-// Pending plugins:
-
-// TODO: apktool-application (may bring in dexptacher if java plugin is applied too)
-// TODO: maybe apktool-dexpatcher-application
-// TODO: maybe apktool-smali-application
+// TODO: Pending plugins:
+// -apktool-application (may bring in dexptacher if java plugin is applied too)
+// -maybe apktool-dexpatcher-application
+// -maybe apktool-smali-application
 
 @CompileStatic
 abstract class AbstractPatcherPlugin<
@@ -270,7 +265,7 @@ abstract class AbstractPatcherPlugin<
 
     @CompileDynamic
     private boolean isUsingAapt1(MergeResources task) {
-        // FIXME: what happens on Android Gradle plugins earlier than 3.2.0?
+        // FIXME: What happens on Android Gradle plugins earlier than 3.2.0?
         try {
             return task.aaptGeneration == 'AAPT_V1'
         } catch (MissingPropertyException e) {
