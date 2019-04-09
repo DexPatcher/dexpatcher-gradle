@@ -15,6 +15,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 abstract class Constants {
 
+    static final int NATIVE_MULTI_DEX_MIN_API_LEVEL = 21
+
     static abstract class ExtensionNames {
         static final String DEXPATCHER_CONFIG = 'dexpatcherConfig'
         static final String TOOL_DEXPATCHER = 'dexpatcher'
@@ -45,6 +47,9 @@ abstract class Constants {
         static final String PROCESS_ID_MAPPINGS_PREFIX = 'process'
         static final String PROCESS_ID_MAPPINGS_SUFFIX = 'IdMappings'
         static final String PROCESS_ID_MAPPINGS_TAG = PROCESS_ID_MAPPINGS_PREFIX + PROCESS_ID_MAPPINGS_SUFFIX
+        static final String PATCH_DEX_PREFIX = 'patchDex'
+        static final String PATCH_DEX_SUFFIX = ''
+        static final String PATCH_DEX_TAG = PATCH_DEX_PREFIX + PATCH_DEX_SUFFIX
     }
 
     static abstract class ConfigurationNames {
@@ -77,6 +82,7 @@ abstract class Constants {
         static final String DIR_COMPONENT_LIBRARY = DIR_INTERMEDIATES + '/component-library'
         static final String FILENAME_COMPONENT_LIBRARY = 'app-components.aar'
         static final String DIR_RESOURCE_ID_MAPPINGS = DIR_INTERMEDIATES + '/resource-id-mappings'
+        static final String DIR_PATCHED_DEX = DIR_INTERMEDIATES + '/patched-dex'
         // Outputs:
         static final String DIR_OUTPUTS = 'outputs'
         static final String DIR_APK_LIBRARY = DIR_OUTPUTS + '/apk-library'

@@ -12,9 +12,11 @@ package lanchon.dexpatcher.gradle
 
 import groovy.transform.CompileStatic
 
+import com.android.build.gradle.api.ApkVariant
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.BaseVariantOutput
 import com.android.build.gradle.tasks.MergeResources
+import com.android.build.gradle.tasks.PackageAndroidArtifact
 import com.android.build.gradle.tasks.ProcessAndroidResources
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskProvider
@@ -37,6 +39,14 @@ abstract class VariantHelper {
             return output.processResourcesProvider
         } catch (NoSuchMethodError e) {
             return new ExistingTaskProvider<ProcessAndroidResources>(output.processResources)
+        }
+    }
+
+    static TaskProvider<PackageAndroidArtifact> getPackageApplication(ApkVariant variant) {
+        try {
+            return variant.packageApplicationProvider
+        } catch (NoSuchMethodError e) {
+            return new ExistingTaskProvider<PackageAndroidArtifact>(variant.packageApplication)
         }
     }
 

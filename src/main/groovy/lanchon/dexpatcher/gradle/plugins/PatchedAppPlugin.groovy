@@ -10,19 +10,19 @@
 
 package lanchon.dexpatcher.gradle.plugins
 
-import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.Utils
+import lanchon.dexpatcher.gradle.VariantHelper
 import lanchon.dexpatcher.gradle.extensions.PatchedAppExtension
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.ApplicationVariant
-import com.google.common.collect.ImmutableSet
+import com.android.utils.StringHelper
 import org.gradle.api.Project
-import org.gradle.api.Task
+import org.gradle.api.file.ConfigurableFileCollection
 
 import static lanchon.dexpatcher.gradle.Constants.*
 
@@ -50,118 +50,56 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
 
         super.afterApply()
 
-        //dexpatcherConfig.addLibDependencies(true)
+        // Patch the bytecode of the source application.
+        androidVariants.all { ApplicationVariant variant ->
+            def packageApplication = VariantHelper.getPackageApplication(variant)
 
-/*
-        project.afterEvaluate {
-            androidVariants.all { ApplicationVariant variant ->
-                def patchDexTask = createPatchDexTask(variant)
-                if (variant.buildType.debuggable) {
-                    if (extension.multiDexThreadedForAllDebugBuilds) {
-                        patchDexTask.multiDex.set true
-                        patchDexTask.multiDexThreaded.set true
-                    } else if (extension.multiDexThreadedForMultiDexDebugBuilds) {
-                        patchDexTask.multiDexThreaded.set true
-                    }
+            def patchDex = project.tasks.register(StringHelper.appendCapitalized(
+                    TaskNames.PATCH_DEX_PREFIX, variant.name, TaskNames.PATCH_DEX_SUFFIX),
+                    DexpatcherTask) {
+                def error = { msg ->
+                    throw new RuntimeException("Variant '${variant.name}': $msg")
                 }
+                def pack = packageApplication.get()
+                if (pack.inInstantRunMode) error("Instant Run is not supported, please disable it")
+
+                // Find the variant's main dex output and its builder task(s).
+                def dexFolders = pack.dexFolders.files
+                if (dexFolders.size() == 0) error("Dex folder not found")
+                if (dexFolders.size() != 1) error("Multiple dex folders found")
+                def dexFolder = dexFolders[0]
+                if (pack.featureDexFolder) error("Feature dex folders not supported")
+                def dexBuilders = pack.dexFolders.buildDependencies.getDependencies(pack)
+                        //.findAll { it instanceof DexMergingTask }
+                if (dexBuilders.size() == 0) error("Main dex builder task not found")
+                //if (dexBuilders.size() != 1) error("Multiple dex builder tasks found")
+                //Task dexBuilder = dexBuilders[0]
+
+                // Patch the bytecode of the source application using the main dex output as the patch.
+                it.description = "Patches the Dalvik bytecode of the source application."
+                it.group = TASK_GROUP_NAME
+                it.dependsOn dexBuilders
+                it.source.set project.layout.buildDirectory.dir(BuildDir.DIR_DECODED_APP)
+                it.patch.set Utils.getDirectory(project, dexFolder)
+                it.outputDir.set project.layout.buildDirectory.dir(BuildDir.DIR_PATCHED_DEX + '/' + variant.dirName)
+                return
             }
-        }
-*/
+            VariantHelper.getAssemble(variant).configure {
+                it.extensions.add TaskNames.PATCH_DEX_TAG, patchDex
+                return
+            }
 
-    }
-
-/*
-    private DexpatcherTask createPatchDexTask(ApplicationVariant variant) {
-
-        def patch = project.layout.directoryProperty()
-        def patchDex = project.tasks.create("patch${variant.name.capitalize()}Dex".toString(), DexpatcherTask)
-        patchDex.with {
-            description = "Patches the source dex from an apk library using the just-built patch dex."
-            group = TASK_GROUP_NAME
-            source.set apkLibrary.dexDir
-            patch.set patch
-            outputDir.set dexpatcherDir.dir("patched-dex/${variant.dirName}")
-        }
-
-        variant.outputs.each {
-            if (it instanceof ApkVariantOutput) {
-
-                //def output = (ApkVariantOutput) it
-                //def packageApp = output.packageApplication
-                def packageApp = getPackageTask(it);
-
-                patchDex.mustRunAfter { packageApp.dependsOn - patchDex }
-                packageApp.dependsOn patchDex
-
-                beforeTask(patchDex) {
-
-                    //def dexFolders = packageApp.dexFolders
-                    def dexFolders = getPackageTaskDexFolders(packageApp)
-
-                    if (dexFolders.is(null)) throw new RuntimeException(
-                            "Output of variant '${variant.name}' has null dex folders")
-                    if (dexFolders.empty) throw new RuntimeException(
-                            "Output of variant '${variant.name}' has no dex folders")
-                    if (dexFolders.size() > 1) throw new RuntimeException(
-                            "Output of variant '${variant.name}' has multiple dex folders")
-
-                    def dexFolder = dexFolders[0]
-                    if (dexFolder.is(null)) throw new RuntimeException(
-                            "Output of variant '${variant.name}' has null dex folder")
-
-                    def oldPatch = patch.orNull
-                    patch.set dexFolder
-                    if (oldPatch && oldPatch != patch.orNull) throw new RuntimeException(
-                        "Outputs of variant '${variant.name}' do not share dex folders")
-
-                    Set<File> patchedDexFolders = ImmutableSet.of(patchDex.outputDir.get().asFile)
-                    //packageApp.dexFolders = patchedDexFolders
-                    setPackageTaskDexFolders(packageApp, patchedDexFolders)
-
-                }
-
+            // Build the APK using the patched bytecode.
+            packageApplication.configure {
+                patchDex.get()      // patchDex must configure first
+                ((ConfigurableFileCollection) it.dexFolders).setFrom patchDex
+                return
             }
         }
 
-        variant.assemble.extensions.add 'patchDex', patchDex
-        return patchDex
-
     }
 
-    @CompileDynamic
-    private static Task getPackageTask(def apkVariantOutput) {
-        // The type of 'apkVariantOutput.packageApplication' is:
-        //  -> 'PackageApplication' in Android plugin up to v2.1.3.
-        //  -> 'PackageAndroidArtifact' in Android plugin v2.2.0 and higher.
-        return apkVariantOutput.packageApplication
-    }
-
-    @CompileDynamic
-    private static Set<File> getPackageTaskDexFolders(def packageTask) {
-        return packageTask.dexFolders
-    }
-
-    //@CompileDynamic
-    private static void setPackageTaskDexFolders(def packageTask, Set<File> dexFolders) {
-        // 'packageApp.dexFolders' is not writable in Android plugin v2.1.3 and earlier.
-        //packageTask.dexFolders = dexFolders
-        // The class of 'packageTask' is subclassed by some presumably run-time mechanism.
-        //def dexFoldersField = packageTask.getClass().getDeclaredField('dexFolders')
-        def dexFoldersField
-        def theClass = packageTask.getClass()
-        for (;;) {
-            try {
-                dexFoldersField = theClass.getDeclaredField('dexFolders')
-                break
-            } catch (NoSuchFieldException e) {
-                theClass = theClass.superclass
-                if (!theClass) throw e
-            }
-        }
-        dexFoldersField.accessible = true
-        dexFoldersField.set(packageTask, dexFolders)
-    }
-*/
+}
 
 /*
     // BYPASS PROCESSING
@@ -206,5 +144,3 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
         return importDex
     }
 */
-
-}
