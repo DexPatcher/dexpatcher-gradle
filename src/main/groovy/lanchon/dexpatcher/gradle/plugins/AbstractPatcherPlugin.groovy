@@ -69,6 +69,7 @@ abstract class AbstractPatcherPlugin<
         def providedLibs = Utils.getJars(project, dexpatcherConfig.resolvedProvidedLibDir)
         project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, providedLibs
 
+        // Dedex the bytecode of the source application.
         def dedexAppClasses = project.tasks.register(TaskNames.DEDEX_APP_CLASSES, Dex2jarTask) {
             it.description = "Translates the Dalvik bytecode of the source application to Java bytecode."
             it.group = TASK_GROUP_NAME
@@ -87,6 +88,7 @@ abstract class AbstractPatcherPlugin<
             }
         }
 
+        // Creates a JAR with files from the source application that will be added verbatim to the patched APK.
         def packExtraAppResources = project.tasks.register(TaskNames.PACK_EXTRA_APP_RESOURCES, LazyZipTask) {
             it.description = "Packs extra resources of the source application."
             it.group = TASK_GROUP_NAME
@@ -106,6 +108,7 @@ abstract class AbstractPatcherPlugin<
             return
         }
 
+        // Creates an AAR with components of the source application that will be used to build the patched APK.
         def packAppComponents = project.tasks.register(TaskNames.PACK_APP_COMPONENTS, LazyZipTask) {
             it.description = "Packs major components of the source application."
             it.group = TASK_GROUP_NAME
