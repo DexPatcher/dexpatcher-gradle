@@ -113,6 +113,12 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                             patch.multiDexThreaded.set true
                         }
                     }
+
+                    // Warn if multi-dex is enabled and target requires legacy multi-dex.
+                    if (patch.multiDex.get() && pack.minSdkVersion < NATIVE_MULTI_DEX_MIN_API_LEVEL) {
+                        project.logger.warn("Variant '${variant.name}': Legacy multi-dex is not supported, " +
+                                "please increase minSdkVersion to $NATIVE_MULTI_DEX_MIN_API_LEVEL or disable multi-dex")
+                    }
                 }
             }
         }
