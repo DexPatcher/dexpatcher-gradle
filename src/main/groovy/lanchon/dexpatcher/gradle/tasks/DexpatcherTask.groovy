@@ -17,12 +17,15 @@ import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Console
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 
 /*
 DexPatcher Version 1.4.1 by Lanchon
@@ -52,6 +55,7 @@ usage: dexpatcher [<option> ...] [--output <patched-dex-or-dir>]
 */
 
 @CompileStatic
+@CacheableTask
 class DexpatcherTask extends AbstractJavaExecTask {
 
     enum Verbosity {
@@ -61,11 +65,11 @@ class DexpatcherTask extends AbstractJavaExecTask {
         DEBUG
     }
 
-    @InputFiles final Property<FileSystemLocation> source
-    @Optional @InputFiles final Property<FileSystemLocation> patch
-    @Optional @InputFiles final ListProperty<FileSystemLocation> patches
-    @Optional @OutputFile final RegularFileProperty outputFile
-    @Optional @OutputDirectory final DirectoryProperty outputDir
+    @InputFiles @PathSensitive(PathSensitivity.NONE) final Property<FileSystemLocation> source
+    @Optional @InputFiles @PathSensitive(PathSensitivity.NONE) final Property<FileSystemLocation> patch
+    @Optional @InputFiles @PathSensitive(PathSensitivity.NONE) final ListProperty<FileSystemLocation> patches
+    @Optional @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty outputFile
+    @Optional @OutputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty outputDir
 
     @Input final Property<Integer> apiLevel
     @Input final Property<Boolean> multiDex

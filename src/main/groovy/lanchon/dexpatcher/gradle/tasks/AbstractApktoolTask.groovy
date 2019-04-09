@@ -22,6 +22,8 @@ import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 
 @CompileStatic
 abstract class AbstractApktoolTask extends AbstractJavaExecTask {
@@ -80,8 +82,8 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
 
     @Console final Property<Verbosity> verbosity
     @Optional @Input final DirectoryProperty frameworkDir
-    @Optional @InputDirectory final DirectoryProperty frameworkDirAsInput
-    @Optional @OutputDirectory final DirectoryProperty frameworkDirAsOutput
+    @Optional @InputDirectory @PathSensitive(PathSensitivity.RELATIVE) final DirectoryProperty frameworkDirAsInput
+    @Optional @OutputDirectory @PathSensitive(PathSensitivity.RELATIVE) final DirectoryProperty frameworkDirAsOutput
 
     @Internal protected final Provider<Directory> resolvedFrameworkDir
 

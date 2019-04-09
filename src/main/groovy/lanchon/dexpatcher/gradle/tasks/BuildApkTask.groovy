@@ -15,11 +15,14 @@ import groovy.transform.CompileStatic
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 
 /*
 Apktool v2.2.1 - a tool for reengineering Android apk files
@@ -33,12 +36,13 @@ usage: apktool [-q|--quiet OR -v|--verbose] b[uild] [options] <app_path>
 */
 
 @CompileStatic
+@CacheableTask
 class BuildApkTask extends AbstractApktoolTask {
 
-    @InputDirectory final DirectoryProperty inputDir
-    @OutputFile final RegularFileProperty apkFile
+    @InputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty inputDir
+    @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty apkFile
 
-    @Optional @InputFile final RegularFileProperty aaptFile
+    @Optional @InputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty aaptFile
     @Input final Property<Boolean> copyOriginal
     @Input final Property<Boolean> forceDebuggableBuild
     @Input final Property<Boolean> forceCleanBuild

@@ -16,11 +16,14 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 
 /*
 d2j-dex2jar -- convert dex to jar
@@ -45,12 +48,13 @@ version: reader-2.1-SNAPSHOT, translator-2.1-SNAPSHOT, ir-2.1-SNAPSHOT
 */
 
 @CompileStatic
+@CacheableTask
 class Dex2jarTask extends AbstractDex2jarTask {
 
-    @InputFiles final ConfigurableFileCollection dexFiles
-    @Optional @OutputFile final RegularFileProperty outputFile
-    @Optional @OutputDirectory final DirectoryProperty outputDir
-    @Optional @OutputFile final RegularFileProperty exceptionFile
+    @InputFiles @PathSensitive(PathSensitivity.NAME_ONLY) final ConfigurableFileCollection dexFiles
+    @Optional @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty outputFile
+    @Optional @OutputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty outputDir
+    @Optional @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty exceptionFile
 
     @Input final Property<Boolean> translateCode
     @Input final Property<Boolean> translateDebugInfo
