@@ -100,7 +100,8 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
             if (dir) return dir
             def dirAsInput = frameworkDirAsInput.orNull
             def dirAsOutput = frameworkDirAsOutput.orNull
-            if (dirAsInput && dirAsOutput && project.file(dirAsInput) != project.file(dirAsOutput)) {
+            if (dirAsInput && dirAsOutput &&
+                    project.file(dirAsInput).canonicalPath != project.file(dirAsOutput).canonicalPath) {
                 throw new RuntimeException('Ambiguous framework directory')
             }
             return dirAsInput ?: dirAsOutput
@@ -128,7 +129,7 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
 
         args.add(command)
 
-        def fwDir = frameworkDir.orNull
+        def fwDir = resolvedFrameworkDir.orNull
         if (fwDir) args.addAll(['--frame-path', fwDir as String])
 
         return args;
