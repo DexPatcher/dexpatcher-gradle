@@ -81,10 +81,12 @@ class BuildApkTask extends AbstractApktoolTask {
     }
 
     @Override protected void beforeExec() {
+        super.beforeExec()
         deleteOutputFileOrDir apkFile.get()
     }
 
     @Override protected void afterExec() {
+        super.afterExec()
         checkOutputFile apkFile.get()
     }
 

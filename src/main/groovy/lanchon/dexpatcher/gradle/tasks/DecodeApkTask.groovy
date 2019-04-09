@@ -106,10 +106,12 @@ class DecodeApkTask extends AbstractApktoolTask {
     }
 
     @Override protected void beforeExec() {
+        super.beforeExec()
         deleteOutputFileOrDir outputDir.get()
     }
 
     @Override protected void afterExec() {
+        super.afterExec()
         checkOutputDir outputDir.get()
     }
 

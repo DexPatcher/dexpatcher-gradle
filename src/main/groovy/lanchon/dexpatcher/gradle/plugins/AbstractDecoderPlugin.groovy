@@ -152,8 +152,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             it.group = taskGroup
             it.apkFile.set apkFile
             it.frameworkDir.set((Directory) null)
-            it.frameworkDirAsInput.set((Directory) null)
-            it.frameworkDirAsOutput.set frameworkOutDir
+            it.frameworkOutDir.set frameworkOutDir
             it.outputDir.set outputDir
             it.decodeClasses.set false
             //it.keepBrokenResources.set true

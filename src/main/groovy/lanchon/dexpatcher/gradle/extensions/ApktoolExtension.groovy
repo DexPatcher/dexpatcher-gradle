@@ -37,8 +37,6 @@ class ApktoolExtension extends AbstractToolExtension {
     // Base
     final Property<Verbosity> verbosity
     final DirectoryProperty frameworkDir
-    final DirectoryProperty frameworkDirAsInput
-    final DirectoryProperty frameworkDirAsOutput
 
     // Decode
     final Property<String> frameworkTag
@@ -65,8 +63,6 @@ class ApktoolExtension extends AbstractToolExtension {
         verbosity = project.objects.property(Verbosity)
         frameworkDir = project.layout.directoryProperty()
         frameworkDir.set properties.getAsDirectory(FRAMEWORK_DIR_PROPERTY)
-        frameworkDirAsInput = project.layout.directoryProperty()
-        frameworkDirAsOutput = project.layout.directoryProperty()
 
         frameworkTag = project.objects.property(String)
         apiLevel = project.objects.property(Integer)

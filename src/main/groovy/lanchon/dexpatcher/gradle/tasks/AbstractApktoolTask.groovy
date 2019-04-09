@@ -17,7 +17,6 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Console
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
@@ -81,11 +80,10 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
     protected final String command
 
     @Console final Property<Verbosity> verbosity
-    @Optional @Input final DirectoryProperty frameworkDir
-    @Optional @InputDirectory @PathSensitive(PathSensitivity.RELATIVE) final DirectoryProperty frameworkDirAsInput
-    @Optional @OutputDirectory @PathSensitive(PathSensitivity.RELATIVE) final DirectoryProperty frameworkDirAsOutput
+    @Optional @InputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty frameworkDir
+    @Optional @Internal final DirectoryProperty frameworkOutDir
 
-    @Internal protected final Provider<Directory> resolvedFrameworkDir
+    @OutputDirectory @PathSensitive(PathSensitivity.NONE) final Provider<Directory> resolvedFrameworkDir
 
     AbstractApktoolTask(String command) {
 
@@ -94,19 +92,14 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
 
         verbosity = project.objects.property(Verbosity)
         frameworkDir = project.layout.directoryProperty()
-        frameworkDirAsInput = project.layout.directoryProperty()
-        frameworkDirAsOutput = project.layout.directoryProperty()
+        frameworkOutDir = project.layout.directoryProperty()
 
         resolvedFrameworkDir = project.providers.<Directory>provider {
             def dir = frameworkDir.orNull
-            if (dir) return dir
-            def dirAsInput = frameworkDirAsInput.orNull
-            def dirAsOutput = frameworkDirAsOutput.orNull
-            if (dirAsInput && dirAsOutput &&
-                    project.file(dirAsInput).canonicalPath != project.file(dirAsOutput).canonicalPath) {
-                throw new RuntimeException('Ambiguous framework directory')
-            }
-            return dirAsInput ?: dirAsOutput
+            def outDir = frameworkOutDir.orNull
+            if (!dir && !outDir) throw new RuntimeException('Undefined framework directory')
+            if (dir && outDir) throw new RuntimeException('Ambiguous framework directory')
+            return dir ?: outDir
         }
 
     }
@@ -131,11 +124,18 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
 
         args.add(command)
 
-        def fwDir = resolvedFrameworkDir.orNull
-        if (fwDir) args.addAll(['--frame-path', fwDir as String])
+        args.addAll(['--frame-path', resolvedFrameworkDir.get() as String])
 
         return args;
 
     }
+
+    @Override protected void beforeExec() {
+        resolvedFrameworkDir.get()
+        def outDir = frameworkOutDir.orNull
+        if (outDir) deleteOutputDirContents outDir
+    }
+
+    @Override protected void afterExec() {}
 
 }
