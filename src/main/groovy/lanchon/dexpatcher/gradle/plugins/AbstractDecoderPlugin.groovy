@@ -130,8 +130,8 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         }
 
         project.afterEvaluate {
-            if (printAppInfo.get()) {
-                provideDecodedApp.configure {
+            provideDecodedApp.configure {
+                if (printAppInfo.get()) {
                     it.finalizedBy sourceAppInfo
                 }
             }
