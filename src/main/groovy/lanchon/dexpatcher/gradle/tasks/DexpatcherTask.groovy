@@ -133,7 +133,7 @@ class DexpatcherTask extends AbstractJavaExecTask {
         args.addAll(['--output', (outFile ? outFile : outDir) as String])
 
         def api = getApiLevel()
-        if (api != null) args.addAll(['--api-level', api as String])
+        if (api) args.addAll(['--api-level', api as String])
 
         if (getMultiDex()) {
             if (!getMultiDexThreaded()) {
@@ -141,15 +141,15 @@ class DexpatcherTask extends AbstractJavaExecTask {
             } else {
                 args.add('--multi-dex-threaded')
                 def jobs = getMultiDexJobs()
-                if (jobs != null) args.addAll(['--multi-dex-jobs', jobs as String])
+                if (jobs) args.addAll(['--multi-dex-jobs', jobs as String])
             }
         }
 
         def poolSize = getMaxDexPoolSize()
-        if (poolSize != null) args.addAll(['--max-dex-pool-size', poolSize as String])
+        if (poolSize) args.addAll(['--max-dex-pool-size', poolSize as String])
 
         def annotations = getAnnotationPackage()
-        if (annotations != null) args.addAll(['--annotations', annotations])
+        if (!annotations.is(null)) args.addAll(['--annotations', annotations])
         if (!getConstructorAutoIgnore()) args.add('--no-auto-ignore')
         if (getCompatDexTag()) args.add('--compat-dextag')
 
@@ -172,7 +172,7 @@ class DexpatcherTask extends AbstractJavaExecTask {
 
         if (getLogSourcePath()) args.add('--path')
         def pathRoot = getLogSourcePathRoot()
-        if (pathRoot != null) args.addAll(['--path-root', pathRoot])
+        if (!pathRoot.is(null)) args.addAll(['--path-root', pathRoot])
 
         if (getLogStats()) args.add('--stats')
 

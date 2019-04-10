@@ -47,7 +47,7 @@ abstract class Resolver {
     }
 
     static File getFile(File parent, String child) {
-        if (parent == null) throw new NullPointerException();
+        if (parent.is(null)) throw new NullPointerException();
         return new File(parent, child)
     }
 
