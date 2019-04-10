@@ -67,12 +67,21 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                 // Find the variant's main dex output and its builder task(s).
                 // FIXME: Make this work on Android Gradle plugin 3.2.0.
                 def dexFolders = pack.dexFolders.files
+                def dexBuilders = pack.dexFolders.buildDependencies.getDependencies(pack)
+                /*
+                // FIXME: Make this work with option 'android.enableDexingArtifactTransform=false'.
+                if (dexFolders.size() == 0) {
+                    dexFolders = new HashSet<File>()
+                    dexBuilders.findAll { it instanceof StreamBasedTask }.collect(dexFolders) {
+                        ((StreamBasedTask) it).streamOutputFolder
+                    }
+                    if (dexFolders.size() == 0) error("Dex folder not found")
+                }
+                */
                 if (dexFolders.size() == 0) error("Dex folder not found")
                 if (dexFolders.size() != 1) error("Multiple dex folders found")
                 def dexFolder = dexFolders[0]
                 if (pack.featureDexFolder) error("Feature dex folders not supported")
-                def dexBuilders = pack.dexFolders.buildDependencies.getDependencies(pack)
-                        //.findAll { it instanceof DexMergingTask }
                 if (dexBuilders.size() == 0) error("Main dex builder task not found")
                 //if (dexBuilders.size() != 1) error("Multiple dex builder tasks found")
                 //Task dexBuilder = dexBuilders[0]
