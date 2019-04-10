@@ -99,7 +99,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
 
         def resources = createResourcesTask(project, taskNameModifier('resources'), apktoolDir)
         resources.with {
-            description = "Packs extra resources into a jar"
+            description = "Packs extra resources into a jar."
             group = taskGroup
             dependsOn decodeApk
             destinationDir = resourcesDir
