@@ -26,6 +26,7 @@ import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.bundling.Zip
+import org.gradle.api.tasks.bundling.ZipEntryCompression
 
 // TODO: Add plugin version to apk libs.
 // TODO: Maybe select apktool decode api level automatically.
@@ -144,7 +145,9 @@ class ApkLibraryPlugin extends AbstractPlugin {
 
         def resources = project.tasks.create(name, Zip)
         resources.with {
+            it.zip64 = true
             duplicatesStrategy = DuplicatesStrategy.FAIL
+            entryCompression = ZipEntryCompression.STORED
             archiveName = 'classes.jar'
             from(Resolver.getFile(apktoolDir, 'unknown'))
             from(Resolver.getFile(apktoolDir, 'original/META-INF')) { CopySpec spec ->
@@ -161,6 +164,7 @@ class ApkLibraryPlugin extends AbstractPlugin {
         def apkLibrary = project.tasks.create(name, Zip)
         apkLibrary.with {
 
+            zip64 = true
             duplicatesStrategy = DuplicatesStrategy.FAIL
             extension = 'apk.aar'
 
