@@ -21,6 +21,7 @@ import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.api.ApplicationVariant
+import com.android.builder.dexing.DexingType
 import com.android.utils.StringHelper
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
@@ -155,10 +156,28 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                         }
                     }
 
+                    def dexingType = VariantHelper.getData(variant).scope.dexingType
+                    def legacyMultiDexMessage = "Legacy multi-dex is not supported by DexPatcher: " +
+                            "please increase minSdkVersion to $NATIVE_MULTI_DEX_MIN_API_LEVEL or disable multi-dex"
+
+                    // Automatically configure multi-dex if needed.
+                    if (!patch.multiDex.get()) {
+                        if (dexingType != DexingType.MONO_DEX) {
+                            if (dexingType == DexingType.LEGACY_MULTIDEX) {
+                                throw new RuntimeException(legacyMultiDexMessage + '\n' +
+                                        '(Manually enable DexPatcher multi-dex patching mode to override this check)')
+                            }
+                            project.logger.info("Variant '${variant.name}': " +
+                                    'Automatically enabling DexPatcher multi-dex patching mode')
+                            patch.multiDex.set true
+                        }
+                    }
+
                     // Warn if multi-dex is enabled and target requires legacy multi-dex.
-                    if (patch.multiDex.get() && pack.minSdkVersion < NATIVE_MULTI_DEX_MIN_API_LEVEL) {
-                        project.logger.warn("Variant '${variant.name}': Legacy multi-dex is not supported, " +
-                                "please increase minSdkVersion to $NATIVE_MULTI_DEX_MIN_API_LEVEL or disable multi-dex")
+                    if (patch.multiDex.get() && (pack.minSdkVersion < NATIVE_MULTI_DEX_MIN_API_LEVEL ||
+                            dexingType == DexingType.LEGACY_MULTIDEX)) {
+                        project.logger.warn("Variant '${variant.name}': " + legacyMultiDexMessage + '\n' +
+                                '(The application being built will not run on Android versions prior to 5.0)')
                     }
                 }
             }
