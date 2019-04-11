@@ -47,6 +47,9 @@ abstract class Constants {
         static final String PROCESS_ID_MAPPINGS_PREFIX = 'process'
         static final String PROCESS_ID_MAPPINGS_SUFFIX = 'IdMappings'
         static final String PROCESS_ID_MAPPINGS_TAG = PROCESS_ID_MAPPINGS_PREFIX + PROCESS_ID_MAPPINGS_SUFFIX
+        static final String COLLECT_DEX_PREFIX = 'collectDex'
+        static final String COLLECT_DEX_SUFFIX = ''
+        static final String COLLECT_DEX_TAG = COLLECT_DEX_PREFIX + COLLECT_DEX_SUFFIX
         static final String PATCH_DEX_PREFIX = 'patchDex'
         static final String PATCH_DEX_SUFFIX = ''
         static final String PATCH_DEX_TAG = PATCH_DEX_PREFIX + PATCH_DEX_SUFFIX
@@ -82,6 +85,7 @@ abstract class Constants {
         static final String DIR_COMPONENT_LIBRARY = DIR_INTERMEDIATES + '/component-library'
         static final String FILENAME_COMPONENT_LIBRARY = 'app-components.aar'
         static final String DIR_RESOURCE_ID_MAPPINGS = DIR_INTERMEDIATES + '/resource-id-mappings'
+        static final String DIR_PATCH_DEX = DIR_INTERMEDIATES + '/patch-dex'
         static final String DIR_PATCHED_DEX = DIR_INTERMEDIATES + '/patched-dex'
         // Outputs:
         static final String DIR_OUTPUTS = 'outputs'
