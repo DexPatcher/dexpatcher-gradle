@@ -189,7 +189,8 @@ abstract class AbstractPatcherPlugin<
                     mergeResources.get().aapt2FromMaven
                 }
                 it.androidBuilder.set project.<AndroidBuilder>provider {
-                    getAndroidBuilder(mergeResources.get())
+                    //getAndroidBuilder(mergeResources.get())
+                    VariantHelper.getData(variant).scope.globalScope.androidBuilder
                 }
                 return
             }
@@ -222,12 +223,6 @@ abstract class AbstractPatcherPlugin<
             }
         }
 
-    }
-
-    private static AndroidBuilder getAndroidBuilder(AndroidBuilderTask task) {
-        def getBuilder = AndroidBuilderTask.class.getDeclaredMethod('getBuilder')
-        getBuilder.setAccessible true
-        return (AndroidBuilder) getBuilder.invoke(task)
     }
 
     private void removeEmptyRFiles(File sourceTreeDir) {
@@ -289,6 +284,16 @@ abstract class AbstractPatcherPlugin<
         config.attributes.attribute(ARTIFACT_FORMAT, AndroidArtifacts.ArtifactType.EXPLODED_AAR.getType())
         def implementationConfig = project.configurations.getByName(JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME)
         implementationConfig.extendsFrom config
+*/
+
+/*
+    // Android builder can also be accessed through global scope
+
+    private static AndroidBuilder getAndroidBuilder(AndroidBuilderTask task) {
+        def getBuilder = AndroidBuilderTask.class.getDeclaredMethod('getBuilder')
+        getBuilder.setAccessible true
+        return (AndroidBuilder) getBuilder.invoke(task)
+    }
 */
 
 /*
