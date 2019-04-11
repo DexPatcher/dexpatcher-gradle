@@ -106,6 +106,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                     throw new RuntimeException("Instant Run is not supported, please disable it")
                 }
                 collectDex.get()       // collectDex must configure first
+                // FIXME: Investigate featureDexFolder.
                 if (pack.featureDexFolder) throw new RuntimeException("Feature dex folder not supported")
 
                 // Patch the bytecode of the source application using the collected dex files.
