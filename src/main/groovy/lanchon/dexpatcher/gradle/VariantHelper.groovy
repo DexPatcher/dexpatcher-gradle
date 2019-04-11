@@ -10,11 +10,18 @@
 
 package lanchon.dexpatcher.gradle
 
+import java.lang.reflect.Method
 import groovy.transform.CompileStatic
 
 import com.android.build.gradle.api.ApkVariant
+import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.BaseVariantOutput
+import com.android.build.gradle.api.LibraryVariant
+import com.android.build.gradle.internal.api.BaseVariantImpl
+import com.android.build.gradle.internal.variant.ApkVariantData
+import com.android.build.gradle.internal.variant.BaseVariantData
+import com.android.build.gradle.internal.variant.LibraryVariantData
 import com.android.build.gradle.tasks.MergeResources
 import com.android.build.gradle.tasks.PackageAndroidArtifact
 import com.android.build.gradle.tasks.ProcessAndroidResources
@@ -23,6 +30,27 @@ import org.gradle.api.tasks.TaskProvider
 
 @CompileStatic
 abstract class VariantHelper {
+
+    // Access internal variant data
+
+    private static final Method getVariantDataMethod
+
+    static {
+        getVariantDataMethod = BaseVariantImpl.class.getDeclaredMethod('getVariantData')
+        getVariantDataMethod.setAccessible true
+    }
+
+    static BaseVariantData getData(BaseVariant variant) {
+        (BaseVariantData) getVariantDataMethod.invoke(variant)
+    }
+
+    static LibraryVariantData getData(LibraryVariant variant) {
+        (LibraryVariantData) getVariantDataMethod.invoke(variant)
+    }
+
+    static ApkVariantData getData(ApplicationVariant variant) {
+        (ApkVariantData) getVariantDataMethod.invoke(variant)
+    }
 
     // Adapters for Android Gradle plugins earlier than 3.3.0
 
