@@ -12,6 +12,7 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
+import com.android.utils.FileUtils
 import org.gradle.api.file.Directory
 import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.file.RegularFile
@@ -53,12 +54,14 @@ abstract class AbstractJavaExecTask extends JavaExec {
         if (extras) args.addAll(extras)
     }
 
-    protected void deleteOutputFileOrDir(FileSystemLocation file) {
-        if (file) project.delete file
+    protected void deleteOutputFileOrDir(FileSystemLocation fileOrDir) {
+        //if (fileOrDir) project.delete fileOrDir
+        if (fileOrDir) FileUtils.deletePath fileOrDir.asFile
     }
 
     protected void deleteOutputDirContents(Directory dir) {
-        if (dir) project.delete project.fileTree(dir)
+        //if (dir) project.delete project.fileTree dir
+        if (dir) FileUtils.deleteDirectoryContents dir.asFile
     }
 
     protected void checkOutputFile(RegularFile file) {
