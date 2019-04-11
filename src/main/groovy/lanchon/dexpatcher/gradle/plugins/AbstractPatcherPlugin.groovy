@@ -173,8 +173,8 @@ abstract class AbstractPatcherPlugin<
             def mergeResources = VariantHelper.getMergeResources(variant)
 
             // Copy (AAPT1) or compile (AAPT2) the source app resource ID mapping file.
-            def processIdMappings = project.tasks.register(StringHelper.appendCapitalized(
-                    TaskNames.PROCESS_ID_MAPPINGS_PREFIX, variant.name, TaskNames.PROCESS_ID_MAPPINGS_SUFFIX),
+            def processIdMappings = project.tasks.register(
+                    StringHelper.appendCapitalized(TaskNames.PROCESS_ID_MAPPINGS_PREFIX, variant.name),
                     ProcessIdMappingsTask) {
                 it.description = "Compiles the resource ID mappings of the source application."
                 it.group = TASK_GROUP_NAME
@@ -194,7 +194,7 @@ abstract class AbstractPatcherPlugin<
                 return
             }
             VariantHelper.getAssemble(variant).configure {
-                it.extensions.add TaskNames.PROCESS_ID_MAPPINGS_TAG, processIdMappings
+                it.extensions.add TaskNames.PROCESS_ID_MAPPINGS_PREFIX, processIdMappings
                 return
             }
 

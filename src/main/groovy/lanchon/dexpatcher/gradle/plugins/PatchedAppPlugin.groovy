@@ -58,8 +58,8 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
         androidVariants.all { ApplicationVariant variant ->
             def packageApplication = VariantHelper.getPackageApplication(variant)
 
-            def collectDex = project.tasks.register(StringHelper.appendCapitalized(
-                    TaskNames.COLLECT_DEX_PREFIX, variant.name, TaskNames.COLLECT_DEX_SUFFIX),
+            def collectDex = project.tasks.register(
+                    StringHelper.appendCapitalized(TaskNames.COLLECT_DEX_PREFIX, variant.name),
                     CollectDexTask) {
 
                 // Find the dex output folders of the variant and their builder tasks.
@@ -92,12 +92,12 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                 return
             }
             VariantHelper.getAssemble(variant).configure {
-                it.extensions.add TaskNames.COLLECT_DEX_TAG, collectDex
+                it.extensions.add TaskNames.COLLECT_DEX_PREFIX, collectDex
                 return
             }
 
-            def patchDex = project.tasks.register(StringHelper.appendCapitalized(
-                    TaskNames.PATCH_DEX_PREFIX, variant.name, TaskNames.PATCH_DEX_SUFFIX),
+            def patchDex = project.tasks.register(
+                    StringHelper.appendCapitalized(TaskNames.PATCH_DEX_PREFIX, variant.name),
                     DexpatcherTask) {
 
                 // Perform sanity checks.
@@ -126,7 +126,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                 return
             }
             VariantHelper.getAssemble(variant).configure {
-                it.extensions.add TaskNames.PATCH_DEX_TAG, patchDex
+                it.extensions.add TaskNames.PATCH_DEX_PREFIX, patchDex
                 return
             }
 
@@ -142,7 +142,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
             androidVariants.all { ApplicationVariant variant ->
                 VariantHelper.getPackageApplication(variant).configure { pack ->
                     def patch = ((TaskProvider<DexpatcherTask>) VariantHelper.getAssemble(variant).get().
-                            extensions.getByName(TaskNames.PATCH_DEX_TAG)).get()
+                            extensions.getByName(TaskNames.PATCH_DEX_PREFIX)).get()
 
                     // Configure multi-dex of debuggable variants.
                     if (variant.buildType.debuggable) {
