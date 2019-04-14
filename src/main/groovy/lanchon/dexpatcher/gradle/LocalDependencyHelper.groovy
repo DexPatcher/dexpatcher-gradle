@@ -25,11 +25,19 @@ abstract class LocalDependencyHelper {
     private static final boolean DECORATE_DEPENDENCIES = true
 
     private static final Field targetComponentIdField
+    private static final Exception targetComponentIdException
 
     static {
-        // FIXME: Discard exceptions or delay throwing them?
-        targetComponentIdField = DefaultSelfResolvingDependency.getDeclaredField('targetComponentId')
-        targetComponentIdField.accessible = true
+        Field field
+        try {
+            field = DefaultSelfResolvingDependency.getDeclaredField('targetComponentId')
+            field.accessible = true
+            targetComponentIdException = null
+        } catch (Exception e) {
+            field = null
+            targetComponentIdException = e
+        }
+        targetComponentIdField = field
     }
 
     static void addDexpatcherAnnotations(Project project, String configurationName, def files) {
@@ -53,8 +61,18 @@ abstract class LocalDependencyHelper {
             String group, String name, String version) {
         def dependency = project.dependencies.create(localDependencyNotation)
         if (DECORATE_DEPENDENCIES) {
-            targetComponentIdField.set dependency,
-                    new DefaultModuleComponentIdentifier(DefaultModuleIdentifier.newId(group, name), version)
+            try {
+
+                if (targetComponentIdException) throw new RuntimeException(
+                        "Cannot access field 'DefaultSelfResolvingDependency.targetComponentId'", targetComponentIdException)
+                targetComponentIdField.set dependency,
+                        new DefaultModuleComponentIdentifier(DefaultModuleIdentifier.newId(group, name), version)
+            } catch (Exception e) {
+                project.logger.warn "Cannot decorate local dependency '$name': $e.message"
+                if (project.logger.debugEnabled) {
+                    project.logger.debug "Cannot decorate local dependency '$name'", e
+                }
+            }
         }
         configuration.dependencies.add dependency
     }
