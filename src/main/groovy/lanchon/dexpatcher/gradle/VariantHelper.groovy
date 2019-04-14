@@ -36,6 +36,7 @@ abstract class VariantHelper {
     private static final Method getVariantDataMethod
 
     static {
+        // FIXME: Discard exceptions or delay throwing them?
         getVariantDataMethod = BaseVariantImpl.class.getDeclaredMethod('getVariantData')
         getVariantDataMethod.setAccessible true
     }
