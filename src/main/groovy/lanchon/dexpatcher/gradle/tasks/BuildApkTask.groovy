@@ -25,14 +25,16 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 
 /*
-Apktool v2.2.1 - a tool for reengineering Android apk files
+Apktool v2.4.0 - a tool for reengineering Android apk files
 usage: apktool [-q|--quiet OR -v|--verbose] b[uild] [options] <app_path>
  -a,--aapt <loc>         Loads aapt from specified location.
  -c,--copy-original      Copies original AndroidManifest.xml and META-INF. See project page for more info.
  -d,--debug              Sets android:debuggable to "true" in the APK's compiled manifest
  -f,--force-all          Skip changes detection and build all files.
+ -nc,--no-crunch         Disable crunching of resource files during the build step.
  -o,--output <dir>       The name of apk that gets written. Default is dist/name.apk
  -p,--frame-path <dir>   Uses framework files located in <dir>.
+    --use-aapt2          Upgrades apktool to use experimental aapt2 binary.
 */
 
 @CompileStatic
@@ -43,6 +45,8 @@ class BuildApkTask extends AbstractApktoolTask {
     @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty apkFile
 
     @Optional @InputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty aaptFile
+    @Input final Property<Boolean> useAapt2
+    @Input final Property<Boolean> crunchResources
     @Input final Property<Boolean> copyOriginal
     @Input final Property<Boolean> forceDebuggableBuild
     @Input final Property<Boolean> forceCleanBuild
@@ -54,6 +58,9 @@ class BuildApkTask extends AbstractApktoolTask {
         inputDir = project.layout.directoryProperty()
         apkFile = project.layout.fileProperty()
         aaptFile = project.layout.fileProperty()
+        useAapt2 = project.objects.property(Boolean)
+        crunchResources = project.objects.property(Boolean)
+        crunchResources.set true
         copyOriginal = project.objects.property(Boolean)
         forceDebuggableBuild = project.objects.property(Boolean)
         forceCleanBuild = project.objects.property(Boolean)
@@ -68,6 +75,8 @@ class BuildApkTask extends AbstractApktoolTask {
 
         def aapt = aaptFile.orNull
         if (aapt) args.addAll(['--aapt', aapt as String])
+        if (useAapt2.get()) args.add('--use-aapt2')
+        if (!crunchResources.get()) args.add('--no-crunch')
         if (copyOriginal.get()) args.add('--copy-original')
         if (forceDebuggableBuild.get()) args.add('--debug')
         if (forceCleanBuild.get()) args.add('--force-all')

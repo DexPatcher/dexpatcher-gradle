@@ -81,6 +81,8 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         }
         project.tasks.withType(BuildApkTask).configureEach {
             it.aaptFile.set apktool.aaptFile
+            it.useAapt2.set apktool.useAapt2
+            it.crunchResources.set apktool.crunchResources
             it.copyOriginal.set apktool.copyOriginal
             it.forceDebuggableBuild.set apktool.forceDebuggableBuild
             it.forceCleanBuild.set apktool.forceCleanBuild

@@ -51,6 +51,8 @@ class ApktoolExtension extends AbstractToolExtension {
 
     // Build
     final RegularFileProperty aaptFile
+    final Property<Boolean> useAapt2
+    final Property<Boolean> crunchResources
     final Property<Boolean> copyOriginal
     final Property<Boolean> forceDebuggableBuild
     final Property<Boolean> forceCleanBuild
@@ -80,6 +82,9 @@ class ApktoolExtension extends AbstractToolExtension {
 
         aaptFile = project.layout.fileProperty()
         aaptFile.set properties.getAsRegularFile(AAPT_FILE_PROPERTY)
+        useAapt2 = project.objects.property(Boolean)
+        crunchResources = project.objects.property(Boolean)
+        crunchResources.set true
         copyOriginal = project.objects.property(Boolean)
         forceDebuggableBuild = project.objects.property(Boolean)
         forceCleanBuild = project.objects.property(Boolean)
