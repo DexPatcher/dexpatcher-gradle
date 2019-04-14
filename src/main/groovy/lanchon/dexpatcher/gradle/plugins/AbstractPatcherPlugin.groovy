@@ -23,7 +23,6 @@ import lanchon.dexpatcher.gradle.tasks.ProcessIdMappingsTask
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.BaseVariantOutput
-import com.android.build.gradle.internal.tasks.AndroidBuilderTask
 import com.android.build.gradle.tasks.MergeResources
 import com.android.builder.core.AndroidBuilder
 import com.android.utils.StringHelper
