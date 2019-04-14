@@ -39,6 +39,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         super.afterApply()
 
         def sourceApk = project.configurations.create(ConfigurationNames.SOURCE_APK)
+        sourceApk.description = 'Source application dependency provided as an Android APK.'
         sourceApk.canBeResolved = true
         sourceApk.canBeConsumed = false
         def apks = project.fileTree(ProjectDir.DIR_SOURCE_APK)
@@ -46,6 +47,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         sourceApk.dependencies.add project.dependencies.create(apks)
 
         def sourceApkLib = project.configurations.create(ConfigurationNames.SOURCE_APK_LIBRARY)
+        sourceApkLib.description = 'Source application dependency provided as a DexPatcher APK library.'
         sourceApkLib.canBeResolved = true
         sourceApkLib.canBeConsumed = false
         def apkLibs = project.fileTree(ProjectDir.DIR_SOURCE_APK_LIBRARY)
