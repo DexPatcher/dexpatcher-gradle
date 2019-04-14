@@ -44,6 +44,7 @@ class ApktoolExtension extends AbstractToolExtension {
     final Property<Boolean> decodeAssets
     final Property<Boolean> decodeResources
     final Property<Boolean> decodeClasses
+    final Property<Boolean> forceDecodeManifest
     final Property<Boolean> keepBrokenResources
     final Property<Boolean> stripDebugInfo
     final Property<Boolean> matchOriginal
@@ -72,6 +73,7 @@ class ApktoolExtension extends AbstractToolExtension {
         decodeResources.set true
         decodeClasses = project.objects.property(Boolean)
         decodeClasses.set true
+        forceDecodeManifest = project.objects.property(Boolean)
         keepBrokenResources = project.objects.property(Boolean)
         stripDebugInfo = project.objects.property(Boolean)
         matchOriginal = project.objects.property(Boolean)

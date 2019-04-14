@@ -24,11 +24,12 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 
 /*
-Apktool v2.3.0 - a tool for reengineering Android apk files
+Apktool v2.4.0 - a tool for reengineering Android apk files
 usage: apktool [-q|--quiet OR -v|--verbose] d[ecode] [options] <file_apk>
  -api,--api-level <API>   The numeric api-level of the file to generate, e.g. 14 for ICS.
  -b,--no-debug-info       don't write out debug info (.local, .param, .line, etc.)
  -f,--force               Force delete destination directory.
+    --force-manifest      Decode the APK's compiled manifest, even if decoding of resources is set to "false".
  -k,--keep-broken-res     Use if there was an error and some resources were dropped, e.g.
                           "Invalid config flags detected. Dropping resources", but you
                           want to decode them anyway, even with errors. You will have to
@@ -54,6 +55,7 @@ class DecodeApkTask extends AbstractApktoolTask {
     @Input final Property<Boolean> decodeAssets
     @Input final Property<Boolean> decodeResources
     @Input final Property<Boolean> decodeClasses
+    @Input final Property<Boolean> forceDecodeManifest
     @Input final Property<Boolean> keepBrokenResources
     @Input final Property<Boolean> stripDebugInfo
     @Input final Property<Boolean> matchOriginal
@@ -73,6 +75,7 @@ class DecodeApkTask extends AbstractApktoolTask {
         decodeResources.set true
         decodeClasses = project.objects.property(Boolean)
         decodeClasses.set true
+        forceDecodeManifest = project.objects.property(Boolean)
         keepBrokenResources = project.objects.property(Boolean)
         stripDebugInfo = project.objects.property(Boolean)
         matchOriginal = project.objects.property(Boolean)
@@ -92,6 +95,7 @@ class DecodeApkTask extends AbstractApktoolTask {
         if (!decodeAssets.get()) args.add('--no-assets')
         if (!decodeResources.get()) args.add('--no-res')
         if (!decodeClasses.get()) args.add('--no-src')
+        if (forceDecodeManifest.get()) args.add('--force-manifest')
         if (keepBrokenResources.get()) args.add('--keep-broken-res')
         if (stripDebugInfo.get()) args.add('--no-debug-info')
         if (matchOriginal.get()) args.add('--match-original')

@@ -73,6 +73,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
             it.decodeAssets.set apktool.decodeAssets
             it.decodeResources.set apktool.decodeResources
             it.decodeClasses.set apktool.decodeClasses
+            it.forceDecodeManifest.set apktool.forceDecodeManifest
             it.keepBrokenResources.set apktool.keepBrokenResources
             it.stripDebugInfo.set apktool.stripDebugInfo
             it.matchOriginal.set apktool.matchOriginal
