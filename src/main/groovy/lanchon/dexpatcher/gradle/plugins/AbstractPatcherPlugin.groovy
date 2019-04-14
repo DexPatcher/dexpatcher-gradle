@@ -162,9 +162,13 @@ abstract class AbstractPatcherPlugin<
         }
 
         // Add the source app component library as an implementation dependency.
-        def componentLib = project.files(packAppComponents)
-        componentLib.builtBy packAppComponents
-        project.dependencies.add JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME, componentLib
+        // This library should be added after any patch libraries added by the user.
+        // (But see: https://issuetracker.google.com/issues/130463010)
+        project.afterEvaluate {
+            def componentLib = project.files(packAppComponents)
+            componentLib.builtBy packAppComponents
+            project.dependencies.add JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME, componentLib
+        }
 
         // Android's resource merger build step ignores existing resource ID mappings ('public.xml' files),
         // so the ID mappings of the source app must be processed and added the the output of the merger.
