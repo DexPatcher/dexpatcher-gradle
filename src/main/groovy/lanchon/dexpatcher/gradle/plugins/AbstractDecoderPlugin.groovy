@@ -165,9 +165,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         def unpackApkLibrary = project.tasks.register(taskName, Sync) {
             it.description = 'Unpacks a DexPatcher APK library.'
             it.group = taskGroup
-            it.from {
-                project.zipTree(apkLibFile)
-            }
+            it.from project.zipTree(apkLibFile)
             it.into outputDir
             return
         }
