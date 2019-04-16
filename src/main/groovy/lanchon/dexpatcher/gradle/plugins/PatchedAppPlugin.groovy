@@ -54,7 +54,6 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
         super.afterApply()
 
         // Patch the bytecode of the source application.
-        // TODO: Could skip the collect task if the dex merger tasks produce a single output folder.
         androidVariants.all { ApplicationVariant variant ->
             def packageApplication = VariantHelper.getPackageApplication(variant)
 
