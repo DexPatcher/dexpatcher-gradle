@@ -25,7 +25,6 @@ import com.android.builder.dexing.DexingType
 import com.android.utils.StringHelper
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskProvider
 
 import static lanchon.dexpatcher.gradle.Constants.*
@@ -78,7 +77,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                 */
                 if (dexFolders.size() == 0) throw new RuntimeException("Dex folders not found")
                 if (dexBuilders.size() == 0) throw new RuntimeException("Dex builder tasks not found")
-                if (project.logger.isEnabled(LogLevel.DEBUG)) {
+                if (project.logger.debugEnabled) {
                     //def builderMap = new LinkedHashMap<String, String>()
                     //dexBuilders.each { builderMap.put(it.name, it.class.canonicalName) }
                     project.logger.debug("Dex builder tasks in variant '${variant.name}': " + dexBuilders)

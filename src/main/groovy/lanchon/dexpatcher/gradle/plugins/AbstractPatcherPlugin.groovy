@@ -30,7 +30,6 @@ import com.android.utils.StringHelper
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.file.CopySpec
 import org.gradle.api.file.DuplicatesStrategy
-import org.gradle.api.logging.LogLevel
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.bundling.ZipEntryCompression
 
@@ -237,7 +236,7 @@ abstract class AbstractPatcherPlugin<
         rFiles.include '**/R.java'
         for (def rFile : rFiles) {
             if (isEmptyRFile(rFile)) {
-                if (project.logger.isEnabled(LogLevel.DEBUG)) {
+                if (project.logger.debugEnabled) {
                     project.logger.debug("Removing empty R file '$rFile' containing:\n" + rFile.text)
                 }
                 project.delete rFile
