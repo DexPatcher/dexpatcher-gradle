@@ -12,6 +12,7 @@ package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.Utils
 import lanchon.dexpatcher.gradle.extensions.AbstractDecoderExtension
 import lanchon.dexpatcher.gradle.tasks.DecodeApkTask
 import lanchon.dexpatcher.gradle.tasks.ProvideDecodedAppTask
@@ -88,21 +89,19 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         def outputDir = project.<Directory>provider {
             provideDecodedApp.get().outputDir.get()
         }
-        def sourceAppFile = project.<RegularFile>provider {
-            provideDecodedApp.get().sourceAppFile.get()
-        }
 
         TaskProvider<DecodeApkTask> decodeApk = null
         if (!sourceApk.is(null)) {
+            def inputFile = project.<RegularFile>provider {
+                provideDecodedApp.get().sourceAppFile.get()
+                Utils.getRegularFile(project, sourceApk.singleFile)
+            }
             decodeApk = registerDecodeApkTask(project,
                     taskNameModifier(TaskNames.DECODE_APK), taskGroup,
                     dirModifier(project.layout.buildDirectory.dir(BuildDir.DIR_APKTOOL_FRAMEWORK)),
-                    outputDir, sourceAppFile)
+                    outputDir, inputFile)
             decodeApk.configure {
-                it.dependsOn sourceApk, provideDecodedApp.get().sourceAppFiles
-                it.onlyIf {
-                    !sourceApk.files.empty
-                }
+                it.dependsOn sourceApk
             }
             provideDecodedApp.configure {
                 it.dependsOn {
@@ -113,14 +112,15 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
 
         TaskProvider<Sync> unpackApkLibrary = null
         if (!sourceApkLib.is(null)) {
+            def inputFile = project.<RegularFile>provider {
+                provideDecodedApp.get().sourceAppFile.get()
+                Utils.getRegularFile(project, sourceApkLib.singleFile)
+            }
             unpackApkLibrary = registerUnpackApkLibraryTask(project,
                     taskNameModifier(TaskNames.UNPACK_APK_LIBRARY), taskGroup,
-                    outputDir, sourceAppFile)
+                    outputDir, inputFile)
             unpackApkLibrary.configure {
-                it.dependsOn sourceApkLib, provideDecodedApp.get().sourceAppFiles
-                it.onlyIf {
-                    !sourceApkLib.files.empty
-                }
+                it.dependsOn sourceApkLib
             }
             provideDecodedApp.configure {
                 it.dependsOn {
