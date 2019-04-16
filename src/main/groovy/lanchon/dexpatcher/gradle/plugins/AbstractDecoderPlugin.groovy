@@ -101,7 +101,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             decodeApk.configure {
                 it.dependsOn sourceApk, provideDecodedApp.get().sourceAppFiles
                 it.onlyIf {
-                    sourceApk.files.size()
+                    !sourceApk.files.empty
                 }
             }
             provideDecodedApp.configure {
@@ -119,7 +119,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             unpackApkLibrary.configure {
                 it.dependsOn sourceApkLib, provideDecodedApp.get().sourceAppFiles
                 it.onlyIf {
-                    sourceApkLib.files.size()
+                    !sourceApkLib.files.empty
                 }
             }
             provideDecodedApp.configure {
