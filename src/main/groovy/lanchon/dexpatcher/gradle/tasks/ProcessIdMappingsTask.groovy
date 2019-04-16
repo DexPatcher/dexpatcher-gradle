@@ -40,6 +40,8 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.workers.WorkerExecutor
 
+// TODO: Maybe make this work on Android Gradle plugin 3.1.0 on which there is no ResourceCompilationService.
+
 @CompileStatic
 @CacheableTask
 class ProcessIdMappingsTask extends DefaultTask {
