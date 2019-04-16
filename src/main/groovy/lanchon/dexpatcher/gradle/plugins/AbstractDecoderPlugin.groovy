@@ -100,8 +100,8 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
                     outputDir, sourceAppFile)
             decodeApk.configure {
                 it.dependsOn sourceApk, provideDecodedApp.get().sourceAppFiles
-                it.onlyIf {
-                    !sourceApk.files.empty
+                it.doFirst {
+                    sourceApk.singleFile
                 }
             }
             provideDecodedApp.configure {
@@ -118,8 +118,8 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
                     outputDir, sourceAppFile)
             unpackApkLibrary.configure {
                 it.dependsOn sourceApkLib, provideDecodedApp.get().sourceAppFiles
-                it.onlyIf {
-                    !sourceApkLib.files.empty
+                it.doFirst {
+                    sourceApkLib.singleFile
                 }
             }
             provideDecodedApp.configure {
