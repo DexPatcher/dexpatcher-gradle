@@ -88,7 +88,6 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         def outputDir = project.<Directory>provider {
             provideDecodedApp.get().outputDir.get()
         }
-
         def sourceAppFile = project.<RegularFile>provider {
             provideDecodedApp.get().sourceAppFile.get()
         }
