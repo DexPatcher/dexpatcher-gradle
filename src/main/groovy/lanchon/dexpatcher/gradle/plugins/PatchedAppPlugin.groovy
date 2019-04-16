@@ -12,7 +12,6 @@ package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Utils
 import lanchon.dexpatcher.gradle.VariantHelper
 import lanchon.dexpatcher.gradle.extensions.PatchedAppExtension
 import lanchon.dexpatcher.gradle.tasks.CollectDexTask
@@ -25,6 +24,7 @@ import com.android.builder.dexing.DexingType
 import com.android.utils.StringHelper
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.Directory
 import org.gradle.api.tasks.TaskProvider
 
 import static lanchon.dexpatcher.gradle.Constants.*
@@ -54,87 +54,74 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
         super.afterApply()
 
         // Patch the bytecode of the source application.
-        // FIXME: Make this work on Android Gradle plugin 3.2.0.
+        // TODO: Could skip the collect task if the dex merger tasks produce a single output folder.
         androidVariants.all { ApplicationVariant variant ->
             def packageApplication = VariantHelper.getPackageApplication(variant)
 
             def collectDex = project.tasks.register(
                     StringHelper.appendCapitalized(TaskNames.COLLECT_DEX_PREFIX, variant.name),
-                    CollectDexTask) {
-
-                // Find the dex output folders of the variant and their builder tasks.
-                def pack = packageApplication.get()
-                def dexFolders = pack.dexFolders.files
-                def dexBuilders = pack.dexFolders.buildDependencies.getDependencies(pack)
-                /*
-                // FIXME: Make this work with option 'android.enableDexingArtifactTransform=false'.
-                if (dexFolders.size() == 0) {
-                    dexFolders = new HashSet<File>()
-                    dexBuilders.findAll { it instanceof StreamBasedTask }.collect(dexFolders) {
-                        ((StreamBasedTask) it).streamOutputFolder
-                    }
-                }
-                */
-                if (dexFolders.size() == 0) throw new RuntimeException("Dex folders not found")
-                if (dexBuilders.size() == 0) throw new RuntimeException("Dex builder tasks not found")
-                if (project.logger.debugEnabled) {
-                    //def builderMap = new LinkedHashMap<String, String>()
-                    //dexBuilders.each { builderMap.put(it.name, it.class.canonicalName) }
-                    project.logger.debug("Dex builder tasks in variant '${variant.name}': " + dexBuilders)
-                }
-
-                // Copy the dex files from the output folders into a single multi-dex container.
-                it.description = "Collects and combines the bytecode of the patch."
-                it.group = TASK_GROUP_NAME
-                it.dependsOn dexBuilders
-                it.inputDirs.from dexFolders
-                it.outputDir.set project.layout.buildDirectory.dir(BuildDir.DIR_PATCH_DEX + '/' + variant.dirName)
-                return
-            }
-            VariantHelper.getAssemble(variant).configure {
-                it.extensions.add TaskNames.COLLECT_DEX_PREFIX, collectDex
-                return
-            }
-
+                    CollectDexTask)
             def patchDex = project.tasks.register(
                     StringHelper.appendCapitalized(TaskNames.PATCH_DEX_PREFIX, variant.name),
-                    DexpatcherTask) {
-
-                // Perform sanity checks.
-                def pack = packageApplication.get()
-                if (pack.inInstantRunMode) {
-                    throw new RuntimeException("Instant Run is not supported, please disable it")
-                }
-                collectDex.get()       // collectDex must configure first
-                // FIXME: Investigate featureDexFolder.
-                if (pack.featureDexFolder) throw new RuntimeException("Feature dex folder not supported")
-
-                // Patch the bytecode of the source application using the collected dex files.
-                it.description = "Patches the bytecode of the source application."
-                it.group = TASK_GROUP_NAME
-                it.source.set project.layout.buildDirectory.dir(BuildDir.DIR_DECODED_APP)
-                it.outputDir.set project.layout.buildDirectory.dir(BuildDir.DIR_PATCHED_DEX + '/' + variant.dirName)
-
-                // Skip the collect task if the dex merger tasks produce a single output folder.
-                def dexFolders = pack.dexFolders.files
-                if (dexFolders.size() != 1) {
-                    it.dependsOn collectDex
-                    it.patch.set collectDex.get().outputDir
-                } else {
-                    it.dependsOn collectDex.get().dependsOn
-                    it.patch.set Utils.getDirectory(project, dexFolders[0])
-                }
-                return
-            }
+                    DexpatcherTask)
             VariantHelper.getAssemble(variant).configure {
+                it.extensions.add TaskNames.COLLECT_DEX_PREFIX, collectDex
                 it.extensions.add TaskNames.PATCH_DEX_PREFIX, patchDex
                 return
             }
 
-            // Build the APK using the patched bytecode.
+            // Copy the dex files from the output folders into a single multi-dex container.
+            collectDex.configure {
+                it.description = "Collects and combines the bytecode of the patch."
+                it.group = TASK_GROUP_NAME
+                it.dependsOn {
+                    def pack = packageApplication.get()
+                    def dexBuilders = []
+                    dexBuilders.addAll pack.dexFolders.buildDependencies.getDependencies(pack)
+                    dexBuilders.addAll pack.dependsOn
+                    dexBuilders.remove patchDex
+                    if (dexBuilders.size() == 0) throw new RuntimeException("Dex builder tasks not found")
+                    if (project.logger.debugEnabled) {
+                        project.logger.debug("Dex builder tasks in variant '${variant.name}': " + dexBuilders)
+                    }
+                    return dexBuilders
+                }
+                it.inputDirs.from {
+                    packageApplication.get().dexFolders
+                }
+                it.outputDir.set project.layout.buildDirectory.dir(BuildDir.DIR_PATCH_DEX + '/' + variant.dirName)
+                return
+            }
+
+            // Patch the bytecode of the source application using the collected dex files.
+            patchDex.configure {
+                it.description = "Patches the bytecode of the source application."
+                it.group = TASK_GROUP_NAME
+                it.source.set project.layout.buildDirectory.dir(BuildDir.DIR_DECODED_APP)
+                it.outputDir.set project.layout.buildDirectory.dir(BuildDir.DIR_PATCHED_DEX + '/' + variant.dirName)
+                it.dependsOn collectDex
+                it.patch.set project.<Directory>provider {
+                    collectDex.get().outputDir.get()
+                }
+                it.doFirst {
+                    // Perform sanity checks.
+                    def pack = packageApplication.get()
+                    if (pack.inInstantRunMode) {
+                        throw new RuntimeException("Instant Run is not supported, please disable it")
+                    }
+                    if (pack.featureDexFolder) {
+                        throw new RuntimeException("Feature dex folder not supported")
+                    }
+                }
+                it.doLast {
+                    // Build the variant using the patched bytecode.
+                    ((ConfigurableFileCollection) packageApplication.get().dexFolders).setFrom patchDex
+                }
+                return
+            }
+
             packageApplication.configure {
-                patchDex.get()      // patchDex must configure first
-                ((ConfigurableFileCollection) it.dexFolders).setFrom patchDex
+                it.dependsOn patchDex
                 return
             }
         }
