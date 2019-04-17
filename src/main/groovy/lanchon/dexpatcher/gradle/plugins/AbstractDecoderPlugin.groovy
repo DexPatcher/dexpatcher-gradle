@@ -169,7 +169,8 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             it.description = 'Unpacks a DexPatcher APK library.'
             it.group = taskGroup
             it.from {
-                project.zipTree(apkLibFile)
+                // See 'Project.zipTree' bug: https://github.com/gradle/gradle/issues/9150
+                project.zipTree apkLibFile
             }
             it.into outputDir
             return
