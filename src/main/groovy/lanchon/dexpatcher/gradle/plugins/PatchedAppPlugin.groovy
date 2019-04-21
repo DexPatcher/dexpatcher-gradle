@@ -110,7 +110,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                         throw new RuntimeException("Instant Run is not supported, please disable it")
                     }
                     if (pack.featureDexFolder) {
-                        throw new RuntimeException("Feature dex folder not supported")
+                        throw new RuntimeException("Feature dex is not supported")
                     }
                 }
                 TaskGraphHelper.afterTask(it) {
