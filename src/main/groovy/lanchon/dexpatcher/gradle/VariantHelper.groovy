@@ -55,11 +55,16 @@ abstract class VariantHelper {
 
     // Adapters for Android Gradle plugins earlier than 3.3.0
 
+    private static <T extends Task> TaskProvider<T> getProvider(T task) {
+        //(TaskProvider<T>) task.project.tasks.named(task.name)
+        new ExistingTaskProvider<T>(task)
+    }
+
     static TaskProvider<MergeResources> getMergeResources(BaseVariant variant) {
         try {
             return variant.mergeResourcesProvider
         } catch (NoSuchMethodError e) {
-            return new ExistingTaskProvider<MergeResources>(variant.mergeResources)
+            return getProvider(variant.mergeResources)
         }
     }
 
@@ -67,7 +72,7 @@ abstract class VariantHelper {
         try {
             return output.processResourcesProvider
         } catch (NoSuchMethodError e) {
-            return new ExistingTaskProvider<ProcessAndroidResources>(output.processResources)
+            return getProvider(output.processResources)
         }
     }
 
@@ -75,7 +80,7 @@ abstract class VariantHelper {
         try {
             return variant.packageApplicationProvider
         } catch (NoSuchMethodError e) {
-            return new ExistingTaskProvider<PackageAndroidArtifact>(variant.packageApplication)
+            return getProvider(variant.packageApplication)
         }
     }
 
@@ -83,7 +88,7 @@ abstract class VariantHelper {
         try {
             return variant.assembleProvider
         } catch (NoSuchMethodError e) {
-            return new ExistingTaskProvider<Task>(variant.assemble)
+            return getProvider(variant.assemble)
         }
     }
 
