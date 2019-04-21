@@ -338,24 +338,6 @@ abstract class AbstractPatcherPlugin<
         return Utils.getFile(task.explodedDir, 'dexpatcher').isDirectory()
     }
 
-    // Task Graph
-
-    protected void beforeTask(Task task, Closure closure) {
-        project.gradle.taskGraph.beforeTask {
-            if (it.is(task)) {
-                closure.maximumNumberOfParameters ? closure(task) : closure()
-            }
-        }
-    }
-
-    protected void afterTask(Task task, Closure closure) {
-        project.gradle.taskGraph.afterTask {
-            if (it.is(task)) {
-                closure.maximumNumberOfParameters ? closure(task) : closure()
-            }
-        }
-    }
-
     protected void prepareDependenciesDoLast(BaseVariant variant, Closure closure) {
         PrepareDependenciesTask task = (PrepareDependenciesTask) project.tasks
                 .getByName("prepare${variant.name.capitalize()}Dependencies")
