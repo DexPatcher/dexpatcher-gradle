@@ -12,6 +12,7 @@ package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.TaskGraphHelper
 import lanchon.dexpatcher.gradle.VariantHelper
 import lanchon.dexpatcher.gradle.extensions.PatchedAppExtension
 import lanchon.dexpatcher.gradle.tasks.CollectDexTask
@@ -112,7 +113,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                         throw new RuntimeException("Feature dex folder not supported")
                     }
                 }
-                it.doLast {
+                TaskGraphHelper.afterTask(it) {
                     // Build the variant using the patched bytecode.
                     ((ConfigurableFileCollection) packageApplication.get().dexFolders).setFrom patchDex
                 }
