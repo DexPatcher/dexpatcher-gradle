@@ -57,7 +57,6 @@ abstract class VariantHelper {
 
     private static <T extends Task> TaskProvider<T> getProvider(T task) {
         (TaskProvider<T>) task.project.tasks.named(task.name)
-        //new ExistingTaskProvider<T>(task)
     }
 
     static TaskProvider<MergeResources> getMergeResources(BaseVariant variant) {
