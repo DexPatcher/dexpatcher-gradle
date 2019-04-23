@@ -13,10 +13,6 @@ package lanchon.dexpatcher.gradle
 import groovy.transform.CompileStatic
 
 import org.gradle.api.Project
-import org.gradle.api.file.Directory
-import org.gradle.api.file.RegularFile
-
-// NOTE: File properties resolve against the root project, not the current project.
 
 @CompileStatic
 class ProjectProperties {
@@ -33,16 +29,6 @@ class ProjectProperties {
 
     String get(String key) {
         project.properties.get(key) ?: localProperties.getProperty(key)
-    }
-
-    Directory getAsDirectory(String key) {
-        String value = get(key)
-        return value ? project.rootProject.layout.projectDirectory.dir(value) : null
-    }
-
-    RegularFile getAsRegularFile(String key) {
-        String value = get(key)
-        return value ? project.rootProject.layout.projectDirectory.file(value) : null
     }
 
     static Properties getPropertiesRecursive(Project project, String filename) {

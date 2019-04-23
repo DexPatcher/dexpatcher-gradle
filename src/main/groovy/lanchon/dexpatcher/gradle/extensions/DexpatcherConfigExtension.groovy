@@ -12,7 +12,7 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.ProjectProperties
+import lanchon.dexpatcher.gradle.ParsedProperties
 import lanchon.dexpatcher.gradle.Utils
 
 import org.gradle.api.Project
@@ -36,7 +36,7 @@ class DexpatcherConfigExtension extends AbstractExtension {
     //private static final String DEFAULT_COMPILE_SUBDIR_NAME = 'compile'
     //private static final String DEFAULT_RUNTIME_SUBDIR_NAME = 'runtime'
 
-    final ProjectProperties properties
+    final ParsedProperties properties
 
     final DirectoryProperty dir
     final DirectoryProperty toolDir
@@ -54,7 +54,7 @@ class DexpatcherConfigExtension extends AbstractExtension {
     DexpatcherConfigExtension(Project project) {
 
         super(project)
-        properties = new ProjectProperties(project)
+        properties = new ParsedProperties(project)
 
         dir = project.layout.directoryProperty()
         dir.set properties.getAsDirectory(DIR_PROPERTY)
