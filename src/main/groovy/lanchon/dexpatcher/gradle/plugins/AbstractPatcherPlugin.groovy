@@ -58,10 +58,12 @@ abstract class AbstractPatcherPlugin<
 
         super.afterApply()
 
+        def decorateDependencies = dexpatcherConfig.properties.decorateDependencies
+
         // Add the DexPatcher annotations as a compile-only dependency.
         def providedLibs = Utils.getJars(project, dexpatcherConfig.resolvedProvidedLibDir)
         //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, providedLibs
-        LocalDependencyHelper.addDexpatcherAnnotations project, providedLibs, false
+        LocalDependencyHelper.addDexpatcherAnnotations project, providedLibs, decorateDependencies && false
 
         // Dedex the bytecode of the source application.
         def dedexAppClasses = project.tasks.register(TaskNames.DEDEX_APP_CLASSES, Dex2jarTask) {
@@ -79,7 +81,7 @@ abstract class AbstractPatcherPlugin<
                 def symbolLib = project.files(dedexAppClasses.get().outputFile)
                 symbolLib.builtBy dedexAppClasses
                 //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, symbolLib
-                LocalDependencyHelper.addAppClasses project, symbolLib, true
+                LocalDependencyHelper.addAppClasses project, symbolLib, decorateDependencies
             }
         }
 
@@ -169,7 +171,7 @@ abstract class AbstractPatcherPlugin<
             def componentLib = project.files(packAppComponents)
             componentLib.builtBy packAppComponents
             //project.dependencies.add JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME, componentLib
-            LocalDependencyHelper.addAppComponents project, componentLib, true
+            LocalDependencyHelper.addAppComponents project, componentLib, decorateDependencies
         }
 
         // Android's resource merger build step ignores existing resource ID mappings ('public.xml' files),

@@ -17,8 +17,11 @@ import org.gradle.api.Project
 @CompileStatic
 class DexpatcherProperties extends ParsedProperties {
 
+    final boolean decorateDependencies
+
     DexpatcherProperties(Project project) {
         super(project)
+        decorateDependencies = getAsBoolean('dexpatcher.decorateDependencies', true)
     }
 
 }
