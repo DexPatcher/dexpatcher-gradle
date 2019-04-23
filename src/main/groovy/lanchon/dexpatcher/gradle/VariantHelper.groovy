@@ -56,8 +56,8 @@ abstract class VariantHelper {
     // Adapters for Android Gradle plugins earlier than 3.3.0
 
     private static <T extends Task> TaskProvider<T> getProvider(T task) {
-        //(TaskProvider<T>) task.project.tasks.named(task.name)
-        new ExistingTaskProvider<T>(task)
+        (TaskProvider<T>) task.project.tasks.named(task.name)
+        //new ExistingTaskProvider<T>(task)
     }
 
     static TaskProvider<MergeResources> getMergeResources(BaseVariant variant) {
