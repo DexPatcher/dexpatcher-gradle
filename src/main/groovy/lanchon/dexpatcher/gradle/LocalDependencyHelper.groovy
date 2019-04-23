@@ -17,6 +17,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.internal.artifacts.DefaultModuleIdentifier
 import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDependency
+import org.gradle.api.plugins.JavaPlugin
 import org.gradle.internal.component.external.model.DefaultModuleComponentIdentifier
 
 @CompileStatic
@@ -40,27 +41,31 @@ abstract class LocalDependencyHelper {
         targetComponentIdField = field
     }
 
-    static void addDexpatcherAnnotations(Project project, String configurationName, def files) {
-        addKnown(project, configurationName, files, 'DexPatcher Annotations', 'dexpatcher-annotation')
+    static void addDexpatcherAnnotations(Project project, def files, boolean decorate) {
+        addKnown(project, JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, files, decorate,
+                'DexPatcher Annotations', 'dexpatcher-annotation')
     }
 
-    static void addAppClasses(Project project, String configurationName, def files) {
-        addKnown(project, configurationName, files, 'App Classes', 'app-classes')
+    static void addAppClasses(Project project, def files, boolean decorate) {
+        addKnown(project, JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, files, decorate,
+                'App Classes', 'app-classes')
     }
 
-    static void addAppComponents(Project project, String configurationName, def files) {
-        addKnown(project, configurationName, files, 'App Components', 'app-components')
+    static void addAppComponents(Project project, def files, boolean decorate) {
+        addKnown(project, JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME, files, decorate,
+                'App Components', 'app-components')
     }
 
-    private static void addKnown(Project project, String configurationName, def files, String group, String name) {
-        add(project, project.configurations.getByName(configurationName), files,
+    private static void addKnown(Project project, String configurationName, def files,
+            boolean decorate, String group, String name) {
+        add(project, project.configurations.getByName(configurationName), files, decorate,
                 "< $group > ", name, 'unspecified')
     }
 
     private static void add(Project project, Configuration configuration, def localDependencyNotation,
-            String group, String name, String version) {
+            boolean decorate, String group, String name, String version) {
         def dependency = project.dependencies.create(localDependencyNotation)
-        if (DECORATE_DEPENDENCIES) {
+        if (DECORATE_DEPENDENCIES && decorate) {
             try {
                 if (targetComponentIdException) throw targetComponentIdException
                 targetComponentIdField.set dependency,

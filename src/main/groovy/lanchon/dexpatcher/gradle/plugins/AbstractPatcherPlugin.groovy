@@ -30,7 +30,6 @@ import com.android.utils.StringHelper
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.file.CopySpec
 import org.gradle.api.file.DuplicatesStrategy
-import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.bundling.ZipEntryCompression
 
 import static lanchon.dexpatcher.gradle.Constants.*
@@ -61,8 +60,8 @@ abstract class AbstractPatcherPlugin<
 
         // Add the DexPatcher annotations as a compile-only dependency.
         def providedLibs = Utils.getJars(project, dexpatcherConfig.resolvedProvidedLibDir)
-        project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, providedLibs
-        //LocalDependencyHelper.addDexpatcherAnnotations project, JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, providedLibs
+        //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, providedLibs
+        LocalDependencyHelper.addDexpatcherAnnotations project, providedLibs, false
 
         // Dedex the bytecode of the source application.
         def dedexAppClasses = project.tasks.register(TaskNames.DEDEX_APP_CLASSES, Dex2jarTask) {
@@ -80,7 +79,7 @@ abstract class AbstractPatcherPlugin<
                 def symbolLib = project.files(dedexAppClasses.get().outputFile)
                 symbolLib.builtBy dedexAppClasses
                 //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, symbolLib
-                LocalDependencyHelper.addAppClasses project, JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, symbolLib
+                LocalDependencyHelper.addAppClasses project, symbolLib, true
             }
         }
 
@@ -170,7 +169,7 @@ abstract class AbstractPatcherPlugin<
             def componentLib = project.files(packAppComponents)
             componentLib.builtBy packAppComponents
             //project.dependencies.add JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME, componentLib
-            LocalDependencyHelper.addAppComponents project, JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME, componentLib
+            LocalDependencyHelper.addAppComponents project, componentLib, true
         }
 
         // Android's resource merger build step ignores existing resource ID mappings ('public.xml' files),
