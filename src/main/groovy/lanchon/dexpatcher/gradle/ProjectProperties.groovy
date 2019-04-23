@@ -16,19 +16,19 @@ import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
 
-import static lanchon.dexpatcher.gradle.Constants.*
-
 // NOTE: File properties resolve against the root project, not the current project.
 
 @CompileStatic
 class ProjectProperties {
+
+    static final String FILENAME_LOCAL_PROPERTIES = 'local.properties'
 
     protected final Project project
     protected final Properties localProperties
 
     ProjectProperties(Project project) {
         this.project = project
-        localProperties = getPropertiesRecursive(project, FileNames.LOCAL_PROPERTIES)
+        localProperties = getPropertiesRecursive(project, FILENAME_LOCAL_PROPERTIES)
     }
 
     String get(String key) {
