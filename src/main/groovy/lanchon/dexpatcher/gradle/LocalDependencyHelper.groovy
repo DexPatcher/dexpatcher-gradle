@@ -62,15 +62,15 @@ abstract class LocalDependencyHelper {
         def dependency = project.dependencies.create(localDependencyNotation)
         if (DECORATE_DEPENDENCIES) {
             try {
-
-                if (targetComponentIdException) throw new RuntimeException(
-                        "Cannot access field 'DefaultSelfResolvingDependency.targetComponentId'", targetComponentIdException)
+                if (targetComponentIdException) throw targetComponentIdException
                 targetComponentIdField.set dependency,
                         new DefaultModuleComponentIdentifier(DefaultModuleIdentifier.newId(group, name), version)
             } catch (Exception e) {
-                project.logger.warn "Cannot decorate local dependency '$name': $e.message"
+                def wrapper = new RuntimeException(
+                        "Cannot access field 'DefaultSelfResolvingDependency.targetComponentId'", e)
+                project.logger.warn "Cannot decorate local dependency '$name': $wrapper.message"
                 if (project.logger.debugEnabled) {
-                    project.logger.debug "Cannot decorate local dependency '$name'", e
+                    project.logger.debug "Cannot decorate local dependency '$name'", wrapper
                 }
             }
         }
