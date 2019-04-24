@@ -49,28 +49,24 @@ class LazyZipTask extends Zip {
 
     @CompileDynamic
     private Property<String> gradle_5_1_getArchiveFileName() {
-        return this.getArchiveFileName()
+        this.getArchiveFileName()
     }
 
     @CompileDynamic
     private DirectoryProperty gradle_5_1_getDestinationDirectory() {
-        return this.getDestinationDirectory()
+        this.getDestinationDirectory()
     }
 
     @Override @Internal String getArchiveName() {
-        if (GRADLE_5_1) {
-            return super.getArchiveName()
-        } else {
-            return lazyArchiveFileName.orNull ?: super.getArchiveName()
-        }
+        GRADLE_5_1 ?
+                super.archiveName :
+                lazyArchiveFileName.orNull ?: super.archiveName
     }
 
     @Override @OutputFile File getArchivePath() {
-        if (GRADLE_5_1) {
-            return super.getArchivePath()
-        } else {
-            return new File((lazyDestinationDirectory.orNull?.asFile) ?: getDestinationDir(), getArchiveName());
-        }
+        GRADLE_5_1 ?
+                super.archivePath :
+                new File((lazyDestinationDirectory.orNull?.asFile) ?: destinationDir, archiveName)
     }
 
 }
