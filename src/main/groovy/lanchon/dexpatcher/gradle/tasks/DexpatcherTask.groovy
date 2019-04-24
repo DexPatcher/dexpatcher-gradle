@@ -65,49 +65,28 @@ class DexpatcherTask extends AbstractJavaExecTask {
         DEBUG
     }
 
-    @InputFiles @PathSensitive(PathSensitivity.NONE) final Property<FileSystemLocation> source
-    @Optional @InputFiles @PathSensitive(PathSensitivity.NONE) final Property<FileSystemLocation> patch
-    @Optional @InputFiles @PathSensitive(PathSensitivity.NONE) final ListProperty<FileSystemLocation> patches
-    @Optional @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty outputFile
-    @Optional @OutputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty outputDir
+    @InputFiles @PathSensitive(PathSensitivity.NONE) final Property<FileSystemLocation> source = project.objects.property(FileSystemLocation)
+    @Optional @InputFiles @PathSensitive(PathSensitivity.NONE) final Property<FileSystemLocation> patch = project.objects.property(FileSystemLocation)
+    @Optional @InputFiles @PathSensitive(PathSensitivity.NONE) final ListProperty<FileSystemLocation> patches = project.objects.listProperty(FileSystemLocation)
+    @Optional @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty outputFile = project.layout.fileProperty()
+    @Optional @OutputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty outputDir = project.layout.directoryProperty()
 
-    @Input final Property<Integer> apiLevel
-    @Input final Property<Boolean> multiDex
-    @Input final Property<Boolean> multiDexThreaded
-    @Input final Property<Integer> multiDexJobs
-    @Input final Property<Integer> maxDexPoolSize
-    @Optional @Input final Property<String> annotationPackage
-    @Input final Property<Boolean> constructorAutoIgnore
-    @Input final Property<Boolean> compatDexTag
-    @Console final Property<Verbosity> verbosity
-    @Console final Property<Boolean> logSourcePath
-    @Console final Property<String> logSourcePathRoot
-    @Console final Property<Boolean> logStats
+    @Input final Property<Integer> apiLevel = project.objects.property(Integer)
+    @Input final Property<Boolean> multiDex = project.objects.property(Boolean)
+    @Input final Property<Boolean> multiDexThreaded = project.objects.property(Boolean)
+    @Input final Property<Integer> multiDexJobs = project.objects.property(Integer)
+    @Input final Property<Integer> maxDexPoolSize = project.objects.property(Integer)
+    @Optional @Input final Property<String> annotationPackage = project.objects.property(String)
+    @Input final Property<Boolean> constructorAutoIgnore = project.objects.property(Boolean)
+    @Input final Property<Boolean> compatDexTag = project.objects.property(Boolean)
+    @Console final Property<Verbosity> verbosity = project.objects.property(Verbosity)
+    @Console final Property<Boolean> logSourcePath = project.objects.property(Boolean)
+    @Console final Property<String> logSourcePathRoot = project.objects.property(String)
+    @Console final Property<Boolean> logStats = project.objects.property(Boolean)
 
     DexpatcherTask() {
-
         main = 'lanchon.dexpatcher.Main'
-
-        source = project.objects.property(FileSystemLocation)
-        patch = project.objects.property(FileSystemLocation)
-        patches = project.objects.listProperty(FileSystemLocation)
-        outputFile = project.layout.fileProperty()
-        outputDir = project.layout.directoryProperty()
-
-        apiLevel = project.objects.property(Integer)
-        multiDex = project.objects.property(Boolean)
-        multiDexThreaded = project.objects.property(Boolean)
-        multiDexJobs = project.objects.property(Integer)
-        maxDexPoolSize = project.objects.property(Integer)
-        annotationPackage = project.objects.property(String)
-        constructorAutoIgnore = project.objects.property(Boolean)
         constructorAutoIgnore.set true
-        compatDexTag = project.objects.property(Boolean)
-        verbosity = project.objects.property(Verbosity)
-        logSourcePath = project.objects.property(Boolean)
-        logSourcePathRoot = project.objects.property(String)
-        logStats = project.objects.property(Boolean)
-
     }
 
     @Override List<String> getArgs() {

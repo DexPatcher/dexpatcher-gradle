@@ -41,30 +41,19 @@ usage: apktool [-q|--quiet OR -v|--verbose] b[uild] [options] <app_path>
 @CacheableTask
 class BuildApkTask extends AbstractApktoolTask {
 
-    @InputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty inputDir
-    @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty apkFile
+    @InputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty inputDir = project.layout.directoryProperty()
+    @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty apkFile = project.layout.fileProperty()
 
-    @Optional @InputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty aaptFile
-    @Input final Property<Boolean> useAapt2
-    @Input final Property<Boolean> crunchResources
-    @Input final Property<Boolean> copyOriginal
-    @Input final Property<Boolean> forceDebuggableBuild
-    @Input final Property<Boolean> forceCleanBuild
+    @Optional @InputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty aaptFile = project.layout.fileProperty()
+    @Input final Property<Boolean> useAapt2 = project.objects.property(Boolean)
+    @Input final Property<Boolean> crunchResources = project.objects.property(Boolean)
+    @Input final Property<Boolean> copyOriginal = project.objects.property(Boolean)
+    @Input final Property<Boolean> forceDebuggableBuild = project.objects.property(Boolean)
+    @Input final Property<Boolean> forceCleanBuild = project.objects.property(Boolean)
 
     BuildApkTask() {
-
         super('build')
-
-        inputDir = project.layout.directoryProperty()
-        apkFile = project.layout.fileProperty()
-        aaptFile = project.layout.fileProperty()
-        useAapt2 = project.objects.property(Boolean)
-        crunchResources = project.objects.property(Boolean)
         crunchResources.set true
-        copyOriginal = project.objects.property(Boolean)
-        forceDebuggableBuild = project.objects.property(Boolean)
-        forceCleanBuild = project.objects.property(Boolean)
-
     }
 
     @Override List<String> getArgs() {

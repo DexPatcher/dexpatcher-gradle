@@ -23,13 +23,7 @@ import org.gradle.process.JavaExecSpec
 @CompileStatic
 abstract class AbstractJavaExecTask extends JavaExec {
 
-    @Input final ListProperty<String> extraArgs
-
-    AbstractJavaExecTask() {
-
-        extraArgs = project.objects.listProperty(String)
-
-    }
+    @Input final ListProperty<String> extraArgs = project.objects.listProperty(String)
 
     @Override void exec() {
         def args = getArgs()

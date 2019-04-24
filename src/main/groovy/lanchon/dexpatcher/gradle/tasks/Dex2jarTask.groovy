@@ -51,36 +51,22 @@ version: reader-2.1-SNAPSHOT, translator-2.1-SNAPSHOT, ir-2.1-SNAPSHOT
 @CacheableTask
 class Dex2jarTask extends AbstractDex2jarTask {
 
-    @InputFiles @PathSensitive(PathSensitivity.NAME_ONLY) final ConfigurableFileCollection dexFiles
-    @Optional @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty outputFile
-    @Optional @OutputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty outputDir
-    @Optional @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty exceptionFile
+    @InputFiles @PathSensitive(PathSensitivity.NAME_ONLY) final ConfigurableFileCollection dexFiles = project.files()
+    @Optional @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty outputFile = project.layout.fileProperty()
+    @Optional @OutputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty outputDir = project.layout.directoryProperty()
+    @Optional @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty exceptionFile = project.layout.fileProperty()
 
-    @Input final Property<Boolean> translateCode
-    @Input final Property<Boolean> translateDebugInfo
-    @Input final Property<Boolean> optimizeSynchronized
-    @Input final Property<Boolean> reuseRegisters
-    @Input final Property<Boolean> topologicalSort
-    @Input final Property<Boolean> handleExceptions
+    @Input final Property<Boolean> translateCode = project.objects.property(Boolean)
+    @Input final Property<Boolean> translateDebugInfo = project.objects.property(Boolean)
+    @Input final Property<Boolean> optimizeSynchronized = project.objects.property(Boolean)
+    @Input final Property<Boolean> reuseRegisters = project.objects.property(Boolean)
+    @Input final Property<Boolean> topologicalSort = project.objects.property(Boolean)
+    @Input final Property<Boolean> handleExceptions = project.objects.property(Boolean)
 
     Dex2jarTask() {
-
         main = 'com.googlecode.dex2jar.tools.Dex2jarCmd'
-
-        dexFiles = project.files()
-        outputFile = project.layout.fileProperty()
-        outputDir = project.layout.directoryProperty()
-        exceptionFile = project.layout.fileProperty()
-
-        translateCode = project.objects.property(Boolean)
         translateCode.set true
-        translateDebugInfo = project.objects.property(Boolean)
-        optimizeSynchronized = project.objects.property(Boolean)
-        reuseRegisters = project.objects.property(Boolean)
-        topologicalSort = project.objects.property(Boolean)
-        handleExceptions = project.objects.property(Boolean)
         //handleExceptions.set true
-
     }
 
     @Override List<String> getArgs() {

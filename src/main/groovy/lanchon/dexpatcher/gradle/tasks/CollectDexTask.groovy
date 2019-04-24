@@ -23,13 +23,8 @@ import org.gradle.api.tasks.TaskAction
 @CompileStatic
 class CollectDexTask extends DefaultTask {
 
-    @InputFiles final ConfigurableFileCollection inputDirs
-    @OutputDirectory final DirectoryProperty outputDir
-
-    CollectDexTask() {
-        inputDirs = project.files()
-        outputDir = project.layout.directoryProperty()
-    }
+    @InputFiles final ConfigurableFileCollection inputDirs = project.files()
+    @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
 
     @TaskAction
     void exec() {

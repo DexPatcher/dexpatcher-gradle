@@ -47,39 +47,24 @@ usage: apktool [-q|--quiet OR -v|--verbose] d[ecode] [options] <file_apk>
 @CacheableTask
 class DecodeApkTask extends AbstractApktoolTask {
 
-    @InputFile @PathSensitive(PathSensitivity.NAME_ONLY) final RegularFileProperty apkFile
-    @OutputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty outputDir
+    @InputFile @PathSensitive(PathSensitivity.NAME_ONLY) final RegularFileProperty apkFile = project.layout.fileProperty()
+    @OutputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty outputDir = project.layout.directoryProperty()
 
-    @Optional @Input final Property<String> frameworkTag
-    @Input final Property<Integer> apiLevel
-    @Input final Property<Boolean> decodeAssets
-    @Input final Property<Boolean> decodeResources
-    @Input final Property<Boolean> decodeClasses
-    @Input final Property<Boolean> forceDecodeManifest
-    @Input final Property<Boolean> keepBrokenResources
-    @Input final Property<Boolean> stripDebugInfo
-    @Input final Property<Boolean> matchOriginal
+    @Optional @Input final Property<String> frameworkTag = project.objects.property(String)
+    @Input final Property<Integer> apiLevel = project.objects.property(Integer)
+    @Input final Property<Boolean> decodeAssets = project.objects.property(Boolean)
+    @Input final Property<Boolean> decodeResources = project.objects.property(Boolean)
+    @Input final Property<Boolean> decodeClasses = project.objects.property(Boolean)
+    @Input final Property<Boolean> forceDecodeManifest = project.objects.property(Boolean)
+    @Input final Property<Boolean> keepBrokenResources = project.objects.property(Boolean)
+    @Input final Property<Boolean> stripDebugInfo = project.objects.property(Boolean)
+    @Input final Property<Boolean> matchOriginal = project.objects.property(Boolean)
 
     DecodeApkTask() {
-
         super('decode')
-
-        apkFile = project.layout.fileProperty()
-        outputDir = project.layout.directoryProperty()
-
-        frameworkTag = project.objects.property(String)
-        apiLevel = project.objects.property(Integer)
-        decodeAssets = project.objects.property(Boolean)
         decodeAssets.set true
-        decodeResources = project.objects.property(Boolean)
         decodeResources.set true
-        decodeClasses = project.objects.property(Boolean)
         decodeClasses.set true
-        forceDecodeManifest = project.objects.property(Boolean)
-        keepBrokenResources = project.objects.property(Boolean)
-        stripDebugInfo = project.objects.property(Boolean)
-        matchOriginal = project.objects.property(Boolean)
-
     }
 
     @Override List<String> getArgs() {

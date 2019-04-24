@@ -79,9 +79,9 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
 
     protected final String command
 
-    @Console final Property<Verbosity> verbosity
-    @Optional @InputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty frameworkDir
-    @Optional @Internal final DirectoryProperty frameworkOutDir
+    @Console final Property<Verbosity> verbosity = project.objects.property(Verbosity)
+    @Optional @InputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty frameworkDir = project.layout.directoryProperty()
+    @Optional @Internal final DirectoryProperty frameworkOutDir = project.layout.directoryProperty()
 
     @OutputDirectory @PathSensitive(PathSensitivity.NONE) final Provider<Directory> resolvedFrameworkDir
 
@@ -89,10 +89,6 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
 
         this.command = command
         main = 'brut.apktool.Main'
-
-        verbosity = project.objects.property(Verbosity)
-        frameworkDir = project.layout.directoryProperty()
-        frameworkOutDir = project.layout.directoryProperty()
 
         resolvedFrameworkDir = project.providers.<Directory>provider {
             def dir = frameworkDir.orNull

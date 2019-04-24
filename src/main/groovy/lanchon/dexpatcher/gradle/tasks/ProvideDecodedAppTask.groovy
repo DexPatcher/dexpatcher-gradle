@@ -28,14 +28,13 @@ import static lanchon.dexpatcher.gradle.Constants.*
 @CompileStatic
 class ProvideDecodedAppTask extends DefaultTask {
 
-    @Internal final ConfigurableFileCollection sourceAppFiles
-    @OutputDirectory final DirectoryProperty outputDir
+    @Internal final ConfigurableFileCollection sourceAppFiles = project.files()
+    @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
     @Internal final Provider<RegularFile> sourceAppFile
     @Internal final Provider<RegularFile> apktoolYmlFile
 
     ProvideDecodedAppTask() {
-        sourceAppFiles = project.files()
-        outputDir = project.layout.directoryProperty()
+
         sourceAppFile = project.<RegularFile>provider {
             def files = sourceAppFiles.files
             def n = files.size()
@@ -45,10 +44,13 @@ class ProvideDecodedAppTask extends DefaultTask {
             }
             return Utils.getRegularFile(project, files[0])
         }
+
         apktoolYmlFile = outputDir.file(ApkLib.FILE_APKTOOL_YML)
+
         outputs.upToDateWhen {
             false
         }
+
     }
 
     @TaskAction
