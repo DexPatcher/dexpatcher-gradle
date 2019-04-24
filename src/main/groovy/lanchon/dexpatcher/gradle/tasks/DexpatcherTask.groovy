@@ -12,6 +12,8 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.NewProperty
+
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.file.RegularFileProperty
@@ -76,22 +78,21 @@ class DexpatcherTask extends AbstractJavaExecTask {
     @PathSensitive(PathSensitivity.NONE)
     @Optional @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
 
-    @Input final Property<Integer> apiLevel = project.objects.property(Integer)
-    @Input final Property<Boolean> multiDex = project.objects.property(Boolean)
-    @Input final Property<Boolean> multiDexThreaded = project.objects.property(Boolean)
-    @Input final Property<Integer> multiDexJobs = project.objects.property(Integer)
-    @Input final Property<Integer> maxDexPoolSize = project.objects.property(Integer)
+    @Input final Property<Integer> apiLevel = NewProperty.from(project, 0)
+    @Input final Property<Boolean> multiDex = NewProperty.from(project, false)
+    @Input final Property<Boolean> multiDexThreaded = NewProperty.from(project, false)
+    @Input final Property<Integer> multiDexJobs = NewProperty.from(project, 0)
+    @Input final Property<Integer> maxDexPoolSize = NewProperty.from(project, 0)
     @Optional @Input final Property<String> annotationPackage = project.objects.property(String)
-    @Input final Property<Boolean> constructorAutoIgnore = project.objects.property(Boolean)
-    @Input final Property<Boolean> compatDexTag = project.objects.property(Boolean)
+    @Input final Property<Boolean> constructorAutoIgnore = NewProperty.from(project, true)
+    @Input final Property<Boolean> compatDexTag = NewProperty.from(project, false)
     @Console final Property<Verbosity> verbosity = project.objects.property(Verbosity)
-    @Console final Property<Boolean> logSourcePath = project.objects.property(Boolean)
+    @Console final Property<Boolean> logSourcePath = NewProperty.from(project, false)
     @Console final Property<String> logSourcePathRoot = project.objects.property(String)
-    @Console final Property<Boolean> logStats = project.objects.property(Boolean)
+    @Console final Property<Boolean> logStats = NewProperty.from(project, false)
 
     DexpatcherTask() {
         main = 'lanchon.dexpatcher.Main'
-        constructorAutoIgnore.set true
     }
 
     @Override List<String> getArgs() {

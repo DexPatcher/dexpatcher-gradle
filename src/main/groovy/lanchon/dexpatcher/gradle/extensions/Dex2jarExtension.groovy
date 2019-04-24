@@ -12,6 +12,8 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.NewProperty
+
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 
@@ -24,17 +26,15 @@ class Dex2jarExtension extends AbstractToolExtension {
 
     private static final String DIR_PROPERTY = PREFIX + 'dir'
 
-    final Property<Boolean> translateCode = project.objects.property(Boolean)
-    final Property<Boolean> translateDebugInfo = project.objects.property(Boolean)
-    final Property<Boolean> optimizeSynchronized = project.objects.property(Boolean)
-    final Property<Boolean> reuseRegisters = project.objects.property(Boolean)
-    final Property<Boolean> topologicalSort = project.objects.property(Boolean)
-    final Property<Boolean> handleExceptions = project.objects.property(Boolean)
+    final Property<Boolean> translateCode = NewProperty.from(project, true)
+    final Property<Boolean> translateDebugInfo = NewProperty.from(project, false)
+    final Property<Boolean> optimizeSynchronized = NewProperty.from(project, false)
+    final Property<Boolean> reuseRegisters = NewProperty.from(project, false)
+    final Property<Boolean> topologicalSort = NewProperty.from(project, false)
+    final Property<Boolean> handleExceptions = NewProperty.from(project, false) // or true?
 
     Dex2jarExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig, DIR_PROPERTY)
-        translateCode.set true
-        //handleExceptions.set true
     }
 
     @Override

@@ -12,13 +12,15 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.NewProperty
+
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 
 @CompileStatic
 abstract class AbstractPatcherExtension extends AbstractDecoderExtension {
 
-    final Property<Boolean> importSymbols = project.objects.property(Boolean)
+    final Property<Boolean> importSymbols = NewProperty.from(project, true)
 
     //final Property<Boolean> patchManifest = true      // TODO
     //final Property<Boolean> patchResources = true     // TODO
@@ -26,7 +28,6 @@ abstract class AbstractPatcherExtension extends AbstractDecoderExtension {
 
     AbstractPatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig)
-        importSymbols.set true
     }
 
 }

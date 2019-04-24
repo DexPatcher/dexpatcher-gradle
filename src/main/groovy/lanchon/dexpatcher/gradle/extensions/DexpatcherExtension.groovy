@@ -12,6 +12,7 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.NewProperty
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask.Verbosity
 
 import org.gradle.api.Project
@@ -31,22 +32,21 @@ class DexpatcherExtension extends AbstractToolExtension {
     static final def VERBOSE = Verbosity.VERBOSE
     static final def DEBUG = Verbosity.DEBUG
 
-    final Property<Integer> apiLevel = project.objects.property(Integer)
-    final Property<Boolean> multiDex = project.objects.property(Boolean)
-    final Property<Boolean> multiDexThreaded = project.objects.property(Boolean)
-    final Property<Integer> multiDexJobs = project.objects.property(Integer)
-    final Property<Integer> maxDexPoolSize = project.objects.property(Integer)
+    final Property<Integer> apiLevel = NewProperty.from(project, 0)
+    final Property<Boolean> multiDex = NewProperty.from(project, false)
+    final Property<Boolean> multiDexThreaded = NewProperty.from(project, false)
+    final Property<Integer> multiDexJobs = NewProperty.from(project, 0)
+    final Property<Integer> maxDexPoolSize = NewProperty.from(project, 0)
     final Property<String> annotationPackage = project.objects.property(String)
-    final Property<Boolean> constructorAutoIgnore = project.objects.property(Boolean)
-    final Property<Boolean> compatDexTag = project.objects.property(Boolean)
+    final Property<Boolean> constructorAutoIgnore = NewProperty.from(project, true)
+    final Property<Boolean> compatDexTag = NewProperty.from(project, false)
     final Property<Verbosity> verbosity = project.objects.property(Verbosity)
-    final Property<Boolean> logSourcePath = project.objects.property(Boolean)
+    final Property<Boolean> logSourcePath = NewProperty.from(project, false)
     final Property<String> logSourcePathRoot = project.objects.property(String)
-    final Property<Boolean> logStats = project.objects.property(Boolean)
+    final Property<Boolean> logStats = NewProperty.from(project, false)
 
     DexpatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig, DIR_PROPERTY)
-        constructorAutoIgnore.set true
     }
 
     @Override

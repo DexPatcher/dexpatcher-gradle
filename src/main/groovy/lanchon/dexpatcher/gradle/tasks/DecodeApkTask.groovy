@@ -12,6 +12,8 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.NewProperty
+
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
@@ -53,20 +55,17 @@ class DecodeApkTask extends AbstractApktoolTask {
     @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
 
     @Optional @Input final Property<String> frameworkTag = project.objects.property(String)
-    @Input final Property<Integer> apiLevel = project.objects.property(Integer)
-    @Input final Property<Boolean> decodeAssets = project.objects.property(Boolean)
-    @Input final Property<Boolean> decodeResources = project.objects.property(Boolean)
-    @Input final Property<Boolean> decodeClasses = project.objects.property(Boolean)
-    @Input final Property<Boolean> forceDecodeManifest = project.objects.property(Boolean)
-    @Input final Property<Boolean> keepBrokenResources = project.objects.property(Boolean)
-    @Input final Property<Boolean> stripDebugInfo = project.objects.property(Boolean)
-    @Input final Property<Boolean> matchOriginal = project.objects.property(Boolean)
+    @Input final Property<Integer> apiLevel = NewProperty.from(project, 0)
+    @Input final Property<Boolean> decodeAssets = NewProperty.from(project, true)
+    @Input final Property<Boolean> decodeResources = NewProperty.from(project, true)
+    @Input final Property<Boolean> decodeClasses = NewProperty.from(project, true)
+    @Input final Property<Boolean> forceDecodeManifest = NewProperty.from(project, false)
+    @Input final Property<Boolean> keepBrokenResources = NewProperty.from(project, false)
+    @Input final Property<Boolean> stripDebugInfo = NewProperty.from(project, false)
+    @Input final Property<Boolean> matchOriginal = NewProperty.from(project, false)
 
     DecodeApkTask() {
         super('decode')
-        decodeAssets.set true
-        decodeResources.set true
-        decodeClasses.set true
     }
 
     @Override List<String> getArgs() {

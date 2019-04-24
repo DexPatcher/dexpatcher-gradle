@@ -12,6 +12,7 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.NewProperty
 import lanchon.dexpatcher.gradle.tasks.AbstractApktoolTask.Verbosity
 
 import org.gradle.api.Project
@@ -40,31 +41,27 @@ class ApktoolExtension extends AbstractToolExtension {
 
     // Decode
     final Property<String> frameworkTag = project.objects.property(String)
-    final Property<Integer> apiLevel = project.objects.property(Integer)
-    final Property<Boolean> decodeAssets = project.objects.property(Boolean)
-    final Property<Boolean> decodeResources = project.objects.property(Boolean)
-    final Property<Boolean> decodeClasses = project.objects.property(Boolean)
-    final Property<Boolean> forceDecodeManifest = project.objects.property(Boolean)
-    final Property<Boolean> keepBrokenResources = project.objects.property(Boolean)
-    final Property<Boolean> stripDebugInfo = project.objects.property(Boolean)
-    final Property<Boolean> matchOriginal = project.objects.property(Boolean)
+    final Property<Integer> apiLevel = NewProperty.from(project, 0)
+    final Property<Boolean> decodeAssets = NewProperty.from(project, true)
+    final Property<Boolean> decodeResources = NewProperty.from(project, true)
+    final Property<Boolean> decodeClasses = NewProperty.from(project, true)
+    final Property<Boolean> forceDecodeManifest = NewProperty.from(project, false)
+    final Property<Boolean> keepBrokenResources = NewProperty.from(project, false)
+    final Property<Boolean> stripDebugInfo = NewProperty.from(project, false)
+    final Property<Boolean> matchOriginal = NewProperty.from(project, false)
 
     // Build
     final RegularFileProperty aaptFile = project.layout.fileProperty()
-    final Property<Boolean> useAapt2 = project.objects.property(Boolean)
-    final Property<Boolean> crunchResources = project.objects.property(Boolean)
-    final Property<Boolean> copyOriginal = project.objects.property(Boolean)
-    final Property<Boolean> forceDebuggableBuild = project.objects.property(Boolean)
-    final Property<Boolean> forceCleanBuild = project.objects.property(Boolean)
+    final Property<Boolean> useAapt2 = NewProperty.from(project, false)
+    final Property<Boolean> crunchResources = NewProperty.from(project, true)
+    final Property<Boolean> copyOriginal = NewProperty.from(project, false)
+    final Property<Boolean> forceDebuggableBuild = NewProperty.from(project, false)
+    final Property<Boolean> forceCleanBuild = NewProperty.from(project, false)
 
     ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig, DIR_PROPERTY)
         frameworkDir.set dexpatcherConfig.properties.getAsDirectory(FRAMEWORK_DIR_PROPERTY)
-        decodeAssets.set true
-        decodeResources.set true
-        decodeClasses.set true
         aaptFile.set dexpatcherConfig.properties.getAsRegularFile(AAPT_FILE_PROPERTY)
-        crunchResources.set true
     }
 
     @Override

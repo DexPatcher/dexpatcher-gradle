@@ -12,6 +12,8 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.NewProperty
+
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
@@ -49,15 +51,14 @@ class BuildApkTask extends AbstractApktoolTask {
     @PathSensitive(PathSensitivity.NONE)
     @Optional @InputFile final RegularFileProperty aaptFile = project.layout.fileProperty()
 
-    @Input final Property<Boolean> useAapt2 = project.objects.property(Boolean)
-    @Input final Property<Boolean> crunchResources = project.objects.property(Boolean)
-    @Input final Property<Boolean> copyOriginal = project.objects.property(Boolean)
-    @Input final Property<Boolean> forceDebuggableBuild = project.objects.property(Boolean)
-    @Input final Property<Boolean> forceCleanBuild = project.objects.property(Boolean)
+    @Input final Property<Boolean> useAapt2 = NewProperty.from(project, false)
+    @Input final Property<Boolean> crunchResources = NewProperty.from(project, true)
+    @Input final Property<Boolean> copyOriginal = NewProperty.from(project, false)
+    @Input final Property<Boolean> forceDebuggableBuild = NewProperty.from(project, false)
+    @Input final Property<Boolean> forceCleanBuild = NewProperty.from(project, false)
 
     BuildApkTask() {
         super('build')
-        crunchResources.set true
     }
 
     @Override List<String> getArgs() {

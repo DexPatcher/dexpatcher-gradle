@@ -13,6 +13,8 @@ package lanchon.dexpatcher.gradle.tasks
 import javax.inject.Inject
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.NewProperty
+
 import com.android.build.gradle.internal.aapt.WorkerExecutorResourceCompilationService
 import com.android.build.gradle.internal.res.namespaced.Aapt2DaemonManagerService
 import com.android.build.gradle.internal.tasks.Workers
@@ -55,7 +57,7 @@ class ProcessIdMappingsTask extends DefaultTask {
     @Optional @InputFiles final ConfigurableFileCollection aapt2FromMaven = project.files()
 
     @Internal final Property<AndroidBuilder> androidBuilder = project.objects.property(AndroidBuilder)
-    @Input final Property<Boolean> processResources = project.objects.property(Boolean)
+    @Input final Property<Boolean> processResources = NewProperty.from(project, false)
 
     private final WorkerExecutorFacade workerExecutorFacade
 
