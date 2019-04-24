@@ -78,7 +78,7 @@ class DecodeApkTask extends AbstractApktoolTask {
         def fwTag = frameworkTag.orNull
         if (fwTag) args.addAll(['--frame-tag', fwTag])
         def api = apiLevel.get()
-        if (api) args.addAll(['--api', api as String])
+        if (api) args.addAll(['--api-level', api as String])
         if (!decodeAssets.get()) args.add('--no-assets')
         if (!decodeResources.get()) args.add('--no-res')
         if (!decodeClasses.get()) args.add('--no-src')
