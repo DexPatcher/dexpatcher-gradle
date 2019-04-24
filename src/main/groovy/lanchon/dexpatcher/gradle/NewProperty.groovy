@@ -12,7 +12,11 @@ package lanchon.dexpatcher.gradle
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.extensions.DexpatcherConfigExtension
+
 import org.gradle.api.Project
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 
 @CompileStatic
@@ -28,6 +32,18 @@ abstract class NewProperty {
         def property = project.objects.property(Integer)
         property.set value
         return property
+    }
+
+    static DirectoryProperty dir(Project project, DexpatcherConfigExtension dexpatcherConfig, String dirProperty) {
+        def dir = project.layout.directoryProperty()
+        dir.set dexpatcherConfig.properties.getAsDirectory(dirProperty)
+        return dir
+    }
+
+    static RegularFileProperty file(Project project, DexpatcherConfigExtension dexpatcherConfig, String fileProperty) {
+        def dir = project.layout.fileProperty()
+        dir.set dexpatcherConfig.properties.getAsRegularFile(fileProperty)
+        return dir
     }
 
 }

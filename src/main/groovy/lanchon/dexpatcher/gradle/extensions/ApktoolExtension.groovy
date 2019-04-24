@@ -37,7 +37,7 @@ class ApktoolExtension extends AbstractToolExtension {
 
     // Base
     final Property<Verbosity> verbosity = project.objects.property(Verbosity)
-    final DirectoryProperty frameworkDir = project.layout.directoryProperty()
+    final DirectoryProperty frameworkDir = NewProperty.dir(project, dexpatcherConfig, FRAMEWORK_DIR_PROPERTY)
 
     // Decode
     final Property<String> frameworkTag = project.objects.property(String)
@@ -51,7 +51,7 @@ class ApktoolExtension extends AbstractToolExtension {
     final Property<Boolean> matchOriginal = NewProperty.from(project, false)
 
     // Build
-    final RegularFileProperty aaptFile = project.layout.fileProperty()
+    final RegularFileProperty aaptFile = NewProperty.file(project, dexpatcherConfig, AAPT_FILE_PROPERTY)
     final Property<Boolean> useAapt2 = NewProperty.from(project, false)
     final Property<Boolean> crunchResources = NewProperty.from(project, true)
     final Property<Boolean> copyOriginal = NewProperty.from(project, false)
@@ -60,8 +60,6 @@ class ApktoolExtension extends AbstractToolExtension {
 
     ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig, DIR_PROPERTY)
-        frameworkDir.set dexpatcherConfig.properties.getAsDirectory(FRAMEWORK_DIR_PROPERTY)
-        aaptFile.set dexpatcherConfig.properties.getAsRegularFile(AAPT_FILE_PROPERTY)
     }
 
     @Override

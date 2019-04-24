@@ -12,6 +12,7 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.NewProperty
 import lanchon.dexpatcher.gradle.Utils
 
 import org.gradle.api.Project
@@ -25,14 +26,14 @@ abstract class AbstractToolExtension extends AbstractSubextension {
 
     protected static final String PREFIX = super.PREFIX + 'tool.'
 
-    final DirectoryProperty dir = project.layout.directoryProperty()
+    final DirectoryProperty dir
     final ListProperty<String> extraArgs = project.objects.listProperty(String)
 
     final Provider<Directory> resolvedDir
 
     AbstractToolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, String dirProperty) {
         super(project, dexpatcherConfig)
-        dir.set dexpatcherConfig.properties.getAsDirectory(dirProperty)
+        dir = NewProperty.dir(project, dexpatcherConfig, dirProperty)
         resolvedDir = Utils.getResolvedDir(project, dir, dexpatcherConfig.resolvedToolDir, name)
     }
 
