@@ -30,6 +30,7 @@ class ProvideDecodedAppTask extends DefaultTask {
 
     @Internal final ConfigurableFileCollection sourceAppFiles = project.files()
     @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
+
     @Internal final Provider<RegularFile> sourceAppFile
     @Internal final Provider<RegularFile> apktoolYmlFile
 

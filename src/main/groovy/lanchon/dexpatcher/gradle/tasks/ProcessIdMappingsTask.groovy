@@ -46,12 +46,16 @@ import org.gradle.workers.WorkerExecutor
 @CacheableTask
 class ProcessIdMappingsTask extends DefaultTask {
 
-    @InputFile @PathSensitive(PathSensitivity.RELATIVE) final RegularFileProperty publicXmlFile = project.layout.fileProperty()
-    @Input final Property<Boolean> processResources = project.objects.property(Boolean)
-    @OutputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty outputDir = project.layout.directoryProperty()
+    @PathSensitive(PathSensitivity.RELATIVE)
+    @InputFile final RegularFileProperty publicXmlFile = project.layout.fileProperty()
+    @PathSensitive(PathSensitivity.NONE)
+    @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
 
-    @Optional @InputFiles @PathSensitive(PathSensitivity.RELATIVE) final ConfigurableFileCollection aapt2FromMaven = project.files()
+    @PathSensitive(PathSensitivity.RELATIVE)
+    @Optional @InputFiles final ConfigurableFileCollection aapt2FromMaven = project.files()
+
     @Internal final Property<AndroidBuilder> androidBuilder = project.objects.property(AndroidBuilder)
+    @Input final Property<Boolean> processResources = project.objects.property(Boolean)
 
     private final WorkerExecutorFacade workerExecutorFacade
 

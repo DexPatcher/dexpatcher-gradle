@@ -41,10 +41,14 @@ usage: apktool [-q|--quiet OR -v|--verbose] b[uild] [options] <app_path>
 @CacheableTask
 class BuildApkTask extends AbstractApktoolTask {
 
-    @InputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty inputDir = project.layout.directoryProperty()
-    @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty apkFile = project.layout.fileProperty()
+    @PathSensitive(PathSensitivity.NONE)
+    @InputDirectory final DirectoryProperty inputDir = project.layout.directoryProperty()
+    @PathSensitive(PathSensitivity.NONE)
+    @OutputFile final RegularFileProperty apkFile = project.layout.fileProperty()
 
-    @Optional @InputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty aaptFile = project.layout.fileProperty()
+    @PathSensitive(PathSensitivity.NONE)
+    @Optional @InputFile final RegularFileProperty aaptFile = project.layout.fileProperty()
+
     @Input final Property<Boolean> useAapt2 = project.objects.property(Boolean)
     @Input final Property<Boolean> crunchResources = project.objects.property(Boolean)
     @Input final Property<Boolean> copyOriginal = project.objects.property(Boolean)
@@ -64,6 +68,7 @@ class BuildApkTask extends AbstractApktoolTask {
 
         def aapt = aaptFile.orNull
         if (aapt) args.addAll(['--aapt', aapt as String])
+
         if (useAapt2.get()) args.add('--use-aapt2')
         if (!crunchResources.get()) args.add('--no-crunch')
         if (copyOriginal.get()) args.add('--copy-original')

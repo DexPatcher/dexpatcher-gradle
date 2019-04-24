@@ -80,10 +80,14 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
     protected final String command
 
     @Console final Property<Verbosity> verbosity = project.objects.property(Verbosity)
-    @Optional @InputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty frameworkDir = project.layout.directoryProperty()
+
+    @PathSensitive(PathSensitivity.NONE)
+    @Optional @InputDirectory final DirectoryProperty frameworkDir = project.layout.directoryProperty()
+
     @Optional @Internal final DirectoryProperty frameworkOutDir = project.layout.directoryProperty()
 
-    @OutputDirectory @PathSensitive(PathSensitivity.NONE) final Provider<Directory> resolvedFrameworkDir
+    @PathSensitive(PathSensitivity.NONE)
+    @OutputDirectory final Provider<Directory> resolvedFrameworkDir
 
     AbstractApktoolTask(String command) {
 

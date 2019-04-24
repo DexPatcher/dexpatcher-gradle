@@ -47,8 +47,10 @@ usage: apktool [-q|--quiet OR -v|--verbose] d[ecode] [options] <file_apk>
 @CacheableTask
 class DecodeApkTask extends AbstractApktoolTask {
 
-    @InputFile @PathSensitive(PathSensitivity.NAME_ONLY) final RegularFileProperty apkFile = project.layout.fileProperty()
-    @OutputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty outputDir = project.layout.directoryProperty()
+    @PathSensitive(PathSensitivity.NAME_ONLY)
+    @InputFile final RegularFileProperty apkFile = project.layout.fileProperty()
+    @PathSensitive(PathSensitivity.NONE)
+    @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
 
     @Optional @Input final Property<String> frameworkTag = project.objects.property(String)
     @Input final Property<Integer> apiLevel = project.objects.property(Integer)

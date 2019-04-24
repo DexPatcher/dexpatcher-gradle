@@ -51,10 +51,14 @@ version: reader-2.1-SNAPSHOT, translator-2.1-SNAPSHOT, ir-2.1-SNAPSHOT
 @CacheableTask
 class Dex2jarTask extends AbstractDex2jarTask {
 
-    @InputFiles @PathSensitive(PathSensitivity.NAME_ONLY) final ConfigurableFileCollection dexFiles = project.files()
-    @Optional @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty outputFile = project.layout.fileProperty()
-    @Optional @OutputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty outputDir = project.layout.directoryProperty()
-    @Optional @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty exceptionFile = project.layout.fileProperty()
+    @PathSensitive(PathSensitivity.NAME_ONLY)
+    @InputFiles final ConfigurableFileCollection dexFiles = project.files()
+    @PathSensitive(PathSensitivity.NONE)
+    @Optional @OutputFile final RegularFileProperty outputFile = project.layout.fileProperty()
+    @PathSensitive(PathSensitivity.NONE)
+    @Optional @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
+    @PathSensitive(PathSensitivity.NONE)
+    @Optional @OutputFile final RegularFileProperty exceptionFile = project.layout.fileProperty()
 
     @Input final Property<Boolean> translateCode = project.objects.property(Boolean)
     @Input final Property<Boolean> translateDebugInfo = project.objects.property(Boolean)

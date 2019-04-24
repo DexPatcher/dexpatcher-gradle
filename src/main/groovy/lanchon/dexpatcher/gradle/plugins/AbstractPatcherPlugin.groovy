@@ -187,9 +187,6 @@ abstract class AbstractPatcherPlugin<
                 it.group = TASK_GROUP_NAME
                 it.dependsOn provideDecodedApp
                 it.publicXmlFile.set provideDecodedApp.get().outputDir.file(ApkLib.FILE_PUBLIC_XML)
-                it.processResources.set project.<Boolean>provider {
-                    mergeResources.get().processResources && !isUsingAapt1(mergeResources.get())
-                }
                 it.outputDir.set project.layout.buildDirectory.dir(
                         BuildDir.DIR_RESOURCE_ID_MAPPINGS + '/' + variant.dirName)
                 it.aapt2FromMaven.from {
@@ -198,6 +195,9 @@ abstract class AbstractPatcherPlugin<
                 it.androidBuilder.set project.<AndroidBuilder>provider {
                     //getAndroidBuilder(mergeResources.get())
                     VariantHelper.getData(variant).scope.globalScope.androidBuilder
+                }
+                it.processResources.set project.<Boolean>provider {
+                    mergeResources.get().processResources && !isUsingAapt1(mergeResources.get())
                 }
                 return
             }

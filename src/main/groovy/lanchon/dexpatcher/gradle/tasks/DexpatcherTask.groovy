@@ -65,11 +65,16 @@ class DexpatcherTask extends AbstractJavaExecTask {
         DEBUG
     }
 
-    @InputFiles @PathSensitive(PathSensitivity.NONE) final Property<FileSystemLocation> source = project.objects.property(FileSystemLocation)
-    @Optional @InputFiles @PathSensitive(PathSensitivity.NONE) final Property<FileSystemLocation> patch = project.objects.property(FileSystemLocation)
-    @Optional @InputFiles @PathSensitive(PathSensitivity.NONE) final ListProperty<FileSystemLocation> patches = project.objects.listProperty(FileSystemLocation)
-    @Optional @OutputFile @PathSensitive(PathSensitivity.NONE) final RegularFileProperty outputFile = project.layout.fileProperty()
-    @Optional @OutputDirectory @PathSensitive(PathSensitivity.NONE) final DirectoryProperty outputDir = project.layout.directoryProperty()
+    @PathSensitive(PathSensitivity.NONE)
+    @InputFiles final Property<FileSystemLocation> source = project.objects.property(FileSystemLocation)
+    @PathSensitive(PathSensitivity.NONE)
+    @Optional @InputFiles final Property<FileSystemLocation> patch = project.objects.property(FileSystemLocation)
+    @PathSensitive(PathSensitivity.NONE)
+    @Optional @InputFiles final ListProperty<FileSystemLocation> patches = project.objects.listProperty(FileSystemLocation)
+    @PathSensitive(PathSensitivity.NONE)
+    @Optional @OutputFile final RegularFileProperty outputFile = project.layout.fileProperty()
+    @PathSensitive(PathSensitivity.NONE)
+    @Optional @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
 
     @Input final Property<Integer> apiLevel = project.objects.property(Integer)
     @Input final Property<Boolean> multiDex = project.objects.property(Boolean)
