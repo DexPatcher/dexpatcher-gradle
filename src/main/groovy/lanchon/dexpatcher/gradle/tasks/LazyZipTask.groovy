@@ -28,7 +28,8 @@ import org.gradle.util.GradleVersion
 @CompileStatic
 class LazyZipTask extends Zip {
 
-    // Conditionally enable workaround for Gradle 5.1 bug (https://github.com/gradle/gradle/issues/8401).
+    // Conditionally enable workaround for AbstractArchiveTask regression in Gradle 5.1 and later.
+    // See: https://github.com/gradle/gradle/issues/8401
     private static final boolean GRADLE_5_1 = (GradleVersion.current() >= GradleVersion.version('5.1'))
 
     @Internal final Property<String> lazyArchiveFileName
