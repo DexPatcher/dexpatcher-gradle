@@ -13,6 +13,8 @@ package lanchon.dexpatcher.gradle.tasks
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.NewProperty
+
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
@@ -40,7 +42,7 @@ class LazyZipTask extends Zip {
         } else {
             // On Gradle < 5.1 create new properties and override existing getters.
             lazyArchiveFileName = project.objects.property(String)
-            lazyDestinationDirectory = project.layout.directoryProperty()
+            lazyDestinationDirectory = NewProperty.dir(project)
         }
     }
 

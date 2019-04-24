@@ -12,6 +12,8 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.NewProperty
+
 import com.android.utils.FileUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -24,7 +26,7 @@ import org.gradle.api.tasks.TaskAction
 class CollectDexTask extends DefaultTask {
 
     @InputFiles final ConfigurableFileCollection inputDirs = project.files()
-    @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
+    @OutputDirectory final DirectoryProperty outputDir = NewProperty.dir(project)
 
     @TaskAction
     void exec() {

@@ -49,9 +49,9 @@ import org.gradle.workers.WorkerExecutor
 class ProcessIdMappingsTask extends DefaultTask {
 
     @PathSensitive(PathSensitivity.RELATIVE)
-    @InputFile final RegularFileProperty publicXmlFile = project.layout.fileProperty()
+    @InputFile final RegularFileProperty publicXmlFile = NewProperty.file(project)
     @PathSensitive(PathSensitivity.NONE)
-    @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
+    @OutputDirectory final DirectoryProperty outputDir = NewProperty.dir(project)
 
     @PathSensitive(PathSensitivity.RELATIVE)
     @Optional @InputFiles final ConfigurableFileCollection aapt2FromMaven = project.files()

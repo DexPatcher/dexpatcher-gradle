@@ -41,14 +41,13 @@ abstract class Utils {
     // Horrible Gradle hacks that should not be necessary
 
     private static Provider<RegularFile> getRegularFileProvider(Project project, File file) {
-        //project.layout.file(project.<File>provider(file))
-        def p = project.layout.fileProperty()
+        def p = NewProperty.file(project)
         p.set file
         return p
     }
 
     private static Provider<Directory> getDirectoryProvider(Project project, File dir) {
-        def p = project.layout.directoryProperty()
+        def p = NewProperty.dir(project)
         p.set dir
         return p
     }
