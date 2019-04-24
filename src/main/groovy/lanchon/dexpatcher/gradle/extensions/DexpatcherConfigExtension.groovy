@@ -38,12 +38,12 @@ class DexpatcherConfigExtension extends AbstractExtension {
 
     final DexpatcherProperties properties
 
-    final DirectoryProperty dir
-    final DirectoryProperty toolDir
-    final DirectoryProperty libDir
-    final DirectoryProperty providedLibDir
-    //final DirectoryProperty compileLibDir
-    //final DirectoryProperty runtimeLibDir
+    final DirectoryProperty dir = project.layout.directoryProperty()
+    final DirectoryProperty toolDir = project.layout.directoryProperty()
+    final DirectoryProperty libDir = project.layout.directoryProperty()
+    final DirectoryProperty providedLibDir = project.layout.directoryProperty()
+    //final DirectoryProperty compileLibDir = project.layout.directoryProperty()
+    //final DirectoryProperty runtimeLibDir = project.layout.directoryProperty()
 
     final Provider<Directory> resolvedToolDir
     final Provider<Directory> resolvedLibDir
@@ -56,17 +56,11 @@ class DexpatcherConfigExtension extends AbstractExtension {
         super(project)
         properties = new DexpatcherProperties(project)
 
-        dir = project.layout.directoryProperty()
         dir.set properties.getAsDirectory(DIR_PROPERTY)
-        toolDir = project.layout.directoryProperty()
         toolDir.set properties.getAsDirectory(TOOL_DIR_PROPERTY)
-        libDir = project.layout.directoryProperty()
         libDir.set properties.getAsDirectory(LIB_DIR_PROPERTY)
-        providedLibDir = project.layout.directoryProperty()
         providedLibDir.set properties.getAsDirectory(PROVIDED_LIB_DIR_PROPERTY)
-        //compileLibDir = project.layout.directoryProperty()
         //compileLibDir.set properties.getAsDirectory(COMPILE_LIB_DIR_PROPERTY)
-        //runtimeLibDir = project.layout.directoryProperty()
         //runtimeLibDir.set properties.getAsDirectory(RUNTIME_LIB_DIR_PROPERTY)
 
         resolvedToolDir = Utils.getResolvedDir(project, toolDir, dir, DEFAULT_TOOL_SUBDIR_NAME)

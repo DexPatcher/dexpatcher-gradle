@@ -18,9 +18,7 @@ import org.gradle.api.Project
 class ApkLibraryExtension extends AbstractDecoderExtension {
 
     ApkLibraryExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-
         super(project, dexpatcherConfig)
-
     }
 
 }

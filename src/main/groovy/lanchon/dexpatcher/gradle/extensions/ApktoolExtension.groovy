@@ -35,60 +35,38 @@ class ApktoolExtension extends AbstractToolExtension {
     static final def VERBOSE = Verbosity.VERBOSE
 
     // Base
-    final Property<Verbosity> verbosity
-    final DirectoryProperty frameworkDir
+    final Property<Verbosity> verbosity = project.objects.property(Verbosity)
+    final DirectoryProperty frameworkDir = project.layout.directoryProperty()
 
     // Decode
-    final Property<String> frameworkTag
-    final Property<Integer> apiLevel
-    final Property<Boolean> decodeAssets
-    final Property<Boolean> decodeResources
-    final Property<Boolean> decodeClasses
-    final Property<Boolean> forceDecodeManifest
-    final Property<Boolean> keepBrokenResources
-    final Property<Boolean> stripDebugInfo
-    final Property<Boolean> matchOriginal
+    final Property<String> frameworkTag = project.objects.property(String)
+    final Property<Integer> apiLevel = project.objects.property(Integer)
+    final Property<Boolean> decodeAssets = project.objects.property(Boolean)
+    final Property<Boolean> decodeResources = project.objects.property(Boolean)
+    final Property<Boolean> decodeClasses = project.objects.property(Boolean)
+    final Property<Boolean> forceDecodeManifest = project.objects.property(Boolean)
+    final Property<Boolean> keepBrokenResources = project.objects.property(Boolean)
+    final Property<Boolean> stripDebugInfo = project.objects.property(Boolean)
+    final Property<Boolean> matchOriginal = project.objects.property(Boolean)
 
     // Build
-    final RegularFileProperty aaptFile
-    final Property<Boolean> useAapt2
-    final Property<Boolean> crunchResources
-    final Property<Boolean> copyOriginal
-    final Property<Boolean> forceDebuggableBuild
-    final Property<Boolean> forceCleanBuild
+    final RegularFileProperty aaptFile = project.layout.fileProperty()
+    final Property<Boolean> useAapt2 = project.objects.property(Boolean)
+    final Property<Boolean> crunchResources = project.objects.property(Boolean)
+    final Property<Boolean> copyOriginal = project.objects.property(Boolean)
+    final Property<Boolean> forceDebuggableBuild = project.objects.property(Boolean)
+    final Property<Boolean> forceCleanBuild = project.objects.property(Boolean)
 
     ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-
         super(project, dexpatcherConfig)
         def properties = dexpatcherConfig.properties
         dir.set properties.getAsDirectory(DIR_PROPERTY)
-
-        verbosity = project.objects.property(Verbosity)
-        frameworkDir = project.layout.directoryProperty()
         frameworkDir.set properties.getAsDirectory(FRAMEWORK_DIR_PROPERTY)
-
-        frameworkTag = project.objects.property(String)
-        apiLevel = project.objects.property(Integer)
-        decodeAssets = project.objects.property(Boolean)
         decodeAssets.set true
-        decodeResources = project.objects.property(Boolean)
         decodeResources.set true
-        decodeClasses = project.objects.property(Boolean)
         decodeClasses.set true
-        forceDecodeManifest = project.objects.property(Boolean)
-        keepBrokenResources = project.objects.property(Boolean)
-        stripDebugInfo = project.objects.property(Boolean)
-        matchOriginal = project.objects.property(Boolean)
-
-        aaptFile = project.layout.fileProperty()
         aaptFile.set properties.getAsRegularFile(AAPT_FILE_PROPERTY)
-        useAapt2 = project.objects.property(Boolean)
-        crunchResources = project.objects.property(Boolean)
         crunchResources.set true
-        copyOriginal = project.objects.property(Boolean)
-        forceDebuggableBuild = project.objects.property(Boolean)
-        forceCleanBuild = project.objects.property(Boolean)
-
     }
 
     @Override

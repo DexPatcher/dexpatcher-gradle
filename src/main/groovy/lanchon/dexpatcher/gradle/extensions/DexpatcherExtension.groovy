@@ -31,39 +31,24 @@ class DexpatcherExtension extends AbstractToolExtension {
     static final def VERBOSE = Verbosity.VERBOSE
     static final def DEBUG = Verbosity.DEBUG
 
-    final Property<Integer> apiLevel
-    final Property<Boolean> multiDex
-    final Property<Boolean> multiDexThreaded
-    final Property<Integer> multiDexJobs
-    final Property<Integer> maxDexPoolSize
-    final Property<String> annotationPackage
-    final Property<Boolean> constructorAutoIgnore
-    final Property<Boolean> compatDexTag
-    final Property<Verbosity> verbosity
-    final Property<Boolean> logSourcePath
-    final Property<String> logSourcePathRoot
-    final Property<Boolean> logStats
+    final Property<Integer> apiLevel = project.objects.property(Integer)
+    final Property<Boolean> multiDex = project.objects.property(Boolean)
+    final Property<Boolean> multiDexThreaded = project.objects.property(Boolean)
+    final Property<Integer> multiDexJobs = project.objects.property(Integer)
+    final Property<Integer> maxDexPoolSize = project.objects.property(Integer)
+    final Property<String> annotationPackage = project.objects.property(String)
+    final Property<Boolean> constructorAutoIgnore = project.objects.property(Boolean)
+    final Property<Boolean> compatDexTag = project.objects.property(Boolean)
+    final Property<Verbosity> verbosity = project.objects.property(Verbosity)
+    final Property<Boolean> logSourcePath = project.objects.property(Boolean)
+    final Property<String> logSourcePathRoot = project.objects.property(String)
+    final Property<Boolean> logStats = project.objects.property(Boolean)
 
     DexpatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-
         super(project, dexpatcherConfig)
         def properties = dexpatcherConfig.properties
         dir.set properties.getAsDirectory(DIR_PROPERTY)
-
-        apiLevel = project.objects.property(Integer)
-        multiDex = project.objects.property(Boolean)
-        multiDexThreaded = project.objects.property(Boolean)
-        multiDexJobs = project.objects.property(Integer)
-        maxDexPoolSize = project.objects.property(Integer)
-        annotationPackage = project.objects.property(String)
-        constructorAutoIgnore = project.objects.property(Boolean)
         constructorAutoIgnore.set true
-        compatDexTag = project.objects.property(Boolean)
-        verbosity = project.objects.property(Verbosity)
-        logSourcePath = project.objects.property(Boolean)
-        logSourcePathRoot = project.objects.property(String)
-        logStats = project.objects.property(Boolean)
-
     }
 
     @Override

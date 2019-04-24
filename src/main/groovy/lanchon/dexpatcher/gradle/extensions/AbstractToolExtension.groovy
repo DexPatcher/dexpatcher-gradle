@@ -25,20 +25,14 @@ abstract class AbstractToolExtension extends AbstractSubextension {
 
     protected static final String PREFIX = super.PREFIX + 'tool.'
 
-    final DirectoryProperty dir
-    final ListProperty<String> extraArgs
+    final DirectoryProperty dir = project.layout.directoryProperty()
+    final ListProperty<String> extraArgs = project.objects.listProperty(String)
 
     final Provider<Directory> resolvedDir
 
     AbstractToolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-
         super(project, dexpatcherConfig)
-
-        dir = project.layout.directoryProperty()
-        extraArgs = project.objects.listProperty(String)
-
         resolvedDir = Utils.getResolvedDir(project, dir, dexpatcherConfig.resolvedToolDir, name)
-
     }
 
     protected abstract String getName()

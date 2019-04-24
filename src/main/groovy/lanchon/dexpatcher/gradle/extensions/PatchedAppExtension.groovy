@@ -18,17 +18,12 @@ import org.gradle.api.provider.Property
 @CompileStatic
 class PatchedAppExtension extends AbstractPatcherExtension {
 
-    final Property<Boolean> multiDexThreadedForMultiDexDebugBuilds
-    final Property<Boolean> multiDexThreadedForAllDebugBuilds
+    final Property<Boolean> multiDexThreadedForMultiDexDebugBuilds = project.objects.property(Boolean)
+    final Property<Boolean> multiDexThreadedForAllDebugBuilds = project.objects.property(Boolean)
 
     PatchedAppExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-
         super(project, dexpatcherConfig)
-
-        multiDexThreadedForMultiDexDebugBuilds = project.objects.property(Boolean)
         multiDexThreadedForMultiDexDebugBuilds.set true
-        multiDexThreadedForAllDebugBuilds = project.objects.property(Boolean)
-
     }
 
 }

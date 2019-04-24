@@ -24,28 +24,19 @@ class Dex2jarExtension extends AbstractToolExtension {
 
     private static final String DIR_PROPERTY = PREFIX + 'dir'
 
-    final Property<Boolean> translateCode
-    final Property<Boolean> translateDebugInfo
-    final Property<Boolean> optimizeSynchronized
-    final Property<Boolean> reuseRegisters
-    final Property<Boolean> topologicalSort
-    final Property<Boolean> handleExceptions
+    final Property<Boolean> translateCode = project.objects.property(Boolean)
+    final Property<Boolean> translateDebugInfo = project.objects.property(Boolean)
+    final Property<Boolean> optimizeSynchronized = project.objects.property(Boolean)
+    final Property<Boolean> reuseRegisters = project.objects.property(Boolean)
+    final Property<Boolean> topologicalSort = project.objects.property(Boolean)
+    final Property<Boolean> handleExceptions = project.objects.property(Boolean)
 
     Dex2jarExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-
         super(project, dexpatcherConfig)
         def properties = dexpatcherConfig.properties
         dir.set properties.getAsDirectory(DIR_PROPERTY)
-
-        translateCode = project.objects.property(Boolean)
         translateCode.set true
-        translateDebugInfo = project.objects.property(Boolean)
-        optimizeSynchronized = project.objects.property(Boolean)
-        reuseRegisters = project.objects.property(Boolean)
-        topologicalSort = project.objects.property(Boolean)
-        handleExceptions = project.objects.property(Boolean)
         //handleExceptions.set true
-
     }
 
     @Override

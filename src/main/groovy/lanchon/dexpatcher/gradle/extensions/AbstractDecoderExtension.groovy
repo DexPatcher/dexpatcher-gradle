@@ -18,15 +18,11 @@ import org.gradle.api.provider.Property
 @CompileStatic
 abstract class AbstractDecoderExtension extends AbstractSubextension {
 
-    final Property<Boolean> printAppInfo
+    final Property<Boolean> printAppInfo = project.objects.property(Boolean)
 
     AbstractDecoderExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-
         super(project, dexpatcherConfig)
-
-        printAppInfo = project.objects.property(Boolean)
         //printAppInfo.set true
-
     }
 
 }

@@ -18,19 +18,15 @@ import org.gradle.api.provider.Property
 @CompileStatic
 abstract class AbstractPatcherExtension extends AbstractDecoderExtension {
 
-    final Property<Boolean> importSymbols
+    final Property<Boolean> importSymbols = project.objects.property(Boolean)
 
     //final Property<Boolean> patchManifest = true      // TODO
     //final Property<Boolean> patchResources = true     // TODO
     //final Property<Boolean> patchCode = true          // TODO
 
     AbstractPatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-
         super(project, dexpatcherConfig)
-
-        importSymbols = project.objects.property(Boolean)
         importSymbols.set true
-
     }
 
 }
