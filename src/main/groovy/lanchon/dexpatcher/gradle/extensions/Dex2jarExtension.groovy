@@ -32,9 +32,7 @@ class Dex2jarExtension extends AbstractToolExtension {
     final Property<Boolean> handleExceptions = project.objects.property(Boolean)
 
     Dex2jarExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-        super(project, dexpatcherConfig)
-        def properties = dexpatcherConfig.properties
-        dir.set properties.getAsDirectory(DIR_PROPERTY)
+        super(project, dexpatcherConfig, DIR_PROPERTY)
         translateCode.set true
         //handleExceptions.set true
     }

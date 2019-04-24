@@ -45,9 +45,7 @@ class DexpatcherExtension extends AbstractToolExtension {
     final Property<Boolean> logStats = project.objects.property(Boolean)
 
     DexpatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-        super(project, dexpatcherConfig)
-        def properties = dexpatcherConfig.properties
-        dir.set properties.getAsDirectory(DIR_PROPERTY)
+        super(project, dexpatcherConfig, DIR_PROPERTY)
         constructorAutoIgnore.set true
     }
 

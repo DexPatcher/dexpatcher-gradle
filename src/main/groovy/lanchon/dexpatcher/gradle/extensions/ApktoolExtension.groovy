@@ -58,14 +58,12 @@ class ApktoolExtension extends AbstractToolExtension {
     final Property<Boolean> forceCleanBuild = project.objects.property(Boolean)
 
     ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-        super(project, dexpatcherConfig)
-        def properties = dexpatcherConfig.properties
-        dir.set properties.getAsDirectory(DIR_PROPERTY)
-        frameworkDir.set properties.getAsDirectory(FRAMEWORK_DIR_PROPERTY)
+        super(project, dexpatcherConfig, DIR_PROPERTY)
+        frameworkDir.set dexpatcherConfig.properties.getAsDirectory(FRAMEWORK_DIR_PROPERTY)
         decodeAssets.set true
         decodeResources.set true
         decodeClasses.set true
-        aaptFile.set properties.getAsRegularFile(AAPT_FILE_PROPERTY)
+        aaptFile.set dexpatcherConfig.properties.getAsRegularFile(AAPT_FILE_PROPERTY)
         crunchResources.set true
     }
 

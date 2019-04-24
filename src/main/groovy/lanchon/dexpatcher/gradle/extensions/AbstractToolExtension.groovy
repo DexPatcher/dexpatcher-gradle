@@ -30,8 +30,9 @@ abstract class AbstractToolExtension extends AbstractSubextension {
 
     final Provider<Directory> resolvedDir
 
-    AbstractToolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
+    AbstractToolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, String dirProperty) {
         super(project, dexpatcherConfig)
+        dir.set dexpatcherConfig.properties.getAsDirectory(dirProperty)
         resolvedDir = Utils.getResolvedDir(project, dir, dexpatcherConfig.resolvedToolDir, name)
     }
 
