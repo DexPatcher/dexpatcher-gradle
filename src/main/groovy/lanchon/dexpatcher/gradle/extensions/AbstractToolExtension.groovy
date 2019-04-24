@@ -27,7 +27,7 @@ abstract class AbstractToolExtension extends AbstractSubextension {
     protected static final String PREFIX = super.PREFIX + 'tool.'
 
     final DirectoryProperty dir
-    final ListProperty<String> extraArgs = project.objects.listProperty(String)
+    final ListProperty<String> extraArgs = NewProperty.list(project, String)
 
     final Provider<Directory> resolvedDir
 

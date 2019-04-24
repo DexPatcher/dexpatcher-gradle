@@ -17,6 +17,7 @@ import lanchon.dexpatcher.gradle.extensions.DexpatcherConfigExtension
 import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 
 @CompileStatic
@@ -44,6 +45,12 @@ abstract class NewProperty {
         def dir = project.layout.fileProperty()
         dir.set dexpatcherConfig.properties.getAsRegularFile(fileProperty)
         return dir
+    }
+
+    static <T> ListProperty<T> list(Project project, Class<T> elementType) {
+        def list = project.objects.listProperty(elementType)
+        list.set Collections.<T>emptyList()
+        return list
     }
 
 }
