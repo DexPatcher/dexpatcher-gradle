@@ -116,7 +116,7 @@ abstract class AbstractPatcherPlugin<
             it.entryCompression = ZipEntryCompression.STORED
             it.lazyArchiveFileName.set BuildDir.FILENAME_COMPONENT_LIBRARY
             it.lazyDestinationDirectory.set project.layout.buildDirectory.dir(BuildDir.DIR_COMPONENT_LIBRARY)
-            //it.dependsOn provideDecodedApp, packExtraAppResources
+            it.dependsOn provideDecodedApp
             /*
                 AAR Format:
                     /AndroidManifest.xml (mandatory)
