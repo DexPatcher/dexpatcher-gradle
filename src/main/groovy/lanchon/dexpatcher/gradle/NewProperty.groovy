@@ -42,9 +42,9 @@ abstract class NewProperty {
     }
 
     static RegularFileProperty file(Project project, DexpatcherConfigExtension dexpatcherConfig, String fileProperty) {
-        def dir = project.layout.fileProperty()
-        dir.set dexpatcherConfig.properties.getAsRegularFile(fileProperty)
-        return dir
+        def file = project.layout.fileProperty()
+        file.set dexpatcherConfig.properties.getAsRegularFile(fileProperty)
+        return file
     }
 
     static <T> ListProperty<T> list(Project project, Class<T> elementType) {
