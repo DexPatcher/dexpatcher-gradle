@@ -116,7 +116,7 @@ abstract class AbstractPatcherPlugin<
             it.entryCompression = ZipEntryCompression.STORED
             it.lazyArchiveFileName.set BuildDir.FILENAME_COMPONENT_LIBRARY
             it.lazyDestinationDirectory.set project.layout.buildDirectory.dir(BuildDir.DIR_COMPONENT_LIBRARY)
-            //it.dependsOn provideDecodedApp, packExtraAppResources
+            it.dependsOn provideDecodedApp, packExtraAppResources
             /*
                 AAR Format:
                     /AndroidManifest.xml (mandatory)
@@ -160,7 +160,10 @@ abstract class AbstractPatcherPlugin<
             it.from(decodedAppDir.dir(ApkLib.DIR_LIB)) { CopySpec spec ->
                 spec.into ComponentLib.DIR_JNI
             }
-            it.from(packExtraAppResources)
+            // Workaround for zip nesting regression in Gradle 5.1 and later.
+            // See: https://github.com/gradle/gradle/issues/9204
+            //it.from(packExtraAppResources)
+            it.from(packExtraAppResources.get().archivePath)
             return
         }
 
