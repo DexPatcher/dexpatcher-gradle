@@ -18,7 +18,6 @@ import lanchon.dexpatcher.gradle.NewProperty
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
-import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.util.GradleVersion
 
@@ -44,6 +43,9 @@ class LazyZipTask extends Zip {
             // On Gradle < 5.1 create new properties and override existing getters.
             lazyArchiveFileName = project.objects.property(String)
             lazyDestinationDirectory = NewProperty.dir(project)
+            // And also mimic the removed '@OutputFile' annotation on 'archivePath'.
+            // See: https://github.com/gradle/gradle/issues/9204
+            outputs.files({ archivePath }).withPropertyName('archivePath')
         }
     }
 
@@ -63,7 +65,7 @@ class LazyZipTask extends Zip {
                 lazyArchiveFileName.orNull ?: super.archiveName
     }
 
-    @Override @OutputFile File getArchivePath() {
+    @Override @Internal File getArchivePath() {
         GRADLE_5_1 ?
                 super.archivePath :
                 new File((lazyDestinationDirectory.orNull?.asFile) ?: destinationDir, archiveName)
