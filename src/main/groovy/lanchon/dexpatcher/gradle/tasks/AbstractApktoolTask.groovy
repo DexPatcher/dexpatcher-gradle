@@ -94,10 +94,8 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
     @OutputDirectory final Provider<Directory> resolvedFrameworkDir
 
     AbstractApktoolTask(String command) {
-
         this.command = command
         main = 'brut.apktool.Main'
-
         resolvedFrameworkDir = project.providers.<Directory>provider {
             def dir = frameworkDir.orNull
             def outDir = frameworkOutDir.orNull
@@ -105,7 +103,6 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
             if (dir && outDir) throw new RuntimeException('Ambiguous framework directory')
             return dir ?: outDir
         }
-
     }
 
     @Override List<String> getArgs() {

@@ -35,7 +35,6 @@ class ProvideDecodedAppTask extends DefaultTask {
     @Internal final Provider<RegularFile> apktoolYmlFile
 
     ProvideDecodedAppTask() {
-
         sourceAppFile = project.<RegularFile>provider {
             def files = sourceAppFiles.files
             def n = files.size()
@@ -45,13 +44,8 @@ class ProvideDecodedAppTask extends DefaultTask {
             }
             return Utils.getRegularFile(project, files[0])
         }
-
         apktoolYmlFile = outputDir.file(ApkLib.FILE_APKTOOL_YML)
-
-        outputs.upToDateWhen {
-            false
-        }
-
+        outputs.upToDateWhen { false }
     }
 
     @TaskAction
