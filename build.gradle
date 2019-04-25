@@ -15,7 +15,7 @@ plugins {
 }
 
 group = 'com.github.lanchon.dexpatcher'
-version = '2.0.0-alpha3'
+version = '2.0.0-alpha4'
 
 repositories {
     jcenter()
