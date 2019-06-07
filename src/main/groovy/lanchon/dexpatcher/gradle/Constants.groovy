@@ -56,6 +56,7 @@ abstract class Constants {
 
     static abstract class FileNames {
         static final String META_INF = 'META-INF'
+        static final String VALUES_PUBLIC_XML = 'values/public.xml'
         static final String EXT_APK_LIBRARY = '.apklib'
         static final List<String> EXTS_SOURCE_APK = ['.apk', '.jar', '.zip'].asImmutable()
         static final List<String> EXTS_SOURCE_APP = (EXTS_SOURCE_APK + EXT_APK_LIBRARY).asImmutable()
@@ -90,11 +91,11 @@ abstract class Constants {
         static final String FILE_APKTOOL_YML = 'apktool.yml'
         static final String FILE_ANDROID_MANIFEST_XML = 'AndroidManifest.xml'
         static final String DIR_ORIGINAL = 'original'
-        static final String DIR_ORIGINAL_META_INF = DIR_ORIGINAL + '/META-INF'
+        static final String DIR_ORIGINAL_META_INF = DIR_ORIGINAL + '/' + FileNames.META_INF
         static final String DIR_LIB = 'lib'
         static final String DIR_LIBS = 'libs'
         static final String DIR_RES = 'res'
-        static final String FILE_PUBLIC_XML = DIR_RES + '/values/public.xml'
+        static final String FILE_PUBLIC_XML = DIR_RES + '/' + FileNames.VALUES_PUBLIC_XML
         static final String DIR_ASSETS = 'assets'
         static final String DIR_KOTLIN = 'kotlin'
         static final String DIR_UNKNOWN = 'unknown'
@@ -103,6 +104,7 @@ abstract class Constants {
     static abstract class ComponentLib {
         static final String FILE_CLASSES_JAR = 'classes.jar'
         static final String DIR_JNI = 'jni'
+        static final String DIR_RES = 'res'
     }
 
 }

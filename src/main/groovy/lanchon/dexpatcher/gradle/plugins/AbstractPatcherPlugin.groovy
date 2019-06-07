@@ -24,12 +24,18 @@ import lanchon.dexpatcher.gradle.tasks.ProcessIdMappingsTask
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.BaseVariantOutput
+import com.android.build.gradle.options.BooleanOption
+import com.android.build.gradle.options.StringOption
 import com.android.build.gradle.tasks.MergeResources
 import com.android.builder.core.AndroidBuilder
+import com.android.ide.common.resources.FileResourceNameValidator
+import com.android.resources.ResourceFolderType
 import com.android.utils.StringHelper
+import com.google.common.base.Strings
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.file.CopySpec
 import org.gradle.api.file.DuplicatesStrategy
+import org.gradle.api.file.FileCopyDetails
 import org.gradle.api.tasks.bundling.ZipEntryCompression
 
 import static lanchon.dexpatcher.gradle.Constants.*
@@ -106,6 +112,8 @@ abstract class AbstractPatcherPlugin<
         }
 
         // Creates an AAR with components of the source application that will be used to build the patched APK.
+        def checkInvalidResources = new boolean[1]
+        def invalidResourcesFound = new boolean[1]
         def packAppComponents = project.tasks.register(TaskNames.PACK_APP_COMPONENTS, LazyZipTask) {
             it.description = "Packs major components of the source application."
             it.group = TASK_GROUP_NAME
@@ -150,17 +158,59 @@ abstract class AbstractPatcherPlugin<
                 spec.exclude ApkLib.DIR_ORIGINAL + '/'
                 spec.exclude ApkLib.DIR_LIB + '/'
                 //spec.include ApkLib.DIR_LIBS + '/'
-                //spec.include ApkLib.DIR_RES + '/'
-                spec.exclude ApkLib.FILE_PUBLIC_XML
+                spec.exclude ApkLib.DIR_RES + '/'
                 //spec.include ApkLib.DIR_ASSETS + '/'
                 //spec.include ApkLib.DIR_KOTLIN + '/'
                 spec.exclude ApkLib.DIR_UNKNOWN + '/'
                 spec.exclude 'classes*.dex'
             }
+            it.from(decodedAppDir.dir(ApkLib.DIR_RES)) { CopySpec spec ->
+                spec.exclude FileNames.VALUES_PUBLIC_XML
+                spec.eachFile { FileCopyDetails details ->
+                    if (checkInvalidResources[0]) {
+                        def path = details.relativeSourcePath;
+                        def pathSegments = path.segments;
+                        if (pathSegments.length == 2) {
+                            def type = ResourceFolderType.getFolderType(pathSegments[0])
+                            def name = pathSegments[1]
+                            def errorText = FileResourceNameValidator.getErrorTextForFileResource(name, type);
+                            if (errorText) {
+                                // For resource removal to work, references must also be removed from 'public.xml'.
+                                //println "Removing invalid resource '$path': $errorText"
+                                //details.exclude()
+                                project.logger.warn "Invalid resource '$path': $errorText"
+                                invalidResourcesFound[0] = true
+                            }
+                        }
+                    }
+                }
+                spec.into ComponentLib.DIR_RES
+            }
             it.from(decodedAppDir.dir(ApkLib.DIR_LIB)) { CopySpec spec ->
                 spec.into ComponentLib.DIR_JNI
             }
             it.from(packExtraAppResources)
+            it.doFirst {
+                boolean checkResources = true
+                if (!androidVariants.empty) {
+                    def variant = androidVariants[0]
+                    def options = VariantHelper.getData(variant).scope.globalScope.projectOptions
+                    if (options.get(BooleanOption.DISABLE_RESOURCE_VALIDATION) &&
+                            !Strings.isNullOrEmpty(options.get(StringOption.AAPT2_FROM_MAVEN_OVERRIDE))) {
+                        checkResources = false
+                    }
+                }
+                checkInvalidResources[0] = checkResources
+                invalidResourcesFound[0] = false
+            }
+            it.doLast {
+                if (invalidResourcesFound[0]) {
+                    project.logger.warn "The source application contains invalid resources: please disable " +
+                            "resource validation ('android.disableResourceValidation=true' in gradle.properties) " +
+                            "and use a patched AAPT2 binary ('android.aapt2FromMavenOverride=path/to/aapt2' " +
+                            "in gradle.properties) to work around the issue"
+                }
+            }
             return
         }
 
