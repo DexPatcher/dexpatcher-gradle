@@ -82,7 +82,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                     dexBuilders.remove patchDex
                     if (dexBuilders.size() == 0) throw new RuntimeException("Dex builder tasks not found")
                     if (project.logger.debugEnabled) {
-                        project.logger.debug("Dex builder tasks in variant '${variant.name}': " + dexBuilders)
+                        project.logger.debug "Dex builder tasks in variant '${variant.name}': " + dexBuilders
                     }
                     return dexBuilders
                 }
@@ -153,8 +153,8 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                                 throw new RuntimeException(legacyMultiDexMessage + '\n' +
                                         '(Manually enable DexPatcher multi-dex patching mode to override this check)')
                             }
-                            project.logger.info("Variant '${variant.name}': " +
-                                    'Automatically enabling DexPatcher multi-dex patching mode')
+                            project.logger.info "Variant '${variant.name}': " +
+                                    'Automatically enabling DexPatcher multi-dex patching mode'
                             patch.multiDex.set true
                         }
                     }
@@ -162,8 +162,8 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                     // Warn if multi-dex is enabled and target requires legacy multi-dex.
                     if (patch.multiDex.get() && (pack.minSdkVersion < NATIVE_MULTI_DEX_MIN_API_LEVEL ||
                             dexingType == DexingType.LEGACY_MULTIDEX)) {
-                        project.logger.warn("Variant '${variant.name}': " + legacyMultiDexMessage + '\n' +
-                                '(The application being built will not run on Android versions prior to 5.0)')
+                        project.logger.warn "Variant '${variant.name}': " + legacyMultiDexMessage + '\n' +
+                                '(The application being built will not run on Android versions prior to 5.0)'
                     }
                 }
             }

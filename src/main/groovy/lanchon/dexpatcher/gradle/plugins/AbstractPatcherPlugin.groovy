@@ -238,7 +238,7 @@ abstract class AbstractPatcherPlugin<
         for (def rFile : rFiles) {
             if (isEmptyRFile(rFile)) {
                 if (project.logger.debugEnabled) {
-                    project.logger.debug("Removing empty R file '$rFile' containing:\n" + rFile.text)
+                    project.logger.debug "Removing empty R file '$rFile' containing:\n" + rFile.text
                 }
                 project.delete rFile
             }
