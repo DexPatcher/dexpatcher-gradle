@@ -35,7 +35,7 @@ class ProjectProperties {
         Properties parentProperties = project.parent ? getPropertiesRecursive(project.parent, filename) : null
         Properties properties = new Properties(parentProperties)
         File file = project.file(filename)
-        if (file.exists()) {
+        if (file.isFile()) {
             file.withInputStream {
                 properties.load(it)
             }
