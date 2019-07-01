@@ -316,7 +316,7 @@ abstract class AbstractPatcherPlugin<
 
     @CompileDynamic
     private boolean isUsingAapt1(MergeResources task) {
-        // FIXME: What happens on Android Gradle plugins earlier than 3.2.0?
+        // NOFIX: For Android Gradle < 3.2.0: What happens here?
         try {
             return task.aaptGeneration == 'AAPT_V1'
         } catch (MissingPropertyException e) {
