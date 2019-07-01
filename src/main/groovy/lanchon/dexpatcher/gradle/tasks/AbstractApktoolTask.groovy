@@ -26,6 +26,8 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 
+// FIXME: Implement proper input/output framework dirs.
+
 @CompileStatic
 abstract class AbstractApktoolTask extends AbstractJavaExecTask {
 
