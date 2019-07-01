@@ -34,23 +34,36 @@ abstract class VariantHelper {
     // Access internal variant data
 
     private static final Method getVariantDataMethod
+    private static final Exception getVariantDataException
 
     static {
-        // FIXME: Discard exceptions or delay throwing them?
-        getVariantDataMethod = BaseVariantImpl.class.getDeclaredMethod('getVariantData')
-        getVariantDataMethod.setAccessible true
+        Method method
+        try {
+            method = BaseVariantImpl.class.getDeclaredMethod('getVariantData')
+            method.accessible = true
+            getVariantDataException = null
+        } catch (Exception e) {
+            method = null
+            getVariantDataException = e
+        }
+        getVariantDataMethod = method
     }
 
     static BaseVariantData getData(BaseVariant variant) {
-        (BaseVariantData) getVariantDataMethod.invoke(variant)
+        try {
+            if (getVariantDataException) throw getVariantDataException
+            return getVariantDataMethod.invoke(variant) as BaseVariantData
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot invoke method 'BaseVariantImpl.getVariantData'", e)
+        }
     }
 
     static LibraryVariantData getData(LibraryVariant variant) {
-        (LibraryVariantData) getVariantDataMethod.invoke(variant)
+        (LibraryVariantData) getData(variant as BaseVariant)
     }
 
     static ApkVariantData getData(ApplicationVariant variant) {
-        (ApkVariantData) getVariantDataMethod.invoke(variant)
+        (ApkVariantData) getData(variant as BaseVariant)
     }
 
     // Adapters for Android Gradle plugins earlier than 3.3.0
