@@ -13,10 +13,6 @@ package lanchon.dexpatcher.gradle
 import groovy.transform.CompileStatic
 
 import org.gradle.api.Project
-import org.gradle.api.file.Directory
-import org.gradle.api.file.RegularFile
-
-// NOTE: File properties resolve against the root project, not the current project.
 
 @CompileStatic
 class ParsedProperties extends ProjectProperties {
@@ -35,6 +31,9 @@ class ParsedProperties extends ProjectProperties {
         return value ? Integer.parseInt(value) : defaultValue
     }
 
+    /*
+    // NOTE: File and directory properties resolve against the root project, not the current project.
+
     Directory getAsDirectory(String key) {
         String value = get(key)
         return value ? project.rootProject.layout.projectDirectory.dir(value) : null
@@ -44,5 +43,6 @@ class ParsedProperties extends ProjectProperties {
         String value = get(key)
         return value ? project.rootProject.layout.projectDirectory.file(value) : null
     }
+    */
 
 }

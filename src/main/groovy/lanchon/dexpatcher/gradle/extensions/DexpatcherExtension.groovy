@@ -16,21 +16,18 @@ import lanchon.dexpatcher.gradle.NewProperty
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask.Verbosity
 
 import org.gradle.api.Project
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.provider.Property
-
-import static lanchon.dexpatcher.gradle.Constants.*
 
 @CompileStatic
 class DexpatcherExtension extends AbstractToolExtension {
-
-    private static final String PREFIX = super.PREFIX + ToolNames.DEXPATCHER + '.'
-
-    private static final String DIR_PROPERTY = PREFIX + 'dir'
 
     static final def QUIET = Verbosity.QUIET
     static final def NORMAL = Verbosity.NORMAL
     static final def VERBOSE = Verbosity.VERBOSE
     static final def DEBUG = Verbosity.DEBUG
+
+    final ConfigurableFileCollection annotationClasspath = project.files()
 
     final Property<Integer> apiLevel = NewProperty.from(project, 0)
     final Property<Boolean> multiDex = NewProperty.from(project, false)
@@ -46,10 +43,7 @@ class DexpatcherExtension extends AbstractToolExtension {
     final Property<Boolean> logStats = NewProperty.from(project, false)
 
     DexpatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-        super(project, dexpatcherConfig, DIR_PROPERTY)
+        super(project, dexpatcherConfig)
     }
-
-    @Override
-    protected String getName() { ToolNames.DEXPATCHER }
 
 }

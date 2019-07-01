@@ -20,16 +20,8 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 
-import static lanchon.dexpatcher.gradle.Constants.*
-
 @CompileStatic
 class ApktoolExtension extends AbstractToolExtension {
-
-    private static final String PREFIX = super.PREFIX + ToolNames.APKTOOL + '.'
-
-    private static final String DIR_PROPERTY = PREFIX + 'dir'
-    private static final String FRAMEWORK_DIR_PROPERTY = PREFIX + 'framework.dir'
-    private static final String AAPT_FILE_PROPERTY = PREFIX + 'aapt.file'
 
     static final def QUIET = Verbosity.QUIET
     static final def NORMAL = Verbosity.NORMAL
@@ -37,7 +29,7 @@ class ApktoolExtension extends AbstractToolExtension {
 
     // Base
     final Property<Verbosity> verbosity = project.objects.property(Verbosity)
-    final DirectoryProperty frameworkDir = NewProperty.dir(project, dexpatcherConfig, FRAMEWORK_DIR_PROPERTY)
+    final DirectoryProperty frameworkDir = NewProperty.dir(project)
 
     // Decode
     final Property<String> frameworkTag = project.objects.property(String)
@@ -51,7 +43,7 @@ class ApktoolExtension extends AbstractToolExtension {
     final Property<Boolean> matchOriginal = NewProperty.from(project, false)
 
     // Build
-    final RegularFileProperty aaptFile = NewProperty.file(project, dexpatcherConfig, AAPT_FILE_PROPERTY)
+    final RegularFileProperty aaptFile = NewProperty.file(project)
     final Property<Boolean> useAapt2 = NewProperty.from(project, false)
     final Property<Boolean> crunchResources = NewProperty.from(project, true)
     final Property<Boolean> copyOriginal = NewProperty.from(project, false)
@@ -59,10 +51,7 @@ class ApktoolExtension extends AbstractToolExtension {
     final Property<Boolean> forceCleanBuild = NewProperty.from(project, false)
 
     ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-        super(project, dexpatcherConfig, DIR_PROPERTY)
+        super(project, dexpatcherConfig)
     }
-
-    @Override
-    protected String getName() { ToolNames.APKTOOL }
 
 }

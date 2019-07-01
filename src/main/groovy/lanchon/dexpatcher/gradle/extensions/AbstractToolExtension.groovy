@@ -13,30 +13,19 @@ package lanchon.dexpatcher.gradle.extensions
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.NewProperty
-import lanchon.dexpatcher.gradle.Utils
 
 import org.gradle.api.Project
-import org.gradle.api.file.Directory
-import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Provider
 
 @CompileStatic
 abstract class AbstractToolExtension extends AbstractSubextension {
 
-    protected static final String PREFIX = super.PREFIX + 'tool.'
-
-    final DirectoryProperty dir
+    final ConfigurableFileCollection classpath = project.files()
     final ListProperty<String> extraArgs = NewProperty.list(project, String)
 
-    final Provider<Directory> resolvedDir
-
-    AbstractToolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, String dirProperty) {
+    AbstractToolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig)
-        dir = NewProperty.dir(project, dexpatcherConfig, dirProperty)
-        resolvedDir = Utils.getResolvedDir(project, dir, dexpatcherConfig.resolvedToolDir, name)
     }
-
-    protected abstract String getName()
 
 }

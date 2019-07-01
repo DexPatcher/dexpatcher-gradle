@@ -17,14 +17,8 @@ import lanchon.dexpatcher.gradle.NewProperty
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 
-import static lanchon.dexpatcher.gradle.Constants.*
-
 @CompileStatic
 class Dex2jarExtension extends AbstractToolExtension {
-
-    private static final String PREFIX = super.PREFIX + ToolNames.DEX2JAR + '.'
-
-    private static final String DIR_PROPERTY = PREFIX + 'dir'
 
     final Property<Boolean> translateCode = NewProperty.from(project, true)
     final Property<Boolean> translateDebugInfo = NewProperty.from(project, false)
@@ -34,10 +28,7 @@ class Dex2jarExtension extends AbstractToolExtension {
     final Property<Boolean> handleExceptions = NewProperty.from(project, false) // or true?
 
     Dex2jarExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
-        super(project, dexpatcherConfig, DIR_PROPERTY)
+        super(project, dexpatcherConfig)
     }
-
-    @Override
-    protected String getName() { ToolNames.DEX2JAR }
 
 }

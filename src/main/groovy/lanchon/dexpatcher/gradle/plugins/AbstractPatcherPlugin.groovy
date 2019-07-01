@@ -14,9 +14,9 @@ import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.LocalDependencyHelper
-import lanchon.dexpatcher.gradle.Utils
 import lanchon.dexpatcher.gradle.VariantHelper
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
+import lanchon.dexpatcher.gradle.extensions.DexpatcherExtension
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
 import lanchon.dexpatcher.gradle.tasks.LazyZipTask
 import lanchon.dexpatcher.gradle.tasks.ProcessIdMappingsTask
@@ -36,6 +36,7 @@ import org.gradle.api.DomainObjectSet
 import org.gradle.api.file.CopySpec
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.file.FileCopyDetails
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.bundling.ZipEntryCompression
 
 import static lanchon.dexpatcher.gradle.Constants.*
@@ -67,9 +68,10 @@ abstract class AbstractPatcherPlugin<
         def decorateDependencies = dexpatcherConfig.properties.decorateDependencies
 
         // Add the DexPatcher annotations as a compile-only dependency.
-        def providedLibs = Utils.getJars(project, dexpatcherConfig.resolvedProvidedLibDir)
-        //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, providedLibs
-        LocalDependencyHelper.addDexpatcherAnnotations project, providedLibs, decorateDependencies && false
+        def annotations = ((dexpatcherConfig as ExtensionAware).extensions.getByName(ExtensionNames.TOOL_DEXPATCHER)
+                as DexpatcherExtension).annotationClasspath
+        //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, annotations
+        LocalDependencyHelper.addDexpatcherAnnotations project, annotations, decorateDependencies && false
 
         // Dedex the bytecode of the source application.
         def dedexAppClasses = project.tasks.register(TaskNames.DEDEX_APP_CLASSES, Dex2jarTask) {

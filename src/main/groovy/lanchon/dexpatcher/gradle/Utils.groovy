@@ -14,29 +14,11 @@ import groovy.transform.CompileStatic
 
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
-import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 
 @CompileStatic
 abstract class Utils {
-
-    static File getFile(File parent, String child) {
-        if (parent.is(null)) throw new NullPointerException();
-        return new File(parent, child)
-    }
-
-    static Provider<Directory> getResolvedDir(Project project, Provider<Directory> directory, Provider<Directory> defaultParent, String defaultChild) {
-        project.providers.<Directory>provider {
-            directory.orNull ?: defaultParent.orNull?.dir(defaultChild)
-        }
-    }
-
-    static FileCollection getJars(Project project, def rootDir) {
-        def jars = project.fileTree(rootDir)
-        jars.include '**/*.jar'
-        return jars
-    }
 
     // Horrible Gradle hacks that should not be necessary
 

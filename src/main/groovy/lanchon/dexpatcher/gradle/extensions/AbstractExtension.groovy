@@ -17,8 +17,6 @@ import org.gradle.api.Project
 @CompileStatic
 abstract class AbstractExtension {
 
-    protected static final String PREFIX = 'dexpatcher.'
-
     protected final Project project
 
     AbstractExtension(Project project) {

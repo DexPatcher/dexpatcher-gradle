@@ -27,12 +27,6 @@ abstract class Constants {
         static final String PLUGIN_PATCH_LIBRARY = 'patchLibrary'
     }
 
-    static abstract class ToolNames {
-        static final String DEXPATCHER = 'dexpatcher'
-        static final String APKTOOL = 'apktool'
-        static final String DEX2JAR = 'dex2jar'
-    }
-
     static final String TASK_GROUP_NAME = 'DexPatcher'
 
     static abstract class TaskNames {
@@ -52,10 +46,15 @@ abstract class Constants {
     static abstract class ConfigurationNames {
         static final String SOURCE_APK = 'sourceApk'
         static final String SOURCE_APK_LIBRARY = 'sourceApkLibrary'
+        static final String DEXPATCHER = 'dexpatcher'
+        static final String DEXPATCHER_ANNOTATION = 'dexpatcherAnnotation'
+        static final String APKTOOL = 'apktool'
+        static final String DEX2JAR = 'dex2jar'
     }
 
     static abstract class FileNames {
         static final String META_INF = 'META-INF'
+        static final String DEXPATCHER_ANNOTATION = 'dexpatcher-annotation-*.jar'
         static final String VALUES_PUBLIC_XML = 'values/public.xml'
         static final String EXT_APK_LIBRARY = '.apklib'
         static final List<String> EXTS_SOURCE_APK = ['.apk', '.jar', '.zip'].asImmutable()

@@ -12,7 +12,6 @@ package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Utils
 import lanchon.dexpatcher.gradle.extensions.AbstractToolExtension
 import lanchon.dexpatcher.gradle.extensions.ApktoolExtension
 import lanchon.dexpatcher.gradle.extensions.Dex2jarExtension
@@ -29,6 +28,7 @@ import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
+import org.gradle.api.tasks.util.PatternFilterable
 
 import static lanchon.dexpatcher.gradle.Constants.*
 
@@ -45,6 +45,54 @@ class DexpatcherBasePlugin implements Plugin<Project> {
 
         this.project = project
         setExtensions()
+
+        def dexpatcherConfiguration = project.configurations.maybeCreate(ConfigurationNames.DEXPATCHER)
+        dexpatcherConfiguration.description = 'DexPatcher tool dependency.'
+        dexpatcherConfiguration.canBeResolved = true
+        dexpatcherConfiguration.canBeConsumed = false
+        dexpatcher.classpath.from { dexpatcherConfiguration.singleFile }
+
+        def annotationConfiguration = project.configurations.maybeCreate(ConfigurationNames.DEXPATCHER_ANNOTATION)
+        annotationConfiguration.description = 'DexPatcher tool annotation dependency.'
+        annotationConfiguration.canBeResolved = true
+        annotationConfiguration.canBeConsumed = false
+        dexpatcher.annotationClasspath.from {
+            if (!annotationConfiguration.resolve().empty) {
+                return annotationConfiguration.singleFile
+            } else {
+                def file = dexpatcherConfiguration.singleFile
+                def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
+                return files.matching { PatternFilterable filer ->
+                    filer.include FileNames.DEXPATCHER_ANNOTATION
+                }
+            }
+        }
+
+        def apktoolConfiguration = project.configurations.maybeCreate(ConfigurationNames.APKTOOL)
+        apktoolConfiguration.description = 'Apktool dependency.'
+        apktoolConfiguration.canBeResolved = true
+        apktoolConfiguration.canBeConsumed = false
+        apktool.classpath.from { apktoolConfiguration.singleFile }
+
+        def dex2jarConfiguration = project.configurations.maybeCreate(ConfigurationNames.DEX2JAR)
+        dex2jarConfiguration.description = 'dex2jar dex-tools dependency.'
+        dex2jarConfiguration.canBeResolved = true
+        dex2jarConfiguration.canBeConsumed = false
+        dex2jar.classpath.from {
+            def file = dex2jarConfiguration.singleFile
+            def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
+            return files.matching { PatternFilterable filer ->
+                filer.include '**/*.jar'
+            }
+        }
+
+        /*
+        //  TODO: Add config overrides.
+        project.afterEvaluate {
+            dexpatcherConfiguration.dependencies.clear()
+            dexpatcherConfiguration.dependencies.add project.dependencies.create(project.files(''))
+        }
+        */
 
         project.tasks.withType(DexpatcherTask).configureEach {
             setupToolTask it, dexpatcher
@@ -103,7 +151,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
     }
 
     private void setupToolTask(AbstractJavaExecTask task, AbstractToolExtension extension) {
-        task.classpath Utils.getJars(project, extension.resolvedDir)
+        task.classpath { extension.classpath }
         task.extraArgs.set extension.extraArgs
     }
 

@@ -17,8 +17,6 @@ import org.gradle.api.Project
 @CompileStatic
 abstract class AbstractSubextension extends AbstractExtension {
 
-    protected static final String PREFIX = super.PREFIX
-
     protected final DexpatcherConfigExtension dexpatcherConfig
 
     AbstractSubextension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
