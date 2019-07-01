@@ -17,12 +17,12 @@ import lanchon.dexpatcher.gradle.DexpatcherProperties
 import org.gradle.api.Project
 
 @CompileStatic
-class DexpatcherConfigExtension extends AbstractExtension {
+class DexpatcherConfigExtension extends AbstractExtension<Project> {
 
     final DexpatcherProperties properties = new DexpatcherProperties(project)
 
     DexpatcherConfigExtension(Project project) {
-        super(project)
+        super(project, project)
     }
 
 }

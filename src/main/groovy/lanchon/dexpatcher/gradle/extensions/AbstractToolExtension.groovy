@@ -19,7 +19,7 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.provider.ListProperty
 
 @CompileStatic
-abstract class AbstractToolExtension extends AbstractSubextension {
+abstract class AbstractToolExtension extends AbstractExtension<DexpatcherConfigExtension> {
 
     final ConfigurableFileCollection classpath = project.files()
     final ListProperty<String> extraArgs = NewProperty.list(project, String)

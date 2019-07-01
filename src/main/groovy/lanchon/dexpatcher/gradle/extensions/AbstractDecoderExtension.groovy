@@ -18,7 +18,7 @@ import org.gradle.api.Project
 import org.gradle.api.provider.Property
 
 @CompileStatic
-abstract class AbstractDecoderExtension extends AbstractSubextension {
+abstract class AbstractDecoderExtension extends AbstractExtension<DexpatcherConfigExtension> {
 
     final Property<Boolean> printAppInfo = NewProperty.from(project, false) // or true?
 

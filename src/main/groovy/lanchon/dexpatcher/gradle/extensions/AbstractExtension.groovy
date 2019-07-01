@@ -15,12 +15,14 @@ import groovy.transform.CompileStatic
 import org.gradle.api.Project
 
 @CompileStatic
-abstract class AbstractExtension {
+abstract class AbstractExtension<P> {
 
     protected final Project project
+    protected final P parent;
 
-    AbstractExtension(Project project) {
+    AbstractExtension(Project project, P parent) {
         this.project = project
+        this.parent = parent
     }
 
 }
