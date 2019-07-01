@@ -14,6 +14,8 @@ import groovy.transform.CompileStatic
 
 import org.gradle.api.Project
 
+// TODO: Remove AbstractSubextension.
+
 @CompileStatic
 abstract class AbstractSubextension extends AbstractExtension {
 

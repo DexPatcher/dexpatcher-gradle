@@ -113,6 +113,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                         throw new RuntimeException("Feature dex is not supported")
                     }
                 }
+                // TODO: Use prepare task instead of graph hook.
                 TaskGraphHelper.afterTask(it) {
                     // Build the variant using the patched bytecode.
                     ((ConfigurableFileCollection) packageApplication.get().dexFolders).setFrom patchDex
