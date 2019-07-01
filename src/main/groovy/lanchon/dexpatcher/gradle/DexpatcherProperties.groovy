@@ -21,7 +21,7 @@ class DexpatcherProperties extends ParsedProperties {
 
     DexpatcherProperties(Project project) {
         super(project)
-        decorateDependencies = getAsBoolean('dexpatcher.decorateDependencies', true)
+        decorateDependencies = getBoolean('dexpatcher.decorateDependencies', true)
     }
 
 }
