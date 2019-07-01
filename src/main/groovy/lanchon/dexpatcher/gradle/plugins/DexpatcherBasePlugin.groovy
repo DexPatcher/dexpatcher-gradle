@@ -75,7 +75,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         apktool.classpath.from { apktoolConfiguration.singleFile }
 
         def dex2jarConfiguration = project.configurations.maybeCreate(ConfigurationNames.DEX2JAR)
-        dex2jarConfiguration.description = 'dex2jar dex-tools dependency.'
+        dex2jarConfiguration.description = 'Dex2jar dex-tools dependency.'
         dex2jarConfiguration.canBeResolved = true
         dex2jarConfiguration.canBeConsumed = false
         dex2jar.classpath.from {
