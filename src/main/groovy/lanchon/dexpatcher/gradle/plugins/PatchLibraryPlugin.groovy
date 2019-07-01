@@ -29,9 +29,7 @@ class PatchLibraryPlugin extends AbstractPatcherPlugin<PatchLibraryExtension, Li
 
         super.apply(project)
 
-        extension = dexpatcherConfig.extensions.create(ExtensionNames.PLUGIN_PATCH_LIBRARY, PatchLibraryExtension,
-                project, dexpatcherConfig)
-
+        extension = basePlugin.createSubextension(ExtensionNames.PLUGIN_PATCH_LIBRARY, PatchLibraryExtension)
         project.plugins.apply(LibraryPlugin)
         androidExtension = project.extensions.getByType(LibraryExtension)
         androidVariants = androidExtension.libraryVariants

@@ -16,7 +16,6 @@ import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.LocalDependencyHelper
 import lanchon.dexpatcher.gradle.VariantHelper
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
-import lanchon.dexpatcher.gradle.extensions.DexpatcherExtension
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
 import lanchon.dexpatcher.gradle.tasks.LazyZipTask
 import lanchon.dexpatcher.gradle.tasks.ProcessIdMappingsTask
@@ -64,11 +63,10 @@ abstract class AbstractPatcherPlugin<
 
         super.afterApply()
 
-        def decorateDependencies = dexpatcherConfig.properties.decorateDependencies
+        def decorateDependencies = basePlugin.dexpatcherConfig.properties.decorateDependencies
 
         // Add the DexPatcher annotations as a compile-only dependency.
-        // TODO: Provide a static path to subextensions.
-        def annotationClasspath = dexpatcherConfig.extensions.getByType(DexpatcherExtension).annotationClasspath
+        def annotationClasspath = basePlugin.dexpatcher.annotationClasspath
         //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, annotationClasspath
         LocalDependencyHelper.addDexpatcherAnnotations project, annotationClasspath, decorateDependencies && false
 

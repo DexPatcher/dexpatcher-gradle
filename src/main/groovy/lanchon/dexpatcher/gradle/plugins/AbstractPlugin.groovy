@@ -12,8 +12,6 @@ package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.extensions.DexpatcherConfigExtension
-
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -21,14 +19,12 @@ import org.gradle.api.Project
 class AbstractPlugin implements Plugin<Project> {
 
     protected Project project
-    protected DexpatcherConfigExtension dexpatcherConfig
+    protected DexpatcherBasePlugin basePlugin
 
     void apply(Project project) {
 
         this.project = project
-
-        def dexpatcherBase = project.plugins.apply(DexpatcherBasePlugin)
-        dexpatcherConfig = dexpatcherBase.dexpatcherConfig
+        basePlugin = project.plugins.apply(DexpatcherBasePlugin)
 
     }
 
