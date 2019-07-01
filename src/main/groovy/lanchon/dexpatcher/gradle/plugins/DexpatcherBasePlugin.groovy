@@ -46,21 +46,21 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         this.project = project
         setExtensions()
 
-        def dexpatcherConfiguration = project.configurations.maybeCreate(ConfigurationNames.DEXPATCHER)
-        dexpatcherConfiguration.description = 'DexPatcher tool dependency.'
-        dexpatcherConfiguration.canBeResolved = true
-        dexpatcherConfiguration.canBeConsumed = false
-        dexpatcher.classpath.from { dexpatcherConfiguration.singleFile }
+        def dexpatcherCfg = project.configurations.maybeCreate(ConfigurationNames.DEXPATCHER)
+        dexpatcherCfg.description = 'DexPatcher tool dependency.'
+        dexpatcherCfg.canBeResolved = true
+        dexpatcherCfg.canBeConsumed = false
+        dexpatcher.classpath.from { dexpatcherCfg.singleFile }
 
-        def annotationConfiguration = project.configurations.maybeCreate(ConfigurationNames.DEXPATCHER_ANNOTATION)
-        annotationConfiguration.description = 'DexPatcher tool annotation dependency.'
-        annotationConfiguration.canBeResolved = true
-        annotationConfiguration.canBeConsumed = false
+        def dexpatcherAnnotationCfg = project.configurations.maybeCreate(ConfigurationNames.DEXPATCHER_ANNOTATION)
+        dexpatcherAnnotationCfg.description = 'DexPatcher tool annotation dependency.'
+        dexpatcherAnnotationCfg.canBeResolved = true
+        dexpatcherAnnotationCfg.canBeConsumed = false
         dexpatcher.annotationClasspath.from {
-            if (!annotationConfiguration.resolve().empty) {
-                return annotationConfiguration.singleFile
+            if (!dexpatcherAnnotationCfg.resolve().empty) {
+                return dexpatcherAnnotationCfg.singleFile
             } else {
-                def file = dexpatcherConfiguration.singleFile
+                def file = dexpatcherCfg.singleFile
                 def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
                 return files.matching { PatternFilterable filer ->
                     filer.include FileNames.DEXPATCHER_ANNOTATION
@@ -68,18 +68,18 @@ class DexpatcherBasePlugin implements Plugin<Project> {
             }
         }
 
-        def apktoolConfiguration = project.configurations.maybeCreate(ConfigurationNames.APKTOOL)
-        apktoolConfiguration.description = 'Apktool dependency.'
-        apktoolConfiguration.canBeResolved = true
-        apktoolConfiguration.canBeConsumed = false
-        apktool.classpath.from { apktoolConfiguration.singleFile }
+        def apktoolCfg = project.configurations.maybeCreate(ConfigurationNames.APKTOOL)
+        apktoolCfg.description = 'Apktool dependency.'
+        apktoolCfg.canBeResolved = true
+        apktoolCfg.canBeConsumed = false
+        apktool.classpath.from { apktoolCfg.singleFile }
 
-        def dex2jarConfiguration = project.configurations.maybeCreate(ConfigurationNames.DEX2JAR)
-        dex2jarConfiguration.description = 'Dex2jar dex-tools dependency.'
-        dex2jarConfiguration.canBeResolved = true
-        dex2jarConfiguration.canBeConsumed = false
+        def dex2jarCfg = project.configurations.maybeCreate(ConfigurationNames.DEX2JAR)
+        dex2jarCfg.description = 'Dex2jar dex-tools dependency.'
+        dex2jarCfg.canBeResolved = true
+        dex2jarCfg.canBeConsumed = false
         dex2jar.classpath.from {
-            def file = dex2jarConfiguration.singleFile
+            def file = dex2jarCfg.singleFile
             def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
             return files.matching { PatternFilterable filer ->
                 filer.include '**/*.jar'
