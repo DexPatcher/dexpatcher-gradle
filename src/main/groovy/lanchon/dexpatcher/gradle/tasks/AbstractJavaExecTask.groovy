@@ -54,8 +54,10 @@ abstract class AbstractJavaExecTask extends JavaExec {
     }
 
     protected void deleteOutputDirContents(Directory dir) {
-        // FIXME: Check whether this deletes nested folders.
-        if (dir) project.delete project.fileTree(dir)
+        if (dir) {
+            def files = dir.asFile.listFiles()
+            if (files) project.delete files
+        }
     }
 
     protected void checkOutputFile(RegularFile file) {
