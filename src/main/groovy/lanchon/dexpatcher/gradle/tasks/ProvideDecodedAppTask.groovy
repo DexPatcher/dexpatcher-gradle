@@ -13,7 +13,7 @@ package lanchon.dexpatcher.gradle.tasks
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.NewProperty
-import lanchon.dexpatcher.gradle.Utils
+import lanchon.dexpatcher.gradle.FileHelper
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -43,7 +43,7 @@ class ProvideDecodedAppTask extends DefaultTask {
                 if (!n) throw new RuntimeException('No source application found')
                 else throw new RuntimeException('Multiple source applications found')
             }
-            return Utils.getRegularFile(project, files[0])
+            return FileHelper.getRegularFile(project, files[0])
         }
         apktoolYmlFile = outputDir.file(ApkLib.FILE_APKTOOL_YML)
         outputs.upToDateWhen { false }

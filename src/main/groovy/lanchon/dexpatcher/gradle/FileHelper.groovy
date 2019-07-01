@@ -18,7 +18,7 @@ import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 
 @CompileStatic
-abstract class Utils {
+abstract class FileHelper {
 
     // Horrible Gradle hacks that should not be necessary
 
