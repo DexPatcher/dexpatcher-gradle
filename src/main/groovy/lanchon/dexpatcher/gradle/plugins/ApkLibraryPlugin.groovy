@@ -36,8 +36,8 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
 
         super.apply(project)
 
-        extension = (ApkLibraryExtension) subextensions.create(
-                ExtensionNames.PLUGIN_APK_LIBRARY, ApkLibraryExtension, project, dexpatcherConfig)
+        extension = dexpatcherConfig.extensions.create(ExtensionNames.PLUGIN_APK_LIBRARY, ApkLibraryExtension,
+                project, dexpatcherConfig)
 
         project.plugins.apply(BasePlugin)
 

@@ -13,12 +13,18 @@ package lanchon.dexpatcher.gradle.extensions
 import groovy.transform.CompileStatic
 
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
+import org.gradle.api.plugins.ExtensionContainer
 
 @CompileStatic
 abstract class AbstractExtension<P> {
 
     protected final Project project
     protected final P parent;
+
+    ExtensionContainer getExtensions() {
+        (this as ExtensionAware).extensions
+    }
 
     AbstractExtension(Project project, P parent) {
         this.project = project

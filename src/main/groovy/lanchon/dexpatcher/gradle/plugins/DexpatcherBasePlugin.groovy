@@ -28,7 +28,6 @@ import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.util.PatternFilterable
 
 import static lanchon.dexpatcher.gradle.Constants.*
@@ -171,11 +170,12 @@ class DexpatcherBasePlugin implements Plugin<Project> {
     }
 
     private void setExtensions() {
-        dexpatcherConfig = project.extensions.create(ExtensionNames.DEXPATCHER_CONFIG, DexpatcherConfigExtension, project)
-        def subextensions = (dexpatcherConfig as ExtensionAware).extensions
-        dexpatcher = subextensions.create(ExtensionNames.TOOL_DEXPATCHER, DexpatcherExtension, project, dexpatcherConfig)
-        apktool = subextensions.create(ExtensionNames.TOOL_APKTOOL, ApktoolExtension, project, dexpatcherConfig)
-        dex2jar = subextensions.create(ExtensionNames.TOOL_DEX2JAR, Dex2jarExtension, project, dexpatcherConfig)
+        dexpatcherConfig = project.extensions.create(ExtensionNames.DEXPATCHER_CONFIG, DexpatcherConfigExtension,
+                project)
+        def extensions = dexpatcherConfig.extensions
+        dexpatcher = extensions.create(ExtensionNames.TOOL_DEXPATCHER, DexpatcherExtension, project, dexpatcherConfig)
+        apktool = extensions.create(ExtensionNames.TOOL_APKTOOL, ApktoolExtension, project, dexpatcherConfig)
+        dex2jar = extensions.create(ExtensionNames.TOOL_DEX2JAR, Dex2jarExtension, project, dexpatcherConfig)
     }
 
 }

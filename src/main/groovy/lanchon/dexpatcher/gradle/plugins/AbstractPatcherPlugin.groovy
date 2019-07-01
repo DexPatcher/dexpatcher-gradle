@@ -36,7 +36,6 @@ import org.gradle.api.DomainObjectSet
 import org.gradle.api.file.CopySpec
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.file.FileCopyDetails
-import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.bundling.ZipEntryCompression
 
 import static lanchon.dexpatcher.gradle.Constants.*
@@ -69,10 +68,9 @@ abstract class AbstractPatcherPlugin<
 
         // Add the DexPatcher annotations as a compile-only dependency.
         // TODO: Provide a static path to subextensions.
-        def annotations = ((dexpatcherConfig as ExtensionAware).extensions.getByName(ExtensionNames.TOOL_DEXPATCHER)
-                as DexpatcherExtension).annotationClasspath
-        //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, annotations
-        LocalDependencyHelper.addDexpatcherAnnotations project, annotations, decorateDependencies && false
+        def annotationClasspath = dexpatcherConfig.extensions.getByType(DexpatcherExtension).annotationClasspath
+        //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, annotationClasspath
+        LocalDependencyHelper.addDexpatcherAnnotations project, annotationClasspath, decorateDependencies && false
 
         // Dedex the bytecode of the source application.
         def dedexAppClasses = project.tasks.register(TaskNames.DEDEX_APP_CLASSES, Dex2jarTask) {

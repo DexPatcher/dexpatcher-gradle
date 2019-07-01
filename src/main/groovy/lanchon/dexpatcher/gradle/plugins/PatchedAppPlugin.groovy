@@ -38,8 +38,8 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
 
         super.apply(project)
 
-        extension = (PatchedAppExtension) subextensions.create(
-                ExtensionNames.PLUGIN_PATCHED_APPLICATION, PatchedAppExtension, project, dexpatcherConfig)
+        extension = dexpatcherConfig.extensions.create(ExtensionNames.PLUGIN_PATCHED_APPLICATION, PatchedAppExtension,
+                project, dexpatcherConfig)
 
         project.plugins.apply(AppPlugin)
         androidExtension = project.extensions.getByType(AppExtension)
