@@ -44,7 +44,17 @@ class DexpatcherBasePlugin implements Plugin<Project> {
     void apply(Project project) {
 
         this.project = project
-        setExtensions()
+
+        // Extensions
+
+        dexpatcherConfig = project.extensions.create(ExtensionNames.DEXPATCHER_CONFIG, DexpatcherConfigExtension,
+                project)
+
+        dexpatcher = createSubextension(ExtensionNames.TOOL_DEXPATCHER, DexpatcherExtension)
+        apktool = createSubextension(ExtensionNames.TOOL_APKTOOL, ApktoolExtension)
+        dex2jar = createSubextension(ExtensionNames.TOOL_DEX2JAR, Dex2jarExtension)
+
+        // Configurations
 
         List<Configuration> configurations = []
 
@@ -108,6 +118,8 @@ class DexpatcherBasePlugin implements Plugin<Project> {
             }
         }
 
+        // Task Defaults
+
         project.tasks.withType(DexpatcherTask).configureEach {
             setupToolTask it, dexpatcher
             it.apiLevel.set dexpatcher.apiLevel
@@ -167,14 +179,6 @@ class DexpatcherBasePlugin implements Plugin<Project> {
     private void setupToolTask(AbstractJavaExecTask task, AbstractToolExtension extension) {
         task.classpath { extension.classpath }
         task.extraArgs.set extension.extraArgs
-    }
-
-    private void setExtensions() {
-        dexpatcherConfig = project.extensions.create(ExtensionNames.DEXPATCHER_CONFIG, DexpatcherConfigExtension,
-                project)
-        dexpatcher = createSubextension(ExtensionNames.TOOL_DEXPATCHER, DexpatcherExtension)
-        apktool = createSubextension(ExtensionNames.TOOL_APKTOOL, ApktoolExtension)
-        dex2jar = createSubextension(ExtensionNames.TOOL_DEX2JAR, Dex2jarExtension)
     }
 
     protected <T> T createSubextension(String name, Class<T> type) {
