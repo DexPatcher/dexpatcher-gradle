@@ -27,6 +27,7 @@ import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.util.PatternFilterable
 
@@ -46,16 +47,20 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         this.project = project
         setExtensions()
 
+        List<Configuration> configurations = []
+
         def dexpatcherCfg = project.configurations.maybeCreate(ConfigurationNames.DEXPATCHER)
         dexpatcherCfg.description = 'DexPatcher tool dependency.'
         dexpatcherCfg.canBeResolved = true
         dexpatcherCfg.canBeConsumed = false
+        configurations << dexpatcherCfg
         dexpatcher.classpath.from { dexpatcherCfg.singleFile }
 
         def dexpatcherAnnotationCfg = project.configurations.maybeCreate(ConfigurationNames.DEXPATCHER_ANNOTATION)
         dexpatcherAnnotationCfg.description = 'DexPatcher tool annotation dependency.'
         dexpatcherAnnotationCfg.canBeResolved = true
         dexpatcherAnnotationCfg.canBeConsumed = false
+        configurations << dexpatcherAnnotationCfg
         dexpatcher.annotationClasspath.from {
             if (!dexpatcherAnnotationCfg.resolve().empty) {
                 return dexpatcherAnnotationCfg.singleFile
@@ -72,12 +77,14 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         apktoolCfg.description = 'Apktool dependency.'
         apktoolCfg.canBeResolved = true
         apktoolCfg.canBeConsumed = false
+        configurations << apktoolCfg
         apktool.classpath.from { apktoolCfg.singleFile }
 
         def dex2jarCfg = project.configurations.maybeCreate(ConfigurationNames.DEX2JAR)
         dex2jarCfg.description = 'Dex2jar dex-tools dependency.'
         dex2jarCfg.canBeResolved = true
         dex2jarCfg.canBeConsumed = false
+        configurations << dex2jarCfg
         dex2jar.classpath.from {
             def file = dex2jarCfg.singleFile
             def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
@@ -86,13 +93,21 @@ class DexpatcherBasePlugin implements Plugin<Project> {
             }
         }
 
-        /*
-        //  TODO: Add config overrides.
         project.afterEvaluate {
-            dexpatcherConfiguration.dependencies.clear()
-            dexpatcherConfiguration.dependencies.add project.dependencies.create(project.files(''))
+            for (def cfg : configurations) {
+                // Note that the contents of these configurations can be overridden by defining
+                // 'dexpatcher.configurationOverride.<config-name>' as a project property or as an
+                // entry in 'local.properties' (typically not posted to the VCS). Its value must
+                // either be empty or be a single local path relative to the root project.
+                def value = dexpatcherConfig.properties.getConfigurationOverride(cfg.name)
+                if (!value.is(null)) {
+                    cfg.dependencies.clear()
+                    if (value) {
+                        cfg.dependencies.add project.dependencies.create(project.rootProject.files(value))
+                    }
+                }
+            }
         }
-        */
 
         project.tasks.withType(DexpatcherTask).configureEach {
             setupToolTask it, dexpatcher

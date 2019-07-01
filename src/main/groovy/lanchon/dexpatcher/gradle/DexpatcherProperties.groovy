@@ -24,4 +24,8 @@ class DexpatcherProperties extends ParsedProperties {
         decorateDependencies = getBoolean('dexpatcher.decorateDependencies', true)
     }
 
+    String getConfigurationOverride(String configurationName) {
+        get('dexpatcher.configurationOverride.' + configurationName)
+    }
+
 }
