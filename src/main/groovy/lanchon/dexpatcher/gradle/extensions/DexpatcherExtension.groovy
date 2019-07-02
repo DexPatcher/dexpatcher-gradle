@@ -12,12 +12,18 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.Constants
+import lanchon.dexpatcher.gradle.FileHelper
 import lanchon.dexpatcher.gradle.NewProperty
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask.Verbosity
 
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.util.PatternFilterable
 
 @CompileStatic
 class DexpatcherExtension extends AbstractToolExtension {
@@ -26,6 +32,8 @@ class DexpatcherExtension extends AbstractToolExtension {
     static final def NORMAL = Verbosity.NORMAL
     static final def VERBOSE = Verbosity.VERBOSE
     static final def DEBUG = Verbosity.DEBUG
+
+    final Provider<RegularFile> bundledAnnotationFile
 
     final ConfigurableFileCollection annotationClasspath = project.files()
 
@@ -42,8 +50,17 @@ class DexpatcherExtension extends AbstractToolExtension {
     final Property<String> logSourcePathRoot = project.objects.property(String)
     final Property<Boolean> logStats = NewProperty.from(project, false)
 
-    DexpatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
+    DexpatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Configuration dexpatcherCfg) {
         super(project, dexpatcherConfig)
+        classpath.from { dexpatcherCfg.singleFile }
+        bundledAnnotationFile = project.<RegularFile>provider {
+            def file = dexpatcherCfg.singleFile
+            def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
+            def annotationFile = files.matching { PatternFilterable filer ->
+                filer.include Constants.FileNames.DEXPATCHER_ANNOTATION
+            }.singleFile
+            return FileHelper.getRegularFile(project, annotationFile)
+        }
     }
 
 }

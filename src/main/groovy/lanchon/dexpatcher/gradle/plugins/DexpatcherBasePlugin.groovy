@@ -28,7 +28,6 @@ import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.tasks.util.PatternFilterable
 
 import static lanchon.dexpatcher.gradle.Constants.*
 
@@ -45,15 +44,6 @@ class DexpatcherBasePlugin implements Plugin<Project> {
 
         this.project = project
 
-        // Extensions
-
-        dexpatcherConfig = project.extensions.create(ExtensionNames.DEXPATCHER_CONFIG, DexpatcherConfigExtension,
-                project)
-
-        dexpatcher = createSubextension(ExtensionNames.TOOL_DEXPATCHER, DexpatcherExtension)
-        apktool = createSubextension(ExtensionNames.TOOL_APKTOOL, ApktoolExtension)
-        dex2jar = createSubextension(ExtensionNames.TOOL_DEX2JAR, Dex2jarExtension)
-
         // Configurations
 
         List<Configuration> configurations = []
@@ -63,44 +53,41 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         dexpatcherCfg.canBeResolved = true
         dexpatcherCfg.canBeConsumed = false
         configurations << dexpatcherCfg
-        dexpatcher.classpath.from { dexpatcherCfg.singleFile }
 
         def dexpatcherAnnotationCfg = project.configurations.maybeCreate(ConfigurationNames.DEXPATCHER_ANNOTATION)
         dexpatcherAnnotationCfg.description = 'DexPatcher tool annotation dependency.'
         dexpatcherAnnotationCfg.canBeResolved = true
         dexpatcherAnnotationCfg.canBeConsumed = false
         configurations << dexpatcherAnnotationCfg
-        dexpatcher.annotationClasspath.from {
-            if (!dexpatcherAnnotationCfg.resolve().empty) {
-                return dexpatcherAnnotationCfg.singleFile
-            } else {
-                def file = dexpatcherCfg.singleFile
-                def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
-                return files.matching { PatternFilterable filer ->
-                    filer.include FileNames.DEXPATCHER_ANNOTATION
-                }
-            }
-        }
 
         def apktoolCfg = project.configurations.maybeCreate(ConfigurationNames.APKTOOL)
         apktoolCfg.description = 'Apktool dependency.'
         apktoolCfg.canBeResolved = true
         apktoolCfg.canBeConsumed = false
         configurations << apktoolCfg
-        apktool.classpath.from { apktoolCfg.singleFile }
 
         def dex2jarCfg = project.configurations.maybeCreate(ConfigurationNames.DEX2JAR)
         dex2jarCfg.description = 'Dex2jar dex-tools dependency.'
         dex2jarCfg.canBeResolved = true
         dex2jarCfg.canBeConsumed = false
         configurations << dex2jarCfg
-        dex2jar.classpath.from {
-            def file = dex2jarCfg.singleFile
-            def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
-            return files.matching { PatternFilterable filer ->
-                filer.include '**/*.jar'
-            }
+
+        // Extensions
+
+        dexpatcherConfig = project.extensions.create(ExtensionNames.DEXPATCHER_CONFIG, DexpatcherConfigExtension,
+                project)
+
+        dexpatcher = createSubextension(ExtensionNames.TOOL_DEXPATCHER, DexpatcherExtension, dexpatcherCfg)
+        apktool = createSubextension(ExtensionNames.TOOL_APKTOOL, ApktoolExtension, apktoolCfg)
+        dex2jar = createSubextension(ExtensionNames.TOOL_DEX2JAR, Dex2jarExtension, dex2jarCfg)
+
+        dexpatcher.annotationClasspath.from {
+            dexpatcherAnnotationCfg.resolve().empty ?
+                    dexpatcher.bundledAnnotationFile.get().asFile :
+                    dexpatcherAnnotationCfg.singleFile
         }
+
+        // Configuration Overrides
 
         project.afterEvaluate {
             for (def cfg : configurations) {
@@ -181,8 +168,8 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         task.extraArgs.set extension.extraArgs
     }
 
-    protected <T> T createSubextension(String name, Class<T> type) {
-        dexpatcherConfig.extensions.create(name, type, project, dexpatcherConfig)
+    protected <T> T createSubextension(String name, Class<T> type, Object... extraArgs) {
+        dexpatcherConfig.extensions.create(name, type, ([project, dexpatcherConfig] as Object[]) + extraArgs)
     }
 
 }

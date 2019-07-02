@@ -16,6 +16,7 @@ import lanchon.dexpatcher.gradle.NewProperty
 import lanchon.dexpatcher.gradle.tasks.AbstractApktoolTask.Verbosity
 
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
@@ -50,8 +51,9 @@ class ApktoolExtension extends AbstractToolExtension {
     final Property<Boolean> forceDebuggableBuild = NewProperty.from(project, false)
     final Property<Boolean> forceCleanBuild = NewProperty.from(project, false)
 
-    ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
+    ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Configuration apktoolCfg) {
         super(project, dexpatcherConfig)
+        classpath.from { apktoolCfg.singleFile }
     }
 
 }

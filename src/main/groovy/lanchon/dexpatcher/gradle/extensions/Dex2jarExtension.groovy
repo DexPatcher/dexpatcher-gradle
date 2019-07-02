@@ -15,7 +15,9 @@ import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.NewProperty
 
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.util.PatternFilterable
 
 @CompileStatic
 class Dex2jarExtension extends AbstractToolExtension {
@@ -27,8 +29,15 @@ class Dex2jarExtension extends AbstractToolExtension {
     final Property<Boolean> topologicalSort = NewProperty.from(project, false)
     final Property<Boolean> handleExceptions = NewProperty.from(project, false) // or true?
 
-    Dex2jarExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
+    Dex2jarExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Configuration dex2jarCfg) {
         super(project, dexpatcherConfig)
+        classpath.from {
+            def file = dex2jarCfg.singleFile
+            def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
+            return files.matching { PatternFilterable filer ->
+                filer.include '**/*.jar'
+            }
+        }
     }
 
 }
