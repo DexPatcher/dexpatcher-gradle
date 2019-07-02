@@ -39,25 +39,25 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
 
         super.afterApply()
 
-        def sourceApk = project.configurations.maybeCreate(ConfigurationNames.SOURCE_APK)
-        sourceApk.description = 'Source application dependency provided as an Android APK.'
-        sourceApk.canBeResolved = true
-        sourceApk.canBeConsumed = false
+        def sourceApkCfg = project.configurations.maybeCreate(ConfigurationNames.SOURCE_APK)
+        sourceApkCfg.description = 'Source application dependency provided as an Android APK.'
+        sourceApkCfg.canBeResolved = true
+        sourceApkCfg.canBeConsumed = false
         def apks = project.fileTree(ProjectDir.DIR_SOURCE_APK)
         apks.include FileNames.EXTS_SOURCE_APK.collect { '*' + it }
-        sourceApk.dependencies.add project.dependencies.create(apks)
+        sourceApkCfg.dependencies.add project.dependencies.create(apks)
 
-        def sourceApkLib = project.configurations.maybeCreate(ConfigurationNames.SOURCE_APK_LIBRARY)
-        sourceApkLib.description = 'Source application dependency provided as a DexPatcher APK library.'
-        sourceApkLib.canBeResolved = true
-        sourceApkLib.canBeConsumed = false
+        def sourceApkLibCfg = project.configurations.maybeCreate(ConfigurationNames.SOURCE_APK_LIBRARY)
+        sourceApkLibCfg.description = 'Source application dependency provided as a DexPatcher APK library.'
+        sourceApkLibCfg.canBeResolved = true
+        sourceApkLibCfg.canBeConsumed = false
         def apkLibs = project.fileTree(ProjectDir.DIR_SOURCE_APK_LIBRARY)
         apkLibs.include '*' + FileNames.EXT_APK_LIBRARY
-        sourceApkLib.dependencies.add project.dependencies.create(apkLibs)
+        sourceApkLibCfg.dependencies.add project.dependencies.create(apkLibs)
 
         provideDecodedApp = registerProvideDecodedAppTaskChain(project, TASK_GROUP_NAME,
                 { String it -> it }, { Provider<Directory> it -> it },
-                sourceApk, sourceApkLib, extension.printAppInfo)
+                sourceApkCfg, sourceApkLibCfg, extension.printAppInfo)
 
     }
 
