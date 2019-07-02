@@ -12,14 +12,19 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.FileHelper
 import lanchon.dexpatcher.gradle.NewProperty
+import lanchon.dexpatcher.gradle.Platform
 import lanchon.dexpatcher.gradle.tasks.AbstractApktoolTask.Verbosity
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.util.PatternFilterable
 
 @CompileStatic
 class ApktoolExtension extends AbstractToolExtension {
@@ -51,9 +56,28 @@ class ApktoolExtension extends AbstractToolExtension {
     final Property<Boolean> forceDebuggableBuild = NewProperty.from(project, false)
     final Property<Boolean> forceCleanBuild = NewProperty.from(project, false)
 
+    final Provider<RegularFile> bundledAaptFile
+    final Provider<RegularFile> bundledAapt2File
+
     ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Configuration apktoolCfg) {
         super(project, dexpatcherConfig)
         classpath.from { apktoolCfg.singleFile }
+        bundledAaptFile = getToolProvider(apktoolCfg, 'aapt')
+        bundledAapt2File = getToolProvider(apktoolCfg, 'aapt2')
+    }
+
+    private Provider<RegularFile> getToolProvider(Configuration apktoolCfg, String tool) {
+        project.<RegularFile>provider {
+            def file = apktoolCfg.singleFile
+            def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
+            def platformDir = Platform.current.binaryDirectoryName
+            def exeExtension = Platform.current.executableExtension
+            def filteredFiles = files.matching { PatternFilterable filter ->
+                filter.include"prebuilt/${tool}/${platformDir}/${tool}${exeExtension}"  // Apktool < 2.4.0
+                filter.include"prebuilt/${platformDir}/${tool}_64${exeExtension}"       // Apktool >= 2.4.0
+            }
+            return filteredFiles.empty ? null : FileHelper.getRegularFile(project, filteredFiles.singleFile)
+        }
     }
 
 }
