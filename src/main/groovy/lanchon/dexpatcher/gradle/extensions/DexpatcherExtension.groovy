@@ -32,8 +32,6 @@ class DexpatcherExtension extends AbstractToolExtension {
     static final def VERBOSE = Verbosity.VERBOSE
     static final def DEBUG = Verbosity.DEBUG
 
-    final Provider<RegularFile> bundledAnnotationFile
-
     final Property<Integer> apiLevel = NewProperty.from(project, 0)
     final Property<Boolean> multiDex = NewProperty.from(project, false)
     final Property<Boolean> multiDexThreaded = NewProperty.from(project, false)
@@ -46,6 +44,8 @@ class DexpatcherExtension extends AbstractToolExtension {
     final Property<Boolean> logSourcePath = NewProperty.from(project, false)
     final Property<String> logSourcePathRoot = project.objects.property(String)
     final Property<Boolean> logStats = NewProperty.from(project, false)
+
+    final Provider<RegularFile> bundledAnnotationFile
 
     DexpatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Configuration dexpatcherCfg) {
         super(project, dexpatcherConfig)
