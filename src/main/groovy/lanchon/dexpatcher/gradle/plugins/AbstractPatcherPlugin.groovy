@@ -63,10 +63,22 @@ abstract class AbstractPatcherPlugin<
 
         super.afterApply()
 
+        def dexpatcherAnnotationCfg = project.configurations.maybeCreate(ConfigurationNames.DEXPATCHER_ANNOTATION)
+        dexpatcherAnnotationCfg.description = 'DexPatcher tool annotation dependency.'
+        dexpatcherAnnotationCfg.canBeResolved = true
+        dexpatcherAnnotationCfg.canBeConsumed = false
+        basePlugin.setupConfigurationOverride dexpatcherAnnotationCfg
+
+        (extension as AbstractPatcherExtension).dexpatcherAnnotationClasspath.from {
+            dexpatcherAnnotationCfg.resolve().empty ?
+                    basePlugin.dexpatcher.bundledAnnotationFile.get().asFile :
+                    dexpatcherAnnotationCfg.singleFile
+        }
+
         def decorateDependencies = basePlugin.dexpatcherConfig.properties.decorateDependencies
 
         // Add the DexPatcher annotations as a compile-only dependency.
-        def annotationClasspath = basePlugin.dexpatcher.annotationClasspath
+        def annotationClasspath = (extension as AbstractPatcherExtension).dexpatcherAnnotationClasspath
         //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, annotationClasspath
         LocalDependencyHelper.addDexpatcherAnnotations project, annotationClasspath, decorateDependencies && false
 
@@ -82,7 +94,7 @@ abstract class AbstractPatcherPlugin<
 
         // Conditionally add the dedexed source classes as a compile-only dependency.
         project.afterEvaluate {
-            if (((AbstractPatcherExtension) extension).importSymbols.get()) {
+            if ((extension as AbstractPatcherExtension).importSymbols.get()) {
                 def symbolLib = project.files(dedexAppClasses.get().outputFile)
                 symbolLib.builtBy dedexAppClasses
                 //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, symbolLib

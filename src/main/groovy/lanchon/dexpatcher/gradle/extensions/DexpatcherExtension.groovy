@@ -19,7 +19,6 @@ import lanchon.dexpatcher.gradle.tasks.DexpatcherTask.Verbosity
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
@@ -34,8 +33,6 @@ class DexpatcherExtension extends AbstractToolExtension {
     static final def DEBUG = Verbosity.DEBUG
 
     final Provider<RegularFile> bundledAnnotationFile
-
-    final ConfigurableFileCollection annotationClasspath = project.files()
 
     final Property<Integer> apiLevel = NewProperty.from(project, 0)
     final Property<Boolean> multiDex = NewProperty.from(project, false)
