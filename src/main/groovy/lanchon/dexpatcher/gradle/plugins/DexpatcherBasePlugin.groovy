@@ -47,19 +47,19 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         // Configurations
 
         def dexpatcherCfg = project.configurations.maybeCreate(ConfigurationNames.DEXPATCHER)
-        dexpatcherCfg.description = 'DexPatcher tool dependency.'
+        dexpatcherCfg.description = 'The DexPatcher tool to use for this project.'
         dexpatcherCfg.canBeResolved = true
         dexpatcherCfg.canBeConsumed = false
         setupConfigurationOverride dexpatcherCfg
 
         def apktoolCfg = project.configurations.maybeCreate(ConfigurationNames.APKTOOL)
-        apktoolCfg.description = 'Apktool dependency.'
+        apktoolCfg.description = 'The Apktool to use for this project.'
         apktoolCfg.canBeResolved = true
         apktoolCfg.canBeConsumed = false
         setupConfigurationOverride apktoolCfg
 
         def dex2jarCfg = project.configurations.maybeCreate(ConfigurationNames.DEX2JAR)
-        dex2jarCfg.description = 'Dex2jar dex-tools dependency.'
+        dex2jarCfg.description = 'The dex2jar dex-tools to use for this project.'
         dex2jarCfg.canBeResolved = true
         dex2jarCfg.canBeConsumed = false
         setupConfigurationOverride dex2jarCfg

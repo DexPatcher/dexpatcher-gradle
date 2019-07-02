@@ -64,7 +64,7 @@ abstract class AbstractPatcherPlugin<
         super.afterApply()
 
         def dexpatcherAnnotationCfg = project.configurations.maybeCreate(ConfigurationNames.DEXPATCHER_ANNOTATION)
-        dexpatcherAnnotationCfg.description = 'DexPatcher tool annotation dependency.'
+        dexpatcherAnnotationCfg.description = 'The DexPatcher annotations to use for this project.'
         dexpatcherAnnotationCfg.canBeResolved = true
         dexpatcherAnnotationCfg.canBeConsumed = false
         basePlugin.setupConfigurationOverride dexpatcherAnnotationCfg
