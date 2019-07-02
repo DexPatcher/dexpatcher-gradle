@@ -34,9 +34,10 @@ class Dex2jarExtension extends AbstractToolExtension {
         classpath.from {
             def file = dex2jarCfg.singleFile
             def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
-            return files.matching { PatternFilterable filter ->
-                filter.include '**/*.jar'
+            def filteredFiles = files.matching { PatternFilterable filter ->
+                filter.include 'lib/*.jar', '*/lib/*.jar'
             }
+            return filteredFiles
         }
     }
 
