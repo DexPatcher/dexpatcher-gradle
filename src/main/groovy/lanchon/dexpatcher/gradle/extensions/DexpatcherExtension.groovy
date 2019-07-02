@@ -53,8 +53,8 @@ class DexpatcherExtension extends AbstractToolExtension {
         bundledAnnotationFile = project.<RegularFile>provider {
             def file = dexpatcherCfg.singleFile
             def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
-            def filteredFiles = files.matching { PatternFilterable filer ->
-                filer.include Constants.FileNames.DEXPATCHER_ANNOTATION
+            def filteredFiles = files.matching { PatternFilterable filter ->
+                filter.include Constants.FileNames.DEXPATCHER_ANNOTATION
             }
             return filteredFiles.empty ? null : FileHelper.getRegularFile(project, filteredFiles.singleFile)
         }
