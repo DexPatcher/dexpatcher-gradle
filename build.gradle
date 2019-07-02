@@ -74,7 +74,7 @@ gradlePlugin {
             id = 'com.github.lanchon.dexpatcher.base'
             implementationClass = 'lanchon.dexpatcher.gradle.plugins.DexpatcherBasePlugin'
             displayName = 'DexPatcher Base'
-            description = 'The DexPatcher Base plugin provides basic DexPatcher, Apktool and Dex2jar tasks. ' +
+            description = 'The DexPatcher Base plugin provides basic DexPatcher, Apktool and dex2jar tasks. ' +
                     'DexPatcher is free software. (GPLv3+)'
         }
 
