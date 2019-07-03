@@ -22,7 +22,7 @@ abstract class AbstractExtension<P> {
     protected final Project project
     protected final P parent;
 
-    ExtensionContainer getExtensions() {
+    ExtensionContainer getSubextensions() {
         (this as ExtensionAware).extensions
     }
 

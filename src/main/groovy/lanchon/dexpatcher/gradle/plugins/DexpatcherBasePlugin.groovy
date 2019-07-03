@@ -153,7 +153,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
     }
 
     public <T> T createSubextension(String name, Class<T> type, Object... extraArgs) {
-        dexpatcherConfig.extensions.create(name, type, ([project, dexpatcherConfig] as Object[]) + extraArgs)
+        dexpatcherConfig.subextensions.create(name, type, ([project, dexpatcherConfig] as Object[]) + extraArgs)
     }
 
 }
