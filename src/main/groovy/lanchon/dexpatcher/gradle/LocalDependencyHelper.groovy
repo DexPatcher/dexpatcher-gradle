@@ -20,6 +20,8 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDepend
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.internal.component.external.model.DefaultModuleComponentIdentifier
 
+// FIXME: Avoid futile download attempts of decorated dependencies.
+
 @CompileStatic
 abstract class LocalDependencyHelper {
 
