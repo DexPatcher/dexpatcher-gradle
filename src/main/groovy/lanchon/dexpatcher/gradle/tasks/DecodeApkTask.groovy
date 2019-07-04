@@ -87,7 +87,9 @@ class DecodeApkTask extends AbstractApktoolTask {
         if (matchOriginal.get()) args.add('--match-original')
 
         //if (forceOverwrite.get()) args.add('--force')
+
         addExtraArgsTo args
+        args.add('--')
 
         args.add(apkFile.get() as String)
 

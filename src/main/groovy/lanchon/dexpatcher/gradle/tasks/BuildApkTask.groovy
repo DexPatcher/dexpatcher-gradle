@@ -77,6 +77,7 @@ class BuildApkTask extends AbstractApktoolTask {
         if (forceCleanBuild.get()) args.add('--force-all')
 
         addExtraArgsTo args
+        args.add('--')
 
         args.add(inputDir.get() as String)
 

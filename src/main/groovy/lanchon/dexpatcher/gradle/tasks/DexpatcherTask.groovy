@@ -150,6 +150,7 @@ class DexpatcherTask extends AbstractJavaExecTask {
         if (logStats.get()) args.add('--stats')
 
         addExtraArgsTo args
+        args.add('--')
 
         args.add(source.get() as String)
 

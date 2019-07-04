@@ -98,7 +98,9 @@ class Dex2jarTask extends AbstractDex2jarTask {
         if (!handleExceptions.get()) args.add('--not-handle-exception')
 
         //if (forceOverwrite.get()) args.add('--force')
+
         addExtraArgsTo args
+        //args.add('--')    // not supported by dex2jar tools
 
         if (dexFiles.isEmpty()) throw new RuntimeException('No input dex files specified')
         args.addAll(dexFiles as List<String>)
