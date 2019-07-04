@@ -70,7 +70,7 @@ abstract class AbstractPatcherPlugin<
         basePlugin.setupConfigurationOverride dexpatcherAnnotationCfg
 
         (extension as AbstractPatcherExtension).dexpatcherAnnotationClasspath.from {
-            dexpatcherAnnotationCfg.resolve().empty ?
+            dexpatcherAnnotationCfg.empty ?
                     basePlugin.dexpatcher.bundledAnnotationFile.get().asFile :
                     dexpatcherAnnotationCfg.singleFile
         }

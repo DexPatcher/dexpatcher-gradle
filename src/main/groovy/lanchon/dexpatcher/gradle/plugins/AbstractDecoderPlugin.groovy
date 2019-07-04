@@ -105,7 +105,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             }
             provideDecodedApp.configure {
                 it.dependsOn {
-                    !sourceApk.files.empty ? decodeApk : []
+                    !sourceApk.empty ? decodeApk : []
                 }
             }
         }
@@ -124,7 +124,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             }
             provideDecodedApp.configure {
                 it.dependsOn {
-                    !sourceApkLib.files.empty ? unpackApkLibrary : []
+                    !sourceApkLib.empty ? unpackApkLibrary : []
                 }
             }
         }
