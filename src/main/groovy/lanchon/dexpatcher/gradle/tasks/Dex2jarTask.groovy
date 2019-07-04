@@ -102,7 +102,7 @@ class Dex2jarTask extends AbstractDex2jarTask {
         addExtraArgsTo args
         //args.add('--')    // not supported by dex2jar tools
 
-        if (dexFiles.isEmpty()) throw new RuntimeException('No input dex files specified')
+        if (dexFiles.empty) throw new RuntimeException('No input dex files specified')
         args.addAll(dexFiles as List<String>)
 
         return args;

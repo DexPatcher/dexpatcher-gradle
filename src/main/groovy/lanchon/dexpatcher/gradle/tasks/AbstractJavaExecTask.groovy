@@ -65,7 +65,7 @@ abstract class AbstractJavaExecTask extends JavaExec {
     }
 
     protected void checkOutputDir(Directory dir) {
-        if (dir && project.fileTree(dir).isEmpty()) throw new RuntimeException('No output generated')
+        if (dir && project.fileTree(dir).empty) throw new RuntimeException('No output generated')
     }
 
 }
