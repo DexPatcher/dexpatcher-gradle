@@ -12,7 +12,6 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Constants
 import lanchon.dexpatcher.gradle.FileHelper
 import lanchon.dexpatcher.gradle.NewProperty
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask.Verbosity
@@ -23,6 +22,8 @@ import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.util.PatternFilterable
+
+import static lanchon.dexpatcher.gradle.Constants.*
 
 @CompileStatic
 class DexpatcherExtension extends AbstractToolExtension {
@@ -45,17 +46,27 @@ class DexpatcherExtension extends AbstractToolExtension {
     final Property<Boolean> logStats = NewProperty.from(project, false)
 
     final Provider<RegularFile> bundledAnnotationFile
+    final Provider<RegularFile> configuredAnnotationFile
+    final Provider<RegularFile> resolvedAnnotationFile
 
-    DexpatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Configuration dexpatcherCfg) {
+    DexpatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Configuration dexpatcherCfg,
+            Configuration dexpatcherAnnotationCfg) {
         super(project, dexpatcherConfig)
         classpath.from { dexpatcherCfg.singleFile }
         bundledAnnotationFile = project.<RegularFile>provider {
             def file = dexpatcherCfg.singleFile
             def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
             def filteredFiles = files.matching { PatternFilterable filter ->
-                filter.include Constants.FileNames.DEXPATCHER_ANNOTATION
+                filter.include FileNames.DEXPATCHER_ANNOTATION
             }
             return filteredFiles.empty ? null : FileHelper.getRegularFile(project, filteredFiles.singleFile)
+        }
+        configuredAnnotationFile = project.<RegularFile>provider {
+            dexpatcherAnnotationCfg.empty ? null :
+                    FileHelper.getRegularFile(project, dexpatcherAnnotationCfg.singleFile)
+        }
+        resolvedAnnotationFile = project.<RegularFile>provider {
+            configuredAnnotationFile.orNull ?: bundledAnnotationFile.orNull
         }
     }
 

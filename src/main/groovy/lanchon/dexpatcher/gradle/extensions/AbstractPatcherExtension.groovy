@@ -15,7 +15,6 @@ import groovy.transform.CompileStatic
 import lanchon.dexpatcher.gradle.NewProperty
 
 import org.gradle.api.Project
-import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.provider.Property
 
 @CompileStatic
@@ -27,8 +26,6 @@ abstract class AbstractPatcherExtension extends AbstractDecoderExtension {
     //final Property<Boolean> patchManifest = true      // TODO
     //final Property<Boolean> patchResources = true     // TODO
     //final Property<Boolean> patchCode = true          // TODO
-
-    final ConfigurableFileCollection dexpatcherAnnotationClasspath = project.files()
 
     AbstractPatcherExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig)

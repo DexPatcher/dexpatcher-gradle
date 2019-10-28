@@ -61,22 +61,10 @@ abstract class AbstractPatcherPlugin<
 
         super.afterApply()
 
-        def dexpatcherAnnotationCfg = project.configurations.maybeCreate(ConfigurationNames.DEXPATCHER_ANNOTATION)
-        dexpatcherAnnotationCfg.description = 'The DexPatcher annotations to use for this project.'
-        dexpatcherAnnotationCfg.canBeResolved = true
-        dexpatcherAnnotationCfg.canBeConsumed = false
-        basePlugin.setupConfigurationOverride dexpatcherAnnotationCfg
-
-        (extension as AbstractPatcherExtension).dexpatcherAnnotationClasspath.from {
-            dexpatcherAnnotationCfg.empty ?
-                    basePlugin.dexpatcher.bundledAnnotationFile.get().asFile :
-                    dexpatcherAnnotationCfg.singleFile
-        }
-
         def decorateDependencies = basePlugin.dexpatcherConfig.properties.decorateDependencies
 
         // Add the DexPatcher annotations as a compile-only dependency.
-        def annotationClasspath = (extension as AbstractPatcherExtension).dexpatcherAnnotationClasspath
+        def annotationClasspath = project.files(basePlugin.dexpatcher.resolvedAnnotationFile)
         //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, annotationClasspath
         LocalDependencyHelper.addDexpatcherAnnotations project, annotationClasspath, decorateDependencies && false
 

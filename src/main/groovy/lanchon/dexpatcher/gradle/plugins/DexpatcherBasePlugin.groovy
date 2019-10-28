@@ -52,6 +52,12 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         dexpatcherCfg.canBeConsumed = false
         setupConfigurationOverride dexpatcherCfg
 
+        def dexpatcherAnnotationCfg = project.configurations.maybeCreate(ConfigurationNames.DEXPATCHER_ANNOTATION)
+        dexpatcherAnnotationCfg.description = 'The DexPatcher annotations to use for this project.'
+        dexpatcherAnnotationCfg.canBeResolved = true
+        dexpatcherAnnotationCfg.canBeConsumed = false
+        setupConfigurationOverride dexpatcherAnnotationCfg
+
         def apktoolCfg = project.configurations.maybeCreate(ConfigurationNames.APKTOOL)
         apktoolCfg.description = 'The Apktool to use for this project.'
         apktoolCfg.canBeResolved = true
@@ -69,7 +75,8 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         dexpatcherConfig = project.extensions.create(ExtensionNames.DEXPATCHER_CONFIG, DexpatcherConfigExtension,
                 project)
 
-        dexpatcher = createSubextension(ExtensionNames.TOOL_DEXPATCHER, DexpatcherExtension, dexpatcherCfg)
+        dexpatcher = createSubextension(ExtensionNames.TOOL_DEXPATCHER, DexpatcherExtension, dexpatcherCfg,
+                dexpatcherAnnotationCfg)
         apktool = createSubextension(ExtensionNames.TOOL_APKTOOL, ApktoolExtension, apktoolCfg)
         dex2jar = createSubextension(ExtensionNames.TOOL_DEX2JAR, Dex2jarExtension, dex2jarCfg)
 
