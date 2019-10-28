@@ -93,7 +93,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         project.tasks.withType(AbstractApktoolTask).configureEach {
             setupToolTask it, apktool
             it.verbosity.set apktool.verbosity
-            it.frameworkDir.set apktool.frameworkDir
+            it.frameworkInDir.set apktool.frameworkInDir
         }
         project.tasks.withType(DecodeApkTask).configureEach {
             it.frameworkTag.set apktool.frameworkTag

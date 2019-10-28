@@ -26,8 +26,6 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 
-// FIXME: Implement proper input/output framework dirs.
-
 @CompileStatic
 abstract class AbstractApktoolTask extends AbstractJavaExecTask {
 
@@ -89,24 +87,15 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
 
     @Console final Property<Verbosity> verbosity = project.objects.property(Verbosity)
 
-    @PathSensitive(PathSensitivity.NONE)
-    @Optional @InputDirectory final DirectoryProperty frameworkDir = NewProperty.dir(project)
+    @PathSensitive(PathSensitivity.RELATIVE)
+    @Optional @InputDirectory final DirectoryProperty frameworkInDir = NewProperty.dir(project)
 
-    @Optional @Internal final DirectoryProperty frameworkOutDir = NewProperty.dir(project)
-
-    @PathSensitive(PathSensitivity.NONE)
-    @OutputDirectory final Provider<Directory> resolvedFrameworkDir
+    @PathSensitive(PathSensitivity.RELATIVE)
+    @OutputDirectory final DirectoryProperty frameworkOutDir = NewProperty.dir(project)
 
     AbstractApktoolTask(String command) {
         this.command = command
         main = 'brut.apktool.Main'
-        resolvedFrameworkDir = project.providers.<Directory>provider {
-            def dir = frameworkDir.orNull
-            def outDir = frameworkOutDir.orNull
-            if (!dir && !outDir) throw new RuntimeException('Undefined framework directory')
-            if (dir && outDir) throw new RuntimeException('Ambiguous framework directory')
-            return dir ?: outDir
-        }
     }
 
     @Override List<String> getArgs() {
@@ -129,16 +118,23 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
 
         args.add(command)
 
-        args.addAll(['--frame-path', resolvedFrameworkDir.get() as String])
+        args.addAll(['--frame-path', frameworkOutDir.get() as String])
 
         return args;
 
     }
 
     @Override protected void beforeExec() {
-        resolvedFrameworkDir.get()
-        def outDir = frameworkOutDir.orNull
-        if (outDir) deleteOutputDirContents outDir
+        def inDir = frameworkInDir.orNull
+        def outDir = frameworkOutDir.get()
+        if (inDir) {
+            project.sync {
+                it.from inDir
+                it.into outDir
+            }
+        } else {
+            deleteOutputDirContents outDir
+        }
     }
 
     @Override protected void afterExec() {}

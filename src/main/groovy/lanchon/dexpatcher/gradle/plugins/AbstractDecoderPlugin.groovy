@@ -154,7 +154,6 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
             it.description = 'Unpacks an Android APK and decodes its manifest and resources.'
             it.group = taskGroup
             it.apkFile.set apkFile
-            it.frameworkDir.set((Directory) null)
             it.frameworkOutDir.set frameworkOutDir
             it.outputDir.set outputDir
             it.decodeClasses.set false
