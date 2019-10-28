@@ -41,6 +41,7 @@ abstract class Constants {
         static final String PROCESS_ID_MAPPINGS_PREFIX = 'processIdMappings'
         static final String COLLECT_DEX_PREFIX = 'collectDex'
         static final String PATCH_DEX_PREFIX = 'patchDex'
+        static final String PRE_PACKAGE_PREFIX = 'prePackage'
     }
 
     static abstract class ConfigurationNames {

@@ -12,7 +12,6 @@ package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.TaskGraphHelper
 import lanchon.dexpatcher.gradle.VariantHelper
 import lanchon.dexpatcher.gradle.extensions.PatchedAppExtension
 import lanchon.dexpatcher.gradle.tasks.CollectDexTask
@@ -62,9 +61,12 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
             def patchDex = project.tasks.register(
                     StringHelper.appendCapitalized(TaskNames.PATCH_DEX_PREFIX, variant.name),
                     DexpatcherTask)
+            def prePackage = project.tasks.register(
+                    StringHelper.appendCapitalized(TaskNames.PRE_PACKAGE_PREFIX, variant.name))
             VariantHelper.getAssemble(variant).configure {
                 it.extensions.add TaskNames.COLLECT_DEX_PREFIX, collectDex
                 it.extensions.add TaskNames.PATCH_DEX_PREFIX, patchDex
+                it.extensions.add TaskNames.PRE_PACKAGE_PREFIX, prePackage
                 return
             }
 
@@ -77,7 +79,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                     def dexBuilders = []
                     dexBuilders.addAll pack.dexFolders.buildDependencies.getDependencies(pack)
                     dexBuilders.addAll pack.dependsOn
-                    dexBuilders.remove patchDex
+                    dexBuilders.remove prePackage
                     if (dexBuilders.size() == 0) throw new RuntimeException("Dex builder tasks not found")
                     if (project.logger.debugEnabled) {
                         project.logger.debug "Dex builder tasks in variant '${variant.name}': " + dexBuilders
@@ -111,16 +113,24 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                         throw new RuntimeException("Feature dex is not supported")
                     }
                 }
-                // TODO: Use prepare task instead of graph hook.
-                TaskGraphHelper.afterTask(it) {
-                    // Build the variant using the patched bytecode.
-                    ((ConfigurableFileCollection) packageApplication.get().dexFolders).setFrom patchDex
+                return
+            }
+
+            // Configure the package task to build the variant using the patched bytecode.
+            prePackage.configure {
+                it.description = "Prepares to package the patched application."
+                it.group = TASK_GROUP_NAME
+                it.dependsOn patchDex
+                it.doLast {
+                    def pack = packageApplication.get()
+                    def dexFolders = (ConfigurableFileCollection) pack.dexFolders
+                    dexFolders.setFrom patchDex
                 }
                 return
             }
 
             packageApplication.configure {
-                it.dependsOn patchDex
+                it.dependsOn prePackage
                 return
             }
         }
