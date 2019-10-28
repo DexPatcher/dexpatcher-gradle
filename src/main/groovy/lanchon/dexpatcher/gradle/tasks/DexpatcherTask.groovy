@@ -83,7 +83,6 @@ class DexpatcherTask extends AbstractJavaExecTask {
     @Input final Property<Integer> maxDexPoolSize = NewProperty.from(project, 0)
     @Optional @Input final Property<String> annotationPackage = project.objects.property(String)
     @Input final Property<Boolean> constructorAutoIgnore = NewProperty.from(project, true)
-    @Input final Property<Boolean> compatDexTag = NewProperty.from(project, false)
     @Console final Property<Verbosity> verbosity = project.objects.property(Verbosity)
     @Console final Property<Boolean> logSourcePath = NewProperty.from(project, false)
     @Console final Property<String> logSourcePathRoot = project.objects.property(String)
@@ -122,7 +121,6 @@ class DexpatcherTask extends AbstractJavaExecTask {
         def annotations = annotationPackage.orNull
         if (!annotations.is(null)) args.addAll(['--annotations', annotations])
         if (!constructorAutoIgnore.get()) args.add('--no-auto-ignore')
-        if (compatDexTag.get()) args.add('--compat-dextag')
 
         switch (verbosity.orNull) {
             case Verbosity.QUIET:

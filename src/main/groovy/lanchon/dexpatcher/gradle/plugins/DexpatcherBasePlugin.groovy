@@ -84,7 +84,6 @@ class DexpatcherBasePlugin implements Plugin<Project> {
             it.maxDexPoolSize.set dexpatcher.maxDexPoolSize
             it.annotationPackage.set dexpatcher.annotationPackage
             it.constructorAutoIgnore.set dexpatcher.constructorAutoIgnore
-            it.compatDexTag.set dexpatcher.compatDexTag
             it.verbosity.set dexpatcher.verbosity
             it.logSourcePath.set dexpatcher.logSourcePath
             it.logSourcePathRoot.set dexpatcher.logSourcePathRoot

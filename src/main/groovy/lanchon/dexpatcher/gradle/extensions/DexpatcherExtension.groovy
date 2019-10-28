@@ -39,7 +39,6 @@ class DexpatcherExtension extends AbstractToolExtension {
     final Property<Integer> maxDexPoolSize = NewProperty.from(project, 0)
     final Property<String> annotationPackage = project.objects.property(String)
     final Property<Boolean> constructorAutoIgnore = NewProperty.from(project, true)
-    final Property<Boolean> compatDexTag = NewProperty.from(project, false)
     final Property<Verbosity> verbosity = project.objects.property(Verbosity)
     final Property<Boolean> logSourcePath = NewProperty.from(project, false)
     final Property<String> logSourcePathRoot = project.objects.property(String)
