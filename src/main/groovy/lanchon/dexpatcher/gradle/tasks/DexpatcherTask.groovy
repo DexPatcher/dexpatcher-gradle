@@ -30,14 +30,13 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 
 /*
-DexPatcher version 1.6.3 by Lanchon (https://dexpatcher.github.io/)
+DexPatcher version 1.7.0 by Lanchon (https://dexpatcher.github.io/)
 usage: dexpatcher [<option> ...] [--output <patched-dex-or-dir>]
                   <source-dex-apk-or-dir> [<patch-dex-apk-or-dir> ...]
  -?,--help                    print this help message and exit
  -a,--api-level <n>           android api level (default: auto-detect)
     --annotations <package>   package name of DexPatcher annotations
                               (default: 'lanchon.dexpatcher.annotation')
-    --compat-dextag           enable support for the deprecated DexTag
     --debug                   output debugging information
     --dry-run                 do not write output files (much faster)
  -J,--multi-dex-jobs <n>      multi-dex thread count (implies: -m -M)
