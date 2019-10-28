@@ -30,8 +30,7 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 
 /*
-DexPatcher Version 1.4.1 by Lanchon
-           https://dexpatcher.github.io/
+DexPatcher version 1.6.3 by Lanchon (https://dexpatcher.github.io/)
 usage: dexpatcher [<option> ...] [--output <patched-dex-or-dir>]
                   <source-dex-apk-or-dir> [<patch-dex-apk-or-dir> ...]
  -?,--help                    print this help message and exit
@@ -43,13 +42,13 @@ usage: dexpatcher [<option> ...] [--output <patched-dex-or-dir>]
     --dry-run                 do not write output files (much faster)
  -J,--multi-dex-jobs <n>      multi-dex thread count (implies: -m -M)
                               (default: available processors up to 4)
- -M,--multi-dex-threaded      multi-threaded multi-dex (implies: -m)
  -m,--multi-dex               enable multi-dex support
+ -M,--multi-dex-threaded      multi-threaded multi-dex (implies: -m)
     --max-dex-pool-size <n>   maximum size of dex pools (default: 65536)
     --no-auto-ignore          no trivial default constructor auto-ignore
  -o,--output <dex-or-dir>     name of output file or directory
- -P,--path-root <root>        output absolute paths of source code files
  -p,--path                    output relative paths of source code files
+ -P,--path-root <root>        output absolute paths of source code files
  -q,--quiet                   do not output warnings
     --stats                   output timing statistics
  -v,--verbose                 output extra information
