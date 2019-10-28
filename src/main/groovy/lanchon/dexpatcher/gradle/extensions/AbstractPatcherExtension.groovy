@@ -22,6 +22,7 @@ import org.gradle.api.provider.Property
 abstract class AbstractPatcherExtension extends AbstractDecoderExtension {
 
     final Property<Boolean> importSymbols = NewProperty.from(project, true)
+    final Property<Boolean> disableResourceValidation = NewProperty.from(project, false)
 
     //final Property<Boolean> patchManifest = true      // TODO
     //final Property<Boolean> patchResources = true     // TODO

@@ -14,6 +14,7 @@ import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.LocalDependencyHelper
+import lanchon.dexpatcher.gradle.MergeResourcesHelper
 import lanchon.dexpatcher.gradle.VariantHelper
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
@@ -23,14 +24,11 @@ import lanchon.dexpatcher.gradle.tasks.ProcessIdMappingsTask
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.BaseVariantOutput
-import com.android.build.gradle.options.BooleanOption
-import com.android.build.gradle.options.StringOption
 import com.android.build.gradle.tasks.MergeResources
 import com.android.builder.core.AndroidBuilder
 import com.android.ide.common.resources.FileResourceNameValidator
 import com.android.resources.ResourceFolderType
 import com.android.utils.StringHelper
-import com.google.common.base.Strings
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.file.CopySpec
 import org.gradle.api.file.DuplicatesStrategy
@@ -202,6 +200,7 @@ abstract class AbstractPatcherPlugin<
             }
             it.from(packExtraAppResources)
             it.doFirst {
+                /*
                 boolean checkResources = true
                 if (!androidVariants.empty) {
                     def variant = androidVariants[0]
@@ -212,12 +211,14 @@ abstract class AbstractPatcherPlugin<
                     }
                 }
                 checkInvalidResources[0] = checkResources
+                */
+                checkInvalidResources[0] = !(this.extension as AbstractPatcherExtension).disableResourceValidation.get()
                 invalidResourcesFound[0] = false
             }
             it.doLast {
                 if (invalidResourcesFound[0]) {
                     project.logger.warn "The source application contains invalid resources: please disable " +
-                            "resource validation ('android.disableResourceValidation=true' in gradle.properties) " +
+                            "resource validation ('disableResourceValidation = true' in build.gradle) " +
                             "and use a patched AAPT2 binary ('android.aapt2FromMavenOverride=path/to/aapt2' " +
                             "in gradle.properties) to work around the issue"
                 }
@@ -233,6 +234,31 @@ abstract class AbstractPatcherPlugin<
             componentLib.builtBy packAppComponents
             //project.dependencies.add JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME, componentLib
             LocalDependencyHelper.addAppComponents project, componentLib, decorateDependencies
+        }
+
+        // Conditionally disable resource validation.
+        project.afterEvaluate {
+            if ((extension as AbstractPatcherExtension).disableResourceValidation.get()) {
+                /*
+                if (!androidVariants.empty) {
+                    def variant = androidVariants[0]
+                    def options = VariantHelper.getData(variant).scope.globalScope.projectOptions
+                    def booleanOptions = ProjectOptionsHelper.getBooleanOptions(options)
+                    if (booleanOptions.containsKey(BooleanOption.DISABLE_RESOURCE_VALIDATION)) {
+                        throw new RuntimeException("Cannot disable resource validation: " +
+                                "the 'android.disableResourceValidation' option is already configured")
+                    }
+                    def builder = ImmutableMap.<BooleanOption, Boolean>builder()
+                    builder.putAll booleanOptions
+                    builder.put BooleanOption.DISABLE_RESOURCE_VALIDATION, true
+                    ProjectOptionsHelper.setBooleanOptions options, builder.build()
+                }
+                */
+                project.tasks.withType(MergeResources).configureEach {
+                    MergeResourcesHelper.setValidateEnabled it, false
+                    it.inputs.property 'dexpatcher.disableResourceValidation', true
+                }
+            }
         }
 
         // Android's resource merger build step ignores existing resource ID mappings ('public.xml' files),
