@@ -59,14 +59,15 @@ class DexpatcherExtension extends AbstractToolExtension {
             def filteredFiles = files.matching { PatternFilterable filter ->
                 filter.include FileNames.DEXPATCHER_ANNOTATION
             }
-            return filteredFiles.empty ? null : FileHelper.getRegularFile(project, filteredFiles.singleFile)
+            if (filteredFiles.empty) throw new RuntimeException("Bundled DexPatcher annotations not found")
+            return FileHelper.getRegularFile(project, filteredFiles.singleFile)
         }
         configuredAnnotationFile = project.<RegularFile>provider {
             dexpatcherAnnotationCfg.empty ? null :
                     FileHelper.getRegularFile(project, dexpatcherAnnotationCfg.singleFile)
         }
         resolvedAnnotationFile = project.<RegularFile>provider {
-            configuredAnnotationFile.orNull ?: bundledAnnotationFile.orNull
+            configuredAnnotationFile.orNull ?: bundledAnnotationFile.get()
         }
     }
 

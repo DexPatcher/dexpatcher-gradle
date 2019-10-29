@@ -88,7 +88,10 @@ class ApktoolExtension extends AbstractToolExtension {
                 filter.include"prebuilt/${tool}/${platformDir}/${tool}${exeExtension}"  // Apktool < 2.4.0
                 filter.include"prebuilt/${platformDir}/${tool}_64${exeExtension}"       // Apktool >= 2.4.0
             }
-            return filteredFiles.empty ? null : FileHelper.getRegularFile(project, filteredFiles.singleFile)
+            if (filteredFiles.empty) {
+                throw new RuntimeException("Bundled Apktool ${tool.toUpperCase(Locale.ROOT)} not found")
+            }
+            return FileHelper.getRegularFile(project, filteredFiles.singleFile)
         }
     }
 
@@ -104,14 +107,17 @@ class ApktoolExtension extends AbstractToolExtension {
                 filter.include"${tool}${exeExtension}"
                 filter.include"${platformDir}/${tool}${exeExtension}"
             }
-            return filteredFiles.empty ? null : FileHelper.getRegularFile(project, filteredFiles.singleFile)
+            if (filteredFiles.empty) {
+                throw new RuntimeException("Configured Apktool ${tool.toUpperCase(Locale.ROOT)} not found")
+            }
+            return FileHelper.getRegularFile(project, filteredFiles.singleFile)
         }
     }
 
     private Provider<RegularFile> getResolvedTool(Provider<RegularFile> bundledToolFile,
             Provider<RegularFile> configuredToolFile) {
         project.<RegularFile>provider {
-            configuredToolFile.orNull ?: bundledToolFile.orNull
+            configuredToolFile.orNull ?: bundledToolFile.get()
         }
     }
 
