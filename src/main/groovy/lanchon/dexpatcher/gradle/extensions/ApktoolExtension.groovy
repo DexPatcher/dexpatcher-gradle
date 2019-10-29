@@ -26,6 +26,8 @@ import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.util.PatternFilterable
 
+import static lanchon.dexpatcher.gradle.Constants.*
+
 @CompileStatic
 class ApktoolExtension extends AbstractToolExtension {
 
@@ -57,16 +59,26 @@ class ApktoolExtension extends AbstractToolExtension {
     final Property<Boolean> forceCleanBuild = NewProperty.from(project, false)
 
     final Provider<RegularFile> bundledAaptFile
-    final Provider<RegularFile> bundledAapt2File
+    final Provider<RegularFile> configuredAaptFile
+    final Provider<RegularFile> resolvedAaptFile
 
-    ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Configuration apktoolCfg) {
+    final Provider<RegularFile> bundledAapt2File
+    final Provider<RegularFile> configuredAapt2File
+    final Provider<RegularFile> resolvedAapt2File
+
+    ApktoolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Configuration apktoolCfg,
+            Configuration aaptCfg, Configuration aapt2Cfg) {
         super(project, dexpatcherConfig)
         classpath.from { apktoolCfg.singleFile }
-        bundledAaptFile = getToolProvider(apktoolCfg, 'aapt')
-        bundledAapt2File = getToolProvider(apktoolCfg, 'aapt2')
+        bundledAaptFile = getBundledTool(apktoolCfg, FileNames.AAPT)
+        configuredAaptFile = getConfiguredTool(aaptCfg, FileNames.AAPT)
+        resolvedAaptFile = getResolvedTool(bundledAaptFile, configuredAaptFile)
+        bundledAapt2File = getBundledTool(apktoolCfg, FileNames.AAPT2)
+        configuredAapt2File = getConfiguredTool(aapt2Cfg, FileNames.AAPT2)
+        resolvedAapt2File = getResolvedTool(bundledAapt2File, configuredAapt2File)
     }
 
-    private Provider<RegularFile> getToolProvider(Configuration apktoolCfg, String tool) {
+    private Provider<RegularFile> getBundledTool(Configuration apktoolCfg, String tool) {
         project.<RegularFile>provider {
             def file = apktoolCfg.singleFile
             def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
@@ -77,6 +89,29 @@ class ApktoolExtension extends AbstractToolExtension {
                 filter.include"prebuilt/${platformDir}/${tool}_64${exeExtension}"       // Apktool >= 2.4.0
             }
             return filteredFiles.empty ? null : FileHelper.getRegularFile(project, filteredFiles.singleFile)
+        }
+    }
+
+    private Provider<RegularFile> getConfiguredTool(Configuration toolCfg, String tool) {
+        project.<RegularFile>provider {
+            if (toolCfg.empty) return null;
+            def file = toolCfg.singleFile
+            def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
+            files.files     // expand complete archive (some archives contain libraries)
+            def platformDir = Platform.current.binaryDirectoryName
+            def exeExtension = Platform.current.executableExtension
+            def filteredFiles = files.matching { PatternFilterable filter ->
+                filter.include"${tool}${exeExtension}"
+                filter.include"${platformDir}/${tool}${exeExtension}"
+            }
+            return filteredFiles.empty ? null : FileHelper.getRegularFile(project, filteredFiles.singleFile)
+        }
+    }
+
+    private Provider<RegularFile> getResolvedTool(Provider<RegularFile> bundledToolFile,
+            Provider<RegularFile> configuredToolFile) {
+        project.<RegularFile>provider {
+            configuredToolFile.orNull ?: bundledToolFile.orNull
         }
     }
 

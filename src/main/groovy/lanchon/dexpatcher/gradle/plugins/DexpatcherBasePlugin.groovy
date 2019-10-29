@@ -70,6 +70,18 @@ class DexpatcherBasePlugin implements Plugin<Project> {
         dex2jarCfg.canBeConsumed = false
         setupConfigurationOverride dex2jarCfg
 
+        def aaptCfg = project.configurations.maybeCreate(ConfigurationNames.AAPT)
+        aaptCfg.description = 'The AAPT to use for this project.'
+        aaptCfg.canBeResolved = true
+        aaptCfg.canBeConsumed = false
+        setupConfigurationOverride aaptCfg
+
+        def aapt2Cfg = project.configurations.maybeCreate(ConfigurationNames.AAPT2)
+        aapt2Cfg.description = 'The AAPT2 to use for this project.'
+        aapt2Cfg.canBeResolved = true
+        aapt2Cfg.canBeConsumed = false
+        setupConfigurationOverride aapt2Cfg
+
         // Extensions
 
         dexpatcherConfig = project.extensions.create(ExtensionNames.DEXPATCHER_CONFIG, DexpatcherConfigExtension,
@@ -77,7 +89,7 @@ class DexpatcherBasePlugin implements Plugin<Project> {
 
         dexpatcher = createSubextension(ExtensionNames.TOOL_DEXPATCHER, DexpatcherExtension, dexpatcherCfg,
                 dexpatcherAnnotationCfg)
-        apktool = createSubextension(ExtensionNames.TOOL_APKTOOL, ApktoolExtension, apktoolCfg)
+        apktool = createSubextension(ExtensionNames.TOOL_APKTOOL, ApktoolExtension, apktoolCfg, aaptCfg, aapt2Cfg)
         dex2jar = createSubextension(ExtensionNames.TOOL_DEX2JAR, Dex2jarExtension, dex2jarCfg)
 
         // Task Defaults

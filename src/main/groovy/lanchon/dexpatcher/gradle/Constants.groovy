@@ -51,10 +51,14 @@ abstract class Constants {
         static final String DEXPATCHER_ANNOTATION = 'dexpatcherAnnotation'
         static final String APKTOOL = 'apktool'
         static final String DEX2JAR = 'dex2jar'
+        static final String AAPT = 'aapt'
+        static final String AAPT2 = 'aapt2'
     }
 
     static abstract class FileNames {
         static final String META_INF = 'META-INF'
+        static final String AAPT = 'aapt'
+        static final String AAPT2 = 'aapt2'
         static final String DEXPATCHER_ANNOTATION = 'dexpatcher-annotation-*.jar'
         static final String VALUES_PUBLIC_XML = 'values/public.xml'
         static final String EXT_APK_LIBRARY = '.apklib'
