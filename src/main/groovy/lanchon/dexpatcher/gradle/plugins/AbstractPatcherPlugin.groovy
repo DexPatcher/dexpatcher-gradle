@@ -13,6 +13,8 @@ package lanchon.dexpatcher.gradle.plugins
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.Aapt2MavenUtilsHelper
+import lanchon.dexpatcher.gradle.FileHelper
 import lanchon.dexpatcher.gradle.LocalDependencyHelper
 import lanchon.dexpatcher.gradle.MergeResourcesHelper
 import lanchon.dexpatcher.gradle.VariantHelper
@@ -21,9 +23,11 @@ import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
 import lanchon.dexpatcher.gradle.tasks.LazyZipTask
 import lanchon.dexpatcher.gradle.tasks.ProcessIdMappingsTask
 
+import com.android.SdkConstants
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.BaseVariantOutput
+import com.android.build.gradle.internal.dependency.IdentityTransform
 import com.android.build.gradle.tasks.MergeResources
 import com.android.builder.core.AndroidBuilder
 import com.android.ide.common.resources.FileResourceNameValidator
@@ -31,8 +35,10 @@ import com.android.resources.ResourceFolderType
 import com.android.utils.StringHelper
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.file.CopySpec
+import org.gradle.api.file.Directory
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.file.FileCopyDetails
+import org.gradle.api.internal.artifacts.ArtifactAttributes
 import org.gradle.api.tasks.bundling.ZipEntryCompression
 
 import static lanchon.dexpatcher.gradle.Constants.*
@@ -67,6 +73,79 @@ abstract class AbstractPatcherPlugin<
         def annotationClasspath = project.files(basePlugin.dexpatcher.resolvedAnnotationFile)
         //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, annotationClasspath
         LocalDependencyHelper.addDexpatcherAnnotations project, annotationClasspath, decorateDependencies
+
+        project.afterEvaluate {
+            def configAapt2 = !project.configurations.getByName(ConfigurationNames.AAPT2).empty
+            def apktoolAapt2 = (extension as AbstractPatcherExtension).useAapt2BundledWithApktool.get()
+            if (configAapt2 && apktoolAapt2) {
+                throw new RuntimeException("Configuration '${ConfigurationNames.AAPT2}' must not be populated " +
+                        "when 'useAapt2BundledWithApktool' is set")
+            }
+
+            if (configAapt2 || apktoolAapt2) {
+                def aapt2File = apktoolAapt2 ?
+                        basePlugin.apktool.bundledAapt2File :
+                        basePlugin.apktool.configuredAapt2File
+                def aapt2Dir = project.<Directory>provider {
+                    def file = aapt2File.get().asFile
+                    if (file.name != SdkConstants.FN_AAPT2) {
+                        throw new RuntimeException("The AAPT2 binary is named '${file.name}' " +
+                                "but it must be named '${SdkConstants.FN_AAPT2}' on this platform")
+                    }
+                    return FileHelper.getDirectory(project, file.parentFile)
+                }
+
+                def AAPT2_CONFIG_NAME = Aapt2MavenUtilsHelper.get_AAPT2_CONFIG_NAME()
+                def TYPE_EXTRACTED_AAPT2_BINARY = Aapt2MavenUtilsHelper.get_TYPE_EXTRACTED_AAPT2_BINARY()
+                def aapt2DirCfg = project.configurations.create(AAPT2_CONFIG_NAME)
+                aapt2DirCfg.visible = false
+                aapt2DirCfg.transitive = false
+                aapt2DirCfg.canBeResolved = true
+                aapt2DirCfg.canBeConsumed = false
+                aapt2DirCfg.description = 'The directory containing the AAPT2 binary to use for this project.'
+                //aapt2DirCfg.attributes.attribute ArtifactAttributes.ARTIFACT_FORMAT, TYPE_EXTRACTED_AAPT2_BINARY
+                aapt2DirCfg.dependencies.add project.dependencies.create(project.files(aapt2Dir))
+
+                // FIXME: If possible, directly set dependency attributes instead of relying on an identity transform.
+                project.dependencies.registerTransform { transform ->
+                    transform.from.attribute ArtifactAttributes.ARTIFACT_FORMAT, ''
+                    transform.to.attribute ArtifactAttributes.ARTIFACT_FORMAT, TYPE_EXTRACTED_AAPT2_BINARY
+                    transform.artifactTransform(IdentityTransform.class)
+                }
+            }
+        }
+
+        /*
+        provideDecodedApp.configure {
+            it.doLast {
+                def aapt2Cfg = project.configurations.getByName(ConfigurationNames.AAPT2)
+                if ((extension as AbstractPatcherExtension).useAapt2BundledWithApktool.get()) {
+                    def files = project.files(basePlugin.apktool.bundledAapt2File)
+                    aapt2Cfg.dependencies.add project.dependencies.create(files)
+                }
+                if (!aapt2Cfg.empty) {
+                    def file = project.file(basePlugin.apktool.configuredAapt2File)
+                    if (file.name != SdkConstants.FN_AAPT2) {
+                        throw new RuntimeException("Cannot set up custom AAPT2: " +
+                                "the AAPT2 binary must be named '${SdkConstants.FN_AAPT2}' on this platform")
+                    }
+                    if (!androidVariants.empty) {
+                        def variant = androidVariants[0]
+                        def options = VariantHelper.getData(variant).scope.globalScope.projectOptions
+                        def stringOptions = ProjectOptionsHelper.getStringOptions(options)
+                        if (stringOptions.containsKey(StringOption.AAPT2_FROM_MAVEN_OVERRIDE)) {
+                            throw new RuntimeException("Cannot set up custom AAPT2: " +
+                                    "the 'android.aapt2FromMavenOverride' option is already configured")
+                        }
+                        def builder = ImmutableMap.<StringOption, String> builder()
+                        builder.putAll stringOptions
+                        builder.put StringOption.AAPT2_FROM_MAVEN_OVERRIDE, file.path
+                        ProjectOptionsHelper.setStringOptions options, builder.build()
+                    }
+                }
+            }
+        }
+        */
 
         // Dedex the bytecode of the source application.
         def dedexAppClasses = project.tasks.register(TaskNames.DEDEX_APP_CLASSES, Dex2jarTask) {
@@ -200,15 +279,17 @@ abstract class AbstractPatcherPlugin<
                 }
                 checkInvalidResources[0] = checkResources
                 */
-                checkInvalidResources[0] = !(this.extension as AbstractPatcherExtension).disableResourceValidation.get()
+                def disableValidation = (this.extension as AbstractPatcherExtension).disableResourceValidation.get()
+                def configAapt2 = !project.configurations.getByName(ConfigurationNames.AAPT2).empty
+                def apktoolAapt2 = (this.extension as AbstractPatcherExtension).useAapt2BundledWithApktool.get()
+                checkInvalidResources[0] = !(disableValidation && (configAapt2 || apktoolAapt2))
                 invalidResourcesFound[0] = false
             }
             it.doLast {
                 if (invalidResourcesFound[0]) {
-                    project.logger.warn "The source application contains invalid resources: please disable " +
-                            "resource validation ('disableResourceValidation = true' in build.gradle) " +
-                            "and use a patched AAPT2 binary ('android.aapt2FromMavenOverride=path/to/aapt2' " +
-                            "in gradle.properties) to work around the issue"
+                    project.logger.warn "The source application contains invalid resources: " +
+                            "please disable resource validation ('disableResourceValidation = true') " +
+                            "and use a patched AAPT2 binary ('useAapt2BundledWithApktool = true')"
                 }
             }
             return
