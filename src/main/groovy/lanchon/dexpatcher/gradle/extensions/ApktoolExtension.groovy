@@ -10,6 +10,8 @@
 
 package lanchon.dexpatcher.gradle.extensions
 
+import java.util.zip.ZipException
+import java.util.zip.ZipFile
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.FileHelper
@@ -99,8 +101,20 @@ class ApktoolExtension extends AbstractToolExtension {
         project.<RegularFile>provider {
             if (toolCfg.empty) return null;
             def file = toolCfg.singleFile
-            def files = file.isDirectory() ? project.fileTree(file) : project.zipTree(file)
-            files.files     // expand complete archive (some archives contain libraries)
+            def files
+            if (file.isDirectory()) {
+                files = project.fileTree(file)
+            } else {
+                try {
+                    new ZipFile(file).close()
+                } catch (ZipException e) {
+                    // If the file is not an archive, assume it is an executable:
+                    return FileHelper.getRegularFile(project, file)
+                }
+                files = project.zipTree(file)
+                // Expand the complete archive in case it contains libraries or other necessary files:
+                files.files
+            }
             def platformDir = Platform.current.binaryDirectoryName
             def exeExtension = Platform.current.executableExtension
             def filteredFiles = files.matching { PatternFilterable filter ->
