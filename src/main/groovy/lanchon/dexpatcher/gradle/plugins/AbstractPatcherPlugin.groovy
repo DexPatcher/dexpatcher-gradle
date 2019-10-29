@@ -66,7 +66,7 @@ abstract class AbstractPatcherPlugin<
         // Add the DexPatcher annotations as a compile-only dependency.
         def annotationClasspath = project.files(basePlugin.dexpatcher.resolvedAnnotationFile)
         //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, annotationClasspath
-        LocalDependencyHelper.addDexpatcherAnnotations project, annotationClasspath, decorateDependencies && false
+        LocalDependencyHelper.addDexpatcherAnnotations project, annotationClasspath, decorateDependencies
 
         // Dedex the bytecode of the source application.
         def dedexAppClasses = project.tasks.register(TaskNames.DEDEX_APP_CLASSES, Dex2jarTask) {
