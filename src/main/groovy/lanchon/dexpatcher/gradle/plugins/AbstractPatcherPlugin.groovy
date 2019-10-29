@@ -115,38 +115,6 @@ abstract class AbstractPatcherPlugin<
             }
         }
 
-        /*
-        provideDecodedApp.configure {
-            it.doLast {
-                def aapt2Cfg = project.configurations.getByName(ConfigurationNames.AAPT2)
-                if ((extension as AbstractPatcherExtension).useAapt2BundledWithApktool.get()) {
-                    def files = project.files(basePlugin.apktool.bundledAapt2File)
-                    aapt2Cfg.dependencies.add project.dependencies.create(files)
-                }
-                if (!aapt2Cfg.empty) {
-                    def file = project.file(basePlugin.apktool.configuredAapt2File)
-                    if (file.name != SdkConstants.FN_AAPT2) {
-                        throw new RuntimeException("Cannot set up custom AAPT2: " +
-                                "the AAPT2 binary must be named '${SdkConstants.FN_AAPT2}' on this platform")
-                    }
-                    if (!androidVariants.empty) {
-                        def variant = androidVariants[0]
-                        def options = VariantHelper.getData(variant).scope.globalScope.projectOptions
-                        def stringOptions = ProjectOptionsHelper.getStringOptions(options)
-                        if (stringOptions.containsKey(StringOption.AAPT2_FROM_MAVEN_OVERRIDE)) {
-                            throw new RuntimeException("Cannot set up custom AAPT2: " +
-                                    "the 'android.aapt2FromMavenOverride' option is already configured")
-                        }
-                        def builder = ImmutableMap.<StringOption, String> builder()
-                        builder.putAll stringOptions
-                        builder.put StringOption.AAPT2_FROM_MAVEN_OVERRIDE, file.path
-                        ProjectOptionsHelper.setStringOptions options, builder.build()
-                    }
-                }
-            }
-        }
-        */
-
         // Dedex the bytecode of the source application.
         def dedexAppClasses = project.tasks.register(TaskNames.DEDEX_APP_CLASSES, Dex2jarTask) {
             it.description = "Translates the Dalvik bytecode of the source application to Java bytecode."
@@ -267,18 +235,6 @@ abstract class AbstractPatcherPlugin<
             }
             it.from(packExtraAppResources)
             it.doFirst {
-                /*
-                boolean checkResources = true
-                if (!androidVariants.empty) {
-                    def variant = androidVariants[0]
-                    def options = VariantHelper.getData(variant).scope.globalScope.projectOptions
-                    if (options.get(BooleanOption.DISABLE_RESOURCE_VALIDATION) &&
-                            !Strings.isNullOrEmpty(options.get(StringOption.AAPT2_FROM_MAVEN_OVERRIDE))) {
-                        checkResources = false
-                    }
-                }
-                checkInvalidResources[0] = checkResources
-                */
                 def disableValidation = (this.extension as AbstractPatcherExtension).disableResourceValidation.get()
                 def configAapt2 = !project.configurations.getByName(ConfigurationNames.AAPT2).empty
                 def apktoolAapt2 = (this.extension as AbstractPatcherExtension).useAapt2BundledWithApktool.get()
@@ -308,21 +264,6 @@ abstract class AbstractPatcherPlugin<
         // Conditionally disable resource validation.
         project.afterEvaluate {
             if ((extension as AbstractPatcherExtension).disableResourceValidation.get()) {
-                /*
-                if (!androidVariants.empty) {
-                    def variant = androidVariants[0]
-                    def options = VariantHelper.getData(variant).scope.globalScope.projectOptions
-                    def booleanOptions = ProjectOptionsHelper.getBooleanOptions(options)
-                    if (booleanOptions.containsKey(BooleanOption.DISABLE_RESOURCE_VALIDATION)) {
-                        throw new RuntimeException("Cannot disable resource validation: " +
-                                "the 'android.disableResourceValidation' option is already configured")
-                    }
-                    def builder = ImmutableMap.<BooleanOption, Boolean>builder()
-                    builder.putAll booleanOptions
-                    builder.put BooleanOption.DISABLE_RESOURCE_VALIDATION, true
-                    ProjectOptionsHelper.setBooleanOptions options, builder.build()
-                }
-                */
                 project.tasks.withType(MergeResources).configureEach {
                     MergeResourcesHelper.setValidateEnabled it, false
                     it.inputs.property 'dexpatcher.disableResourceValidation', true
