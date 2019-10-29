@@ -107,7 +107,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                     // Perform sanity checks.
                     def pack = packageApplication.get()
                     if (pack.inInstantRunMode) {
-                        throw new RuntimeException("Instant Run is not supported, please disable it")
+                        throw new RuntimeException("Instant Run is not supported: please disable it")
                     }
                     if (pack.featureDexFolder) {
                         throw new RuntimeException("Feature dex is not supported")
