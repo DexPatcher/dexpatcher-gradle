@@ -115,7 +115,8 @@ abstract class AbstractPatcherPlugin<
 
                 def AAPT2_CONFIG_NAME = Aapt2MavenUtilsHelper.get_AAPT2_CONFIG_NAME()
                 def TYPE_EXTRACTED_AAPT2_BINARY = Aapt2MavenUtilsHelper.get_TYPE_EXTRACTED_AAPT2_BINARY()
-                def aapt2DirCfg = project.configurations.create(AAPT2_CONFIG_NAME)
+                def aapt2DirCfg = project.configurations.maybeCreate(AAPT2_CONFIG_NAME)
+                aapt2DirCfg.dependencies.clear()
                 aapt2DirCfg.visible = false
                 aapt2DirCfg.transitive = false
                 aapt2DirCfg.canBeResolved = true
