@@ -39,6 +39,8 @@ import org.gradle.api.file.Directory
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.file.FileCopyDetails
 import org.gradle.api.internal.artifacts.ArtifactAttributes
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Sync
 import org.gradle.api.tasks.bundling.ZipEntryCompression
 
 import static lanchon.dexpatcher.gradle.Constants.*
@@ -84,16 +86,31 @@ abstract class AbstractPatcherPlugin<
             }
 
             if (configAapt2 || apktoolAapt2) {
-                def aapt2File = apktoolAapt2 ?
-                        basePlugin.apktool.bundledAapt2File :
-                        basePlugin.apktool.configuredAapt2File
-                def aapt2Dir = project.<Directory>provider {
-                    def file = aapt2File.get().asFile
-                    if (file.name != SdkConstants.FN_AAPT2) {
-                        throw new RuntimeException("The AAPT2 binary is named '${file.name}' " +
-                                "but it must be named '${SdkConstants.FN_AAPT2}' on this platform")
+                Provider<Directory> aapt2Dir
+                if (configAapt2) {
+                    aapt2Dir = project.<Directory>provider {
+                        def file = basePlugin.apktool.configuredAapt2File.get().asFile
+                        if (file.name != SdkConstants.FN_AAPT2) {
+                            throw new RuntimeException("The AAPT2 binary is named '${file.name}' " +
+                                    "but it must be named '${SdkConstants.FN_AAPT2}' on this platform")
+                        }
+                        return FileHelper.getDirectory(project, file.parentFile)
                     }
-                    return FileHelper.getDirectory(project, file.parentFile)
+                } else {
+                    aapt2Dir = project.layout.buildDirectory.dir(BuildDir.DIR_APKTOOL_AAPT2)
+                    def unpackApktoolAapt2 = project.tasks.register(TaskNames.UNPACK_APKTOOL_AAPT2, Sync) {
+                        it.description = 'Unpacks an AAPT2 binary bundled with Apktool.'
+                        it.group = TASK_GROUP_NAME
+                        it.from basePlugin.apktool.bundledAapt2File
+                        it.rename { SdkConstants.FN_AAPT2 }
+                        it.fileMode = 0755
+                        it.into aapt2Dir
+                        return
+                    }
+                    provideDecodedApp.configure {
+                        it.dependsOn unpackApktoolAapt2
+                        return
+                    }
                 }
 
                 def AAPT2_CONFIG_NAME = Aapt2MavenUtilsHelper.get_AAPT2_CONFIG_NAME()
