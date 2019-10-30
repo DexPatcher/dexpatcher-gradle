@@ -126,10 +126,22 @@ abstract class AbstractPatcherPlugin<
                 aapt2DirCfg.dependencies.add project.dependencies.create(project.files(aapt2Dir))
 
                 // FIXME: If possible, directly set dependency attributes instead of relying on an identity transform.
-                project.dependencies.registerTransform { transform ->
-                    transform.from.attribute ArtifactAttributes.ARTIFACT_FORMAT, ''
-                    transform.to.attribute ArtifactAttributes.ARTIFACT_FORMAT, TYPE_EXTRACTED_AAPT2_BINARY
-                    transform.artifactTransform(IdentityTransform.class)
+                provideDecodedApp.configure {
+                    it.doLast {
+                        def results = aapt2DirCfg.incoming.artifacts.artifacts
+                        if (!results.empty) {
+                            def type = results[0].variant.attributes.getAttribute(ArtifactAttributes.ARTIFACT_FORMAT)
+                            if (!type.is(null)) {
+                                project.dependencies.registerTransform { transform ->
+                                    transform.from.attribute ArtifactAttributes.ARTIFACT_FORMAT, type
+                                    transform.to.attribute ArtifactAttributes.ARTIFACT_FORMAT,
+                                            TYPE_EXTRACTED_AAPT2_BINARY
+                                    transform.artifactTransform(IdentityTransform.class)
+                                }
+                            }
+                        }
+                    }
+                    return
                 }
             }
         }
