@@ -262,16 +262,6 @@ abstract class AbstractPatcherPlugin<
             LocalDependencyHelper.addAppComponents project, componentLib, decorateDependencies
         }
 
-        // Conditionally disable resource validation.
-        project.afterEvaluate {
-            if ((extension as AbstractPatcherExtension).disableResourceValidation.get()) {
-                project.tasks.withType(MergeResources).configureEach {
-                    MergeResourcesHelper.setValidateEnabled it, false
-                    it.inputs.property 'dexpatcher.disableResourceValidation', true
-                }
-            }
-        }
-
         // Android's resource merger build step ignores existing resource ID mappings ('public.xml' files),
         // so the ID mappings of the source app must be processed and added the the output of the merger.
         androidVariants.all { BaseVariant variant ->
@@ -314,6 +304,16 @@ abstract class AbstractPatcherPlugin<
                     }
                 }
                 return
+            }
+
+            // Conditionally disable resource validation.
+            project.afterEvaluate {
+                if ((extension as AbstractPatcherExtension).disableResourceValidation.get()) {
+                    mergeResources.configure {
+                        MergeResourcesHelper.setValidateEnabled it, false
+                        return
+                    }
+                }
             }
         }
 
