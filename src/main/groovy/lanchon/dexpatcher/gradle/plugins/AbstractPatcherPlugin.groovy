@@ -74,6 +74,7 @@ abstract class AbstractPatcherPlugin<
         //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, annotationClasspath
         LocalDependencyHelper.addDexpatcherAnnotations project, annotationClasspath, decorateDependencies
 
+        // Conditionally configure a custom AAPT2 binary.
         project.afterEvaluate {
             def configAapt2 = !project.configurations.getByName(ConfigurationNames.AAPT2).empty
             def apktoolAapt2 = (extension as AbstractPatcherExtension).useAapt2BundledWithApktool.get()
