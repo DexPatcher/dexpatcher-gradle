@@ -72,7 +72,8 @@ abstract class AbstractPatcherPlugin<
         def decorateDependencies = basePlugin.dexpatcherConfig.properties.decorateDependencies
 
         // Add the DexPatcher annotations as a compile-only dependency.
-        def annotationClasspath = project.files(basePlugin.dexpatcher.resolvedAnnotationFile)
+        def annotationClasspath = (extension as AbstractPatcherExtension).dexpatcherAnnotationClasspath
+        annotationClasspath.from basePlugin.dexpatcher.resolvedAnnotationFile
         //project.dependencies.add JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME, annotationClasspath
         LocalDependencyHelper.addDexpatcherAnnotations project, annotationClasspath, decorateDependencies
 
