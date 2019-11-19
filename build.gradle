@@ -17,6 +17,9 @@ plugins {
 group = 'com.github.lanchon.dexpatcher'
 version = '2.0.0'
 
+ext.mainArtifact = 'dexpatcher-gradle'
+ext.artifactName = 'DexPatcher-gradle'
+
 repositories {
     jcenter()
     google()
@@ -27,22 +30,11 @@ dependencies {
     compileOnly 'com.android.tools.build:gradle:3.3.2'
 }
 
-processResources {
-    from 'LICENSE.txt', 'NOTICE.txt'
-}
-
 compileGroovy {
     options.compilerArgs << '-proc:none'
 }
 
-jar {
-    manifest {
-        attributes(
-                'Implementation-Title': 'DexPatcher-gradle',
-                'Implementation-Version': version
-        )
-    }
-}
+apply from: 'configure-artifacts.gradle'
 
 afterEvaluate {
     def archivesArtifacts = configurations.archives.artifacts
@@ -60,8 +52,8 @@ pluginBundle {
     tags = ['android', 'application', 'apk', 'dexpatcher', 'apktool', 'dex2jar', 'patch', 'modify', 'reverse']
 
     mavenCoordinates {
-        groupId = 'com.github.lanchon.dexpatcher'
-        artifactId = 'dexpatcher-gradle'
+        groupId = group
+        artifactId = mainArtifact
     }
 
 }
