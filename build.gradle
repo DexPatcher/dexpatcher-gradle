@@ -115,3 +115,5 @@ gradlePlugin {
 }
 
 apply from: 'check-copyright.gradle'
+
+wrapper.distributionType = Wrapper.DistributionType.ALL
