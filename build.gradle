@@ -38,7 +38,7 @@ apply from: 'configure-artifacts.gradle'
 
 afterEvaluate {
     def archivesArtifacts = configurations.archives.artifacts
-    archivesArtifacts.removeAll archivesArtifacts.findAll { it.classifier }
+    archivesArtifacts.removeAll archivesArtifacts.findAll { it.classifier in ['javadoc', 'groovydoc'] }
 }
 
 pluginBundle {
