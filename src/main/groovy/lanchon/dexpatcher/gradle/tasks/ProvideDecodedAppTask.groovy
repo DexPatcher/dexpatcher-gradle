@@ -12,8 +12,8 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.NewProperty
 import lanchon.dexpatcher.gradle.FileHelper
+import lanchon.dexpatcher.gradle.NewProperty
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
