@@ -54,7 +54,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
 
         // Patch the bytecode of the source application.
         androidVariants.all { ApplicationVariant variant ->
-            def packageApplication = VariantHelper.getPackageApplication(variant)
+            def packageApplication = variant.packageApplicationProvider
 
             def collectDex = project.tasks.register(
                     StringHelper.appendCapitalized(TaskNames.COLLECT_DEX_PREFIX, variant.name),
@@ -64,7 +64,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                     DexpatcherTask)
             def prePackage = project.tasks.register(
                     StringHelper.appendCapitalized(TaskNames.PRE_PACKAGE_PREFIX, variant.name))
-            VariantHelper.getAssemble(variant).configure {
+            variant.assembleProvider.configure {
                 it.extensions.add TaskNames.COLLECT_DEX_PREFIX, collectDex
                 it.extensions.add TaskNames.PATCH_DEX_PREFIX, patchDex
                 it.extensions.add TaskNames.PRE_PACKAGE_PREFIX, prePackage
@@ -138,8 +138,8 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
 
         project.afterEvaluate {
             androidVariants.all { ApplicationVariant variant ->
-                VariantHelper.getPackageApplication(variant).configure { pack ->
-                    def patch = ((TaskProvider<DexpatcherTask>) VariantHelper.getAssemble(variant).get().
+                variant.packageApplicationProvider.configure { pack ->
+                    def patch = ((TaskProvider<DexpatcherTask>) variant.assembleProvider.get().
                             extensions.getByName(TaskNames.PATCH_DEX_PREFIX)).get()
 
                     // Configure multi-dex of debuggable variants.

@@ -293,7 +293,7 @@ abstract class AbstractPatcherPlugin<
         // Android's resource merger build step ignores existing resource ID mappings ('public.xml' files),
         // so the ID mappings of the source app must be processed and added the the output of the merger.
         androidVariants.all { BaseVariant variant ->
-            def mergeResources = VariantHelper.getMergeResources(variant)
+            def mergeResources = variant.mergeResourcesProvider
 
             // Copy or compile the source app resource ID mapping file.
             def processIdMappings = project.tasks.register(
@@ -317,7 +317,7 @@ abstract class AbstractPatcherPlugin<
                 }
                 return
             }
-            VariantHelper.getAssemble(variant).configure {
+            variant.assembleProvider.configure {
                 it.extensions.add TaskNames.PROCESS_ID_MAPPINGS_PREFIX, processIdMappings
                 return
             }
@@ -348,7 +348,7 @@ abstract class AbstractPatcherPlugin<
         // Remove empty 'R.java' files generated from the source app component library.
         androidVariants.all { BaseVariant variant ->
             variant.outputs.all { BaseVariantOutput output ->
-                VariantHelper.getProcessResources(output).configure {
+                output.processResourcesProvider.configure {
                     it.doLast { task ->
                         removeEmptyRFiles it.sourceOutputDir
                     }
