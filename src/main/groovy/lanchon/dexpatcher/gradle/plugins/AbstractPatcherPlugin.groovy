@@ -14,7 +14,6 @@ import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.Aapt2MavenUtilsHelper
-import lanchon.dexpatcher.gradle.FileHelper
 import lanchon.dexpatcher.gradle.LocalDependencyHelper
 import lanchon.dexpatcher.gradle.MergeResourcesHelper
 import lanchon.dexpatcher.gradle.VariantHelper
@@ -95,7 +94,7 @@ abstract class AbstractPatcherPlugin<
                             throw new RuntimeException("The AAPT2 binary is named '${file.name}' " +
                                     "but it must be named '${SdkConstants.FN_AAPT2}' on this platform")
                         }
-                        return FileHelper.getDirectory(project, file.parentFile)
+                        return project.layout.projectDirectory.dir(file.parentFile.path)
                     }
                 } else {
                     aapt2Dir = project.layout.buildDirectory.dir(BuildDir.DIR_APKTOOL_AAPT2)

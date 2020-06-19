@@ -14,7 +14,6 @@ import java.util.zip.ZipException
 import java.util.zip.ZipFile
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.FileHelper
 import lanchon.dexpatcher.gradle.Platform
 import lanchon.dexpatcher.gradle.tasks.AbstractApktoolTask.Verbosity
 
@@ -92,7 +91,7 @@ class ApktoolExtension extends AbstractToolExtension {
             if (filteredFiles.empty) {
                 throw new RuntimeException("Bundled Apktool ${tool.toUpperCase(Locale.ROOT)} not found")
             }
-            return FileHelper.getRegularFile(project, filteredFiles.singleFile)
+            return project.layout.projectDirectory.file(filteredFiles.singleFile.path)
         }
     }
 
@@ -108,7 +107,7 @@ class ApktoolExtension extends AbstractToolExtension {
                     new ZipFile(file).close()
                 } catch (ZipException e) {
                     // If the file is not an archive, assume it is an executable:
-                    return FileHelper.getRegularFile(project, file)
+                    return project.layout.projectDirectory.file(file.path)
                 }
                 files = project.zipTree(file)
                 // Expand the complete archive in case it contains libraries or other necessary files:
@@ -123,7 +122,7 @@ class ApktoolExtension extends AbstractToolExtension {
             if (filteredFiles.empty) {
                 throw new RuntimeException("Configured Apktool ${tool.toUpperCase(Locale.ROOT)} not found")
             }
-            return FileHelper.getRegularFile(project, filteredFiles.singleFile)
+            return project.layout.projectDirectory.file(filteredFiles.singleFile.path)
         }
     }
 

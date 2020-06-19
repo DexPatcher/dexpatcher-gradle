@@ -12,7 +12,6 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.FileHelper
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask.Verbosity
 
 import org.gradle.api.Project
@@ -59,11 +58,11 @@ class DexpatcherExtension extends AbstractToolExtension {
                 filter.include FileNames.DEXPATCHER_ANNOTATION
             }
             if (filteredFiles.empty) throw new RuntimeException("Bundled DexPatcher annotations not found")
-            return FileHelper.getRegularFile(project, filteredFiles.singleFile)
+            return project.layout.projectDirectory.file(filteredFiles.singleFile.path)
         }
         configuredAnnotationFile = project.<RegularFile>provider {
             dexpatcherAnnotationCfg.empty ? null :
-                    FileHelper.getRegularFile(project, dexpatcherAnnotationCfg.singleFile)
+                    project.layout.projectDirectory.file(dexpatcherAnnotationCfg.singleFile.path)
         }
         resolvedAnnotationFile = project.<RegularFile>provider {
             configuredAnnotationFile.orNull ?: bundledAnnotationFile.get()

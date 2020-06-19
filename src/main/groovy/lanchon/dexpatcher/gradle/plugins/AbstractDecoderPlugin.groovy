@@ -12,7 +12,6 @@ package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.FileHelper
 import lanchon.dexpatcher.gradle.extensions.AbstractDecoderExtension
 import lanchon.dexpatcher.gradle.tasks.DecodeApkTask
 import lanchon.dexpatcher.gradle.tasks.ProvideDecodedAppTask
@@ -94,7 +93,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         if (!sourceApk.is(null)) {
             def inputFile = project.<RegularFile>provider {
                 provideDecodedApp.get().sourceAppFile.get()
-                FileHelper.getRegularFile(project, sourceApk.singleFile)
+                project.layout.projectDirectory.file(sourceApk.singleFile.path)
             }
             decodeApk = registerDecodeApkTask(project,
                     taskNameModifier(TaskNames.DECODE_APK), taskGroup,
@@ -114,7 +113,7 @@ abstract class AbstractDecoderPlugin<E extends AbstractDecoderExtension> extends
         if (!sourceApkLib.is(null)) {
             def inputFile = project.<RegularFile>provider {
                 provideDecodedApp.get().sourceAppFile.get()
-                FileHelper.getRegularFile(project, sourceApkLib.singleFile)
+                project.layout.projectDirectory.file(sourceApkLib.singleFile.path)
             }
             unpackApkLibrary = registerUnpackApkLibraryTask(project,
                     taskNameModifier(TaskNames.UNPACK_APK_LIBRARY), taskGroup,
