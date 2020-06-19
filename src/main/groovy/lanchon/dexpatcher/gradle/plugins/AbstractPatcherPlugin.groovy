@@ -10,7 +10,6 @@
 
 package lanchon.dexpatcher.gradle.plugins
 
-import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.Aapt2MavenUtilsHelper
@@ -26,7 +25,6 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.BaseVariantOutput
 import com.android.build.gradle.internal.dependency.IdentityTransform
-import com.android.build.gradle.tasks.MergeResources
 import com.android.builder.core.AndroidBuilder
 import com.android.ide.common.resources.FileResourceNameValidator
 import com.android.resources.ResourceFolderType
@@ -297,7 +295,7 @@ abstract class AbstractPatcherPlugin<
         androidVariants.all { BaseVariant variant ->
             def mergeResources = VariantHelper.getMergeResources(variant)
 
-            // Copy (AAPT1) or compile (AAPT2) the source app resource ID mapping file.
+            // Copy or compile the source app resource ID mapping file.
             def processIdMappings = project.tasks.register(
                     StringHelper.appendCapitalized(TaskNames.PROCESS_ID_MAPPINGS_PREFIX, variant.name),
                     ProcessIdMappingsTask) {
@@ -315,7 +313,7 @@ abstract class AbstractPatcherPlugin<
                     VariantHelper.getData(variant).scope.globalScope.androidBuilder
                 }
                 it.processResources.set project.<Boolean>provider {
-                    mergeResources.get().processResources && !isUsingAapt1(mergeResources.get())
+                    mergeResources.get().processResources
                 }
                 return
             }
@@ -391,16 +389,6 @@ abstract class AbstractPatcherPlugin<
             reader.close()
         }
         return true
-    }
-
-    @CompileDynamic
-    private boolean isUsingAapt1(MergeResources task) {
-        // NOFIX: For Android Gradle < 3.2.0: What happens here?
-        try {
-            return task.aaptGeneration == 'AAPT_V1'
-        } catch (MissingPropertyException e) {
-            return false
-        }
     }
 
 }

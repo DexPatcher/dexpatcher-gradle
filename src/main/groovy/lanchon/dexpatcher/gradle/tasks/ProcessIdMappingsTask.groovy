@@ -40,8 +40,6 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.workers.WorkerExecutor
 
-// NOFIX: For Android Gradle < 3.2.0: There is no ResourceCompilationService.
-
 @CompileStatic
 @CacheableTask
 class ProcessIdMappingsTask extends DefaultTask {
@@ -83,13 +81,13 @@ class ProcessIdMappingsTask extends DefaultTask {
 
     private ResourceCompilationService getResourceCompiler() {
         if (processResources.get()) {
-            // When using AAPT2, compile the file.
+            // Compile the file.
             def builder = androidBuilder.get()
             return new WorkerExecutorResourceCompilationService(workerExecutorFacade,
                     Aapt2DaemonManagerService.registerAaptService(aapt2FromMaven, builder.buildToolInfo,
                             builder.logger))
         } else {
-            // When using AAPT1, just copy it instead.
+            // Or just copy it instead.
             return CopyToOutputDirectoryResourceCompilationService.INSTANCE
         }
     }
