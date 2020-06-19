@@ -10,21 +10,16 @@
 
 package lanchon.dexpatcher.gradle
 
-import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 
 import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
-import org.gradle.util.GradleVersion
 
 @CompileStatic
 abstract class NewProperty {
-
-    private static final boolean GRADLE_5_0 = (GradleVersion.current() >= GradleVersion.version('5.0'))
 
     static Property<Boolean> from(Project project, boolean value) {
         def property = project.objects.property(Boolean)
@@ -38,22 +33,12 @@ abstract class NewProperty {
         return property
     }
 
-    @CompileDynamic
-    private static DirectoryProperty gradle_5_0_directoryProperty(ObjectFactory objects) {
-        objects.directoryProperty()
-    }
-
-    @CompileDynamic
-    private static RegularFileProperty gradle_5_0_fileProperty(ObjectFactory objects) {
-        objects.fileProperty()
-    }
-
     static DirectoryProperty dir(Project project) {
-        GRADLE_5_0 ? gradle_5_0_directoryProperty(project.objects) : project.layout.directoryProperty()
+        project.objects.directoryProperty()
     }
 
     static RegularFileProperty file(Project project) {
-        GRADLE_5_0 ? gradle_5_0_fileProperty(project.objects) : project.layout.fileProperty()
+        project.objects.fileProperty()
     }
 
     static <T> ListProperty<T> list(Project project, Class<T> elementType) {

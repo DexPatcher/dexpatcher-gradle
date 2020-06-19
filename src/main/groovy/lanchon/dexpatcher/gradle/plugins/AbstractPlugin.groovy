@@ -20,7 +20,7 @@ import org.gradle.util.GradleVersion
 @CompileStatic
 class AbstractPlugin implements Plugin<Project> {
 
-    static final String GRADLE_VERSION_MIN = '4.9'
+    static final String GRADLE_VERSION_MIN = '5.1'
     static final String GRADLE_VERSION_MAX = null
 
     static final String ANDROID_PLUGIN_VERSION_MIN = '3.2'
@@ -32,7 +32,7 @@ class AbstractPlugin implements Plugin<Project> {
     void apply(Project project) {
 
         this.project = project
-        basePlugin = project.plugins.apply(DexpatcherBasePlugin)
+        basePlugin = (DexpatcherBasePlugin) project.plugins.apply(DexpatcherBasePlugin)
 
         def requires = 'The configured DexPatcher Gradle plugins require'
 

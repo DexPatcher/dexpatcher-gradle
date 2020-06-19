@@ -37,7 +37,8 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
 
         super.apply(project)
 
-        extension = basePlugin.createSubextension(ExtensionNames.PLUGIN_PATCHED_APPLICATION, PatchedAppExtension)
+        extension = (PatchedAppExtension) basePlugin.createSubextension(ExtensionNames.PLUGIN_PATCHED_APPLICATION,
+                PatchedAppExtension)
         project.plugins.apply(AppPlugin)
         androidExtension = project.extensions.getByType(AppExtension)
         androidVariants = androidExtension.applicationVariants
@@ -143,10 +144,10 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
 
                     // Configure multi-dex of debuggable variants.
                     if (variant.buildType.debuggable) {
-                        if (extension.multiDexThreadedForAllDebugBuilds.get()) {
+                        if (((PatchedAppExtension) extension).multiDexThreadedForAllDebugBuilds.get()) {
                             patch.multiDex.set true
                             patch.multiDexThreaded.set true
-                        } else if (extension.multiDexThreadedForMultiDexDebugBuilds.get()) {
+                        } else if (((PatchedAppExtension) extension).multiDexThreadedForMultiDexDebugBuilds.get()) {
                             patch.multiDexThreaded.set true
                         }
                     }
