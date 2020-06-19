@@ -111,9 +111,7 @@ abstract class AbstractPatcherPlugin<
                     }
                 }
 
-                def AAPT2_CONFIG_NAME = Aapt2MavenUtilsHelper.get_AAPT2_CONFIG_NAME()
-                def TYPE_EXTRACTED_AAPT2_BINARY = Aapt2MavenUtilsHelper.get_TYPE_EXTRACTED_AAPT2_BINARY()
-                def aapt2DirCfg = project.configurations.maybeCreate(AAPT2_CONFIG_NAME)
+                def aapt2DirCfg = project.configurations.maybeCreate(Aapt2MavenUtilsHelper.AAPT2_CONFIG_NAME)
                 aapt2DirCfg.dependencies.clear()
                 aapt2DirCfg.visible = false
                 aapt2DirCfg.transitive = false
@@ -133,7 +131,7 @@ abstract class AbstractPatcherPlugin<
                                 project.dependencies.registerTransform { transform ->
                                     transform.from.attribute ArtifactAttributes.ARTIFACT_FORMAT, type
                                     transform.to.attribute ArtifactAttributes.ARTIFACT_FORMAT,
-                                            TYPE_EXTRACTED_AAPT2_BINARY
+                                            Aapt2MavenUtilsHelper.TYPE_EXTRACTED_AAPT2_BINARY
                                     transform.artifactTransform(IdentityTransform.class)
                                 }
                             }

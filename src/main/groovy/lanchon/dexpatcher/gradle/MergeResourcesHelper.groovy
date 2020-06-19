@@ -19,23 +19,18 @@ import com.android.build.gradle.tasks.MergeResources
 abstract class MergeResourcesHelper {
 
     private static final Field validateEnabled_FIELD
-    private static final Exception validateEnabled_EXCEPTION
 
     static {
         try {
-            def field = MergeResources.class.getDeclaredField('validateEnabled')
-            field.accessible = true
-            validateEnabled_FIELD = field
-            validateEnabled_EXCEPTION = null
+            validateEnabled_FIELD = MergeResources.class.getDeclaredField('validateEnabled')
+            validateEnabled_FIELD.accessible = true
         } catch (Exception e) {
-            validateEnabled_FIELD = null
-            validateEnabled_EXCEPTION = e
+            throw new Error("Cannot link field 'MergeResources.validateEnabled'", e)
         }
     }
 
     static boolean getValidateEnabled(MergeResources mergeResources) {
         try {
-            if (validateEnabled_EXCEPTION) throw validateEnabled_EXCEPTION
             return validateEnabled_FIELD.get(mergeResources) as boolean
         } catch (Exception e) {
             throw new RuntimeException("Cannot get field 'MergeResources.validateEnabled'", e)
@@ -44,7 +39,6 @@ abstract class MergeResourcesHelper {
 
     static void setValidateEnabled(MergeResources mergeResources, boolean value) {
         try {
-            if (validateEnabled_EXCEPTION) throw validateEnabled_EXCEPTION
             validateEnabled_FIELD.set(mergeResources, value)
         } catch (Exception e) {
             throw new RuntimeException("Cannot set field 'MergeResources.validateEnabled'", e)
