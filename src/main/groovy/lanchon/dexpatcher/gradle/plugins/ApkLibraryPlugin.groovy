@@ -13,7 +13,6 @@ package lanchon.dexpatcher.gradle.plugins
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.extensions.ApkLibraryExtension
-import lanchon.dexpatcher.gradle.tasks.LazyZipTask
 import lanchon.dexpatcher.gradle.tasks.ProvideDecodedAppTask
 
 import org.gradle.api.Project
@@ -23,13 +22,14 @@ import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.bundling.Zip
 
 import static lanchon.dexpatcher.gradle.Constants.*
 
 @CompileStatic
 class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
 
-    protected TaskProvider<LazyZipTask> createApkLibrary
+    protected TaskProvider<Zip> createApkLibrary
 
     @Override
     void apply(Project project) {
@@ -82,10 +82,10 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
         return name
     }
 
-    static TaskProvider<LazyZipTask> registerCreateApkLibraryTask(Project project, String taskName, String taskGroup,
+    static TaskProvider<Zip> registerCreateApkLibraryTask(Project project, String taskName, String taskGroup,
             TaskProvider<ProvideDecodedAppTask> provideDecodedApp, Provider<String> apkLibFileName,
             Provider<Directory> apkLibDirectory) {
-        def apkLibrary = project.tasks.register(taskName, LazyZipTask) {
+        def apkLibrary = project.tasks.register(taskName, Zip) {
             it.description = 'Packs the decoded source application as a DexPatcher APK library.'
             it.group = taskGroup
             it.extension = FileNames.EXT_APK_LIBRARY.substring(1)
@@ -94,8 +94,8 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
             it.preserveFileTimestamps = false
             it.duplicatesStrategy = DuplicatesStrategy.FAIL
             it.from provideDecodedApp
-            it.lazyArchiveFileName.set apkLibFileName
-            it.lazyDestinationDirectory.set apkLibDirectory
+            it.archiveFileName.set apkLibFileName
+            it.destinationDirectory.set apkLibDirectory
         }
         return apkLibrary
     }

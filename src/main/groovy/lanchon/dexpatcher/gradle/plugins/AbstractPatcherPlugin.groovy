@@ -20,7 +20,6 @@ import lanchon.dexpatcher.gradle.MergeResourcesHelper
 import lanchon.dexpatcher.gradle.VariantHelper
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
-import lanchon.dexpatcher.gradle.tasks.LazyZipTask
 import lanchon.dexpatcher.gradle.tasks.ProcessIdMappingsTask
 
 import com.android.SdkConstants
@@ -41,6 +40,7 @@ import org.gradle.api.file.FileCopyDetails
 import org.gradle.api.internal.artifacts.ArtifactAttributes
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Sync
+import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.tasks.bundling.ZipEntryCompression
 
 import static lanchon.dexpatcher.gradle.Constants.*
@@ -168,7 +168,7 @@ abstract class AbstractPatcherPlugin<
         }
 
         // Creates a JAR with files from the source application that will be added verbatim to the patched APK.
-        def packExtraAppResources = project.tasks.register(TaskNames.PACK_EXTRA_APP_RESOURCES, LazyZipTask) {
+        def packExtraAppResources = project.tasks.register(TaskNames.PACK_EXTRA_APP_RESOURCES, Zip) {
             it.description = "Packs extra resources of the source application."
             it.group = TASK_GROUP_NAME
             it.zip64 = true
@@ -176,8 +176,8 @@ abstract class AbstractPatcherPlugin<
             it.preserveFileTimestamps = false
             it.duplicatesStrategy = DuplicatesStrategy.FAIL
             it.entryCompression = ZipEntryCompression.STORED
-            it.lazyArchiveFileName.set BuildDir.FILENAME_EXTRA_RESOURCES
-            it.lazyDestinationDirectory.set project.layout.buildDirectory.dir(BuildDir.DIR_EXTRA_RESOURCES)
+            it.archiveFileName.set BuildDir.FILENAME_EXTRA_RESOURCES
+            it.destinationDirectory.set project.layout.buildDirectory.dir(BuildDir.DIR_EXTRA_RESOURCES)
             it.dependsOn provideDecodedApp
             def decodedAppDir = provideDecodedApp.get().outputDir
             it.from(decodedAppDir.dir(ApkLib.DIR_UNKNOWN))
@@ -190,7 +190,7 @@ abstract class AbstractPatcherPlugin<
         // Creates an AAR with components of the source application that will be used to build the patched APK.
         def checkInvalidResources = new boolean[1]
         def invalidResourcesFound = new boolean[1]
-        def packAppComponents = project.tasks.register(TaskNames.PACK_APP_COMPONENTS, LazyZipTask) {
+        def packAppComponents = project.tasks.register(TaskNames.PACK_APP_COMPONENTS, Zip) {
             it.description = "Packs major components of the source application."
             it.group = TASK_GROUP_NAME
             it.zip64 = true
@@ -198,8 +198,8 @@ abstract class AbstractPatcherPlugin<
             it.preserveFileTimestamps = false
             it.duplicatesStrategy = DuplicatesStrategy.FAIL
             it.entryCompression = ZipEntryCompression.STORED
-            it.lazyArchiveFileName.set BuildDir.FILENAME_COMPONENT_LIBRARY
-            it.lazyDestinationDirectory.set project.layout.buildDirectory.dir(BuildDir.DIR_COMPONENT_LIBRARY)
+            it.archiveFileName.set BuildDir.FILENAME_COMPONENT_LIBRARY
+            it.destinationDirectory.set project.layout.buildDirectory.dir(BuildDir.DIR_COMPONENT_LIBRARY)
             it.dependsOn provideDecodedApp
             /*
                 AAR Format:
