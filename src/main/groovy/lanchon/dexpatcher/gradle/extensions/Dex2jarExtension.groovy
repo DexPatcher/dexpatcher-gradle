@@ -12,8 +12,6 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.NewProperty
-
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.provider.Property
@@ -22,12 +20,12 @@ import org.gradle.api.tasks.util.PatternFilterable
 @CompileStatic
 class Dex2jarExtension extends AbstractToolExtension {
 
-    final Property<Boolean> translateCode = NewProperty.from(project, true)
-    final Property<Boolean> translateDebugInfo = NewProperty.from(project, false)
-    final Property<Boolean> optimizeSynchronized = NewProperty.from(project, false)
-    final Property<Boolean> reuseRegisters = NewProperty.from(project, false)
-    final Property<Boolean> topologicalSort = NewProperty.from(project, false)
-    final Property<Boolean> handleExceptions = NewProperty.from(project, false) // or true?
+    final Property<Boolean> translateCode = project.objects.property(Boolean).value(true)
+    final Property<Boolean> translateDebugInfo = project.objects.property(Boolean).value(false)
+    final Property<Boolean> optimizeSynchronized = project.objects.property(Boolean).value(false)
+    final Property<Boolean> reuseRegisters = project.objects.property(Boolean).value(false)
+    final Property<Boolean> topologicalSort = project.objects.property(Boolean).value(false)
+    final Property<Boolean> handleExceptions = project.objects.property(Boolean).value(false) // or true?
 
     Dex2jarExtension(Project project, DexpatcherConfigExtension dexpatcherConfig, Configuration dex2jarCfg) {
         super(project, dexpatcherConfig)

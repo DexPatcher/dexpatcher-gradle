@@ -15,7 +15,6 @@ import java.util.zip.ZipFile
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.FileHelper
-import lanchon.dexpatcher.gradle.NewProperty
 import lanchon.dexpatcher.gradle.Platform
 import lanchon.dexpatcher.gradle.tasks.AbstractApktoolTask.Verbosity
 
@@ -43,22 +42,22 @@ class ApktoolExtension extends AbstractToolExtension {
 
     // Decode
     final Property<String> frameworkTag = project.objects.property(String)
-    final Property<Integer> apiLevel = NewProperty.from(project, 0)
-    final Property<Boolean> decodeAssets = NewProperty.from(project, true)
-    final Property<Boolean> decodeResources = NewProperty.from(project, true)
-    final Property<Boolean> decodeClasses = NewProperty.from(project, true)
-    final Property<Boolean> forceDecodeManifest = NewProperty.from(project, false)
-    final Property<Boolean> keepBrokenResources = NewProperty.from(project, false)
-    final Property<Boolean> stripDebugInfo = NewProperty.from(project, false)
-    final Property<Boolean> matchOriginal = NewProperty.from(project, false)
+    final Property<Integer> apiLevel = project.objects.property(Integer).value(0)
+    final Property<Boolean> decodeAssets = project.objects.property(Boolean).value(true)
+    final Property<Boolean> decodeResources = project.objects.property(Boolean).value(true)
+    final Property<Boolean> decodeClasses = project.objects.property(Boolean).value(true)
+    final Property<Boolean> forceDecodeManifest = project.objects.property(Boolean).value(false)
+    final Property<Boolean> keepBrokenResources = project.objects.property(Boolean).value(false)
+    final Property<Boolean> stripDebugInfo = project.objects.property(Boolean).value(false)
+    final Property<Boolean> matchOriginal = project.objects.property(Boolean).value(false)
 
     // Build
     final RegularFileProperty aaptFile = project.objects.fileProperty()
-    final Property<Boolean> useAapt2 = NewProperty.from(project, false)
-    final Property<Boolean> crunchResources = NewProperty.from(project, true)
-    final Property<Boolean> copyOriginal = NewProperty.from(project, false)
-    final Property<Boolean> forceDebuggableBuild = NewProperty.from(project, false)
-    final Property<Boolean> forceCleanBuild = NewProperty.from(project, false)
+    final Property<Boolean> useAapt2 = project.objects.property(Boolean).value(false)
+    final Property<Boolean> crunchResources = project.objects.property(Boolean).value(true)
+    final Property<Boolean> copyOriginal = project.objects.property(Boolean).value(false)
+    final Property<Boolean> forceDebuggableBuild = project.objects.property(Boolean).value(false)
+    final Property<Boolean> forceCleanBuild = project.objects.property(Boolean).value(false)
 
     final Provider<RegularFile> bundledAaptFile
     final Provider<RegularFile> configuredAaptFile

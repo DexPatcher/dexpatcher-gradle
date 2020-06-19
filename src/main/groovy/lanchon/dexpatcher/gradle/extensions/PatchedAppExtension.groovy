@@ -12,16 +12,14 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.NewProperty
-
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 
 @CompileStatic
 class PatchedAppExtension extends AbstractPatcherExtension {
 
-    final Property<Boolean> multiDexThreadedForMultiDexDebugBuilds = NewProperty.from(project, true)
-    final Property<Boolean> multiDexThreadedForAllDebugBuilds = NewProperty.from(project, false)
+    final Property<Boolean> multiDexThreadedForMultiDexDebugBuilds = project.objects.property(Boolean).value(true)
+    final Property<Boolean> multiDexThreadedForAllDebugBuilds = project.objects.property(Boolean).value(false)
 
     PatchedAppExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig)

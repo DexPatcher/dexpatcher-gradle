@@ -12,8 +12,6 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.NewProperty
-
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.provider.Property
@@ -21,9 +19,9 @@ import org.gradle.api.provider.Property
 @CompileStatic
 abstract class AbstractPatcherExtension extends AbstractDecoderExtension {
 
-    final Property<Boolean> importSymbols = NewProperty.from(project, true)
-    final Property<Boolean> disableResourceValidation = NewProperty.from(project, false)
-    final Property<Boolean> useAapt2BundledWithApktool = NewProperty.from(project, false)
+    final Property<Boolean> importSymbols = project.objects.property(Boolean).value(true)
+    final Property<Boolean> disableResourceValidation = project.objects.property(Boolean).value(false)
+    final Property<Boolean> useAapt2BundledWithApktool = project.objects.property(Boolean).value(false)
 
     //final Property<Boolean> patchManifest = true      // TODO
     //final Property<Boolean> patchResources = true     // TODO

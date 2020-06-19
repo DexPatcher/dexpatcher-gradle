@@ -12,15 +12,13 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.NewProperty
-
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 
 @CompileStatic
 abstract class AbstractDecoderExtension extends AbstractExtension<DexpatcherConfigExtension> {
 
-    final Property<Boolean> printAppInfo = NewProperty.from(project, false) // or true?
+    final Property<Boolean> printAppInfo = project.objects.property(Boolean).value(false) // or true?
 
     AbstractDecoderExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig)

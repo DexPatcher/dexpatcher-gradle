@@ -12,8 +12,6 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.NewProperty
-
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
@@ -62,12 +60,12 @@ class Dex2jarTask extends AbstractDex2jarTask {
     @PathSensitive(PathSensitivity.NONE)
     @Optional @OutputFile final RegularFileProperty exceptionFile = project.objects.fileProperty()
 
-    @Input final Property<Boolean> translateCode = NewProperty.from(project, true)
-    @Input final Property<Boolean> translateDebugInfo = NewProperty.from(project, false)
-    @Input final Property<Boolean> optimizeSynchronized = NewProperty.from(project, false)
-    @Input final Property<Boolean> reuseRegisters = NewProperty.from(project, false)
-    @Input final Property<Boolean> topologicalSort = NewProperty.from(project, false)
-    @Input final Property<Boolean> handleExceptions = NewProperty.from(project, false) // or true?
+    @Input final Property<Boolean> translateCode = project.objects.property(Boolean).value(true)
+    @Input final Property<Boolean> translateDebugInfo = project.objects.property(Boolean).value(false)
+    @Input final Property<Boolean> optimizeSynchronized = project.objects.property(Boolean).value(false)
+    @Input final Property<Boolean> reuseRegisters = project.objects.property(Boolean).value(false)
+    @Input final Property<Boolean> topologicalSort = project.objects.property(Boolean).value(false)
+    @Input final Property<Boolean> handleExceptions = project.objects.property(Boolean).value(false) // or true?
 
     Dex2jarTask() {
         main = 'com.googlecode.dex2jar.tools.Dex2jarCmd'
