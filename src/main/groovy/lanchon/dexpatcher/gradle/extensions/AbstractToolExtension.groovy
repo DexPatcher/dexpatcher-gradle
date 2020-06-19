@@ -12,8 +12,6 @@ package lanchon.dexpatcher.gradle.extensions
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.NewProperty
-
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.provider.ListProperty
@@ -22,7 +20,7 @@ import org.gradle.api.provider.ListProperty
 abstract class AbstractToolExtension extends AbstractExtension<DexpatcherConfigExtension> {
 
     final ConfigurableFileCollection classpath = project.files()
-    final ListProperty<String> extraArgs = NewProperty.list(project, String)
+    final ListProperty<String> extraArgs = project.objects.listProperty(String)
 
     AbstractToolExtension(Project project, DexpatcherConfigExtension dexpatcherConfig) {
         super(project, dexpatcherConfig)

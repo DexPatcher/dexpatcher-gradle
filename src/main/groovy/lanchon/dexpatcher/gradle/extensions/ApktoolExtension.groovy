@@ -39,7 +39,7 @@ class ApktoolExtension extends AbstractToolExtension {
 
     // Base
     final Property<Verbosity> verbosity = project.objects.property(Verbosity)
-    final DirectoryProperty frameworkInDir = NewProperty.dir(project)
+    final DirectoryProperty frameworkInDir = project.objects.directoryProperty()
 
     // Decode
     final Property<String> frameworkTag = project.objects.property(String)
@@ -53,7 +53,7 @@ class ApktoolExtension extends AbstractToolExtension {
     final Property<Boolean> matchOriginal = NewProperty.from(project, false)
 
     // Build
-    final RegularFileProperty aaptFile = NewProperty.file(project)
+    final RegularFileProperty aaptFile = project.objects.fileProperty()
     final Property<Boolean> useAapt2 = NewProperty.from(project, false)
     final Property<Boolean> crunchResources = NewProperty.from(project, true)
     final Property<Boolean> copyOriginal = NewProperty.from(project, false)

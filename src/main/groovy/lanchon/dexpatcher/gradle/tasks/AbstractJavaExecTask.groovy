@@ -12,8 +12,6 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.NewProperty
-
 import org.gradle.api.file.Directory
 import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.file.RegularFile
@@ -25,7 +23,7 @@ import org.gradle.process.JavaExecSpec
 @CompileStatic
 abstract class AbstractJavaExecTask extends JavaExec {
 
-    @Input final ListProperty<String> extraArgs = NewProperty.list(project, String)
+    @Input final ListProperty<String> extraArgs = project.objects.listProperty(String)
 
     @Override void exec() {
         def args = getArgs()

@@ -13,9 +13,6 @@ package lanchon.dexpatcher.gradle
 import groovy.transform.CompileStatic
 
 import org.gradle.api.Project
-import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 
 @CompileStatic
@@ -31,20 +28,6 @@ abstract class NewProperty {
         def property = project.objects.property(Integer)
         property.set value
         return property
-    }
-
-    static DirectoryProperty dir(Project project) {
-        project.objects.directoryProperty()
-    }
-
-    static RegularFileProperty file(Project project) {
-        project.objects.fileProperty()
-    }
-
-    static <T> ListProperty<T> list(Project project, Class<T> elementType) {
-        def list = project.objects.listProperty(elementType)
-        list.set Collections.<T>emptyList()
-        return list
     }
 
 }

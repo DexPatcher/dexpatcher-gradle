@@ -12,8 +12,6 @@ package lanchon.dexpatcher.gradle.tasks
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.NewProperty
-
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Console
@@ -85,10 +83,10 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
     @Console final Property<Verbosity> verbosity = project.objects.property(Verbosity)
 
     @PathSensitive(PathSensitivity.RELATIVE)
-    @Optional @InputDirectory final DirectoryProperty frameworkInDir = NewProperty.dir(project)
+    @Optional @InputDirectory final DirectoryProperty frameworkInDir = project.objects.directoryProperty()
 
     @PathSensitive(PathSensitivity.RELATIVE)
-    @OutputDirectory final DirectoryProperty frameworkOutDir = NewProperty.dir(project)
+    @OutputDirectory final DirectoryProperty frameworkOutDir = project.objects.directoryProperty()
 
     AbstractApktoolTask(String command) {
         this.command = command

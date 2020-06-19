@@ -13,7 +13,6 @@ package lanchon.dexpatcher.gradle.tasks
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.FileHelper
-import lanchon.dexpatcher.gradle.NewProperty
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -30,7 +29,7 @@ import static lanchon.dexpatcher.gradle.Constants.*
 class ProvideDecodedAppTask extends DefaultTask {
 
     @Internal final ConfigurableFileCollection sourceAppFiles = project.files()
-    @OutputDirectory final DirectoryProperty outputDir = NewProperty.dir(project)
+    @OutputDirectory final DirectoryProperty outputDir = project.objects.directoryProperty()
 
     @Internal final Provider<RegularFile> sourceAppFile
     @Internal final Provider<RegularFile> apktoolYmlFile

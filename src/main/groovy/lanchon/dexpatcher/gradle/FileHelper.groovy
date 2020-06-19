@@ -23,13 +23,13 @@ abstract class FileHelper {
     // Horrible Gradle hacks that should not be necessary
 
     private static Provider<RegularFile> getRegularFileProvider(Project project, File file) {
-        def p = NewProperty.file(project)
+        def p = project.objects.fileProperty()
         p.set file
         return p
     }
 
     private static Provider<Directory> getDirectoryProvider(Project project, File dir) {
-        def p = NewProperty.dir(project)
+        def p = project.objects.directoryProperty()
         p.set dir
         return p
     }

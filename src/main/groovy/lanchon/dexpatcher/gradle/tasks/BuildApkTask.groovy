@@ -44,12 +44,12 @@ usage: apktool [-q|--quiet OR -v|--verbose] b[uild] [options] <app_path>
 class BuildApkTask extends AbstractApktoolTask {
 
     @PathSensitive(PathSensitivity.NONE)
-    @InputDirectory final DirectoryProperty inputDir = NewProperty.dir(project)
+    @InputDirectory final DirectoryProperty inputDir = project.objects.directoryProperty()
     @PathSensitive(PathSensitivity.NONE)
-    @OutputFile final RegularFileProperty apkFile = NewProperty.file(project)
+    @OutputFile final RegularFileProperty apkFile = project.objects.fileProperty()
 
     @PathSensitive(PathSensitivity.NONE)
-    @Optional @InputFile final RegularFileProperty aaptFile = NewProperty.file(project)
+    @Optional @InputFile final RegularFileProperty aaptFile = project.objects.fileProperty()
 
     @Input final Property<Boolean> useAapt2 = NewProperty.from(project, false)
     @Input final Property<Boolean> crunchResources = NewProperty.from(project, true)
