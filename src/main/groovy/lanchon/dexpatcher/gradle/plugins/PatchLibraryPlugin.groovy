@@ -12,6 +12,7 @@ package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.AndroidPluginHelperInitializer
 import lanchon.dexpatcher.gradle.extensions.PatchLibraryExtension
 
 import com.android.build.gradle.LibraryExtension
@@ -32,6 +33,7 @@ class PatchLibraryPlugin extends AbstractPatcherPlugin<PatchLibraryExtension, Li
         extension = (PatchLibraryExtension) basePlugin.createSubextension(ExtensionNames.PLUGIN_PATCH_LIBRARY,
                 PatchLibraryExtension)
         project.plugins.apply(LibraryPlugin)
+        AndroidPluginHelperInitializer.init()
         androidExtension = project.extensions.getByType(LibraryExtension)
         androidVariants = androidExtension.libraryVariants
 

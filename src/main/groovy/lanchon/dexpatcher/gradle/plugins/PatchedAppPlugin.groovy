@@ -12,6 +12,7 @@ package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.AndroidPluginHelperInitializer
 import lanchon.dexpatcher.gradle.VariantHelper
 import lanchon.dexpatcher.gradle.extensions.PatchedAppExtension
 import lanchon.dexpatcher.gradle.tasks.CollectDexTask
@@ -40,6 +41,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
         extension = (PatchedAppExtension) basePlugin.createSubextension(ExtensionNames.PLUGIN_PATCHED_APPLICATION,
                 PatchedAppExtension)
         project.plugins.apply(AppPlugin)
+        AndroidPluginHelperInitializer.init()
         androidExtension = project.extensions.getByType(AppExtension)
         androidVariants = androidExtension.applicationVariants
 

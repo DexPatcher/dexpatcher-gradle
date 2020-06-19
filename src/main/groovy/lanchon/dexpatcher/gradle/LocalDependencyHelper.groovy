@@ -25,6 +25,8 @@ import org.gradle.internal.component.external.model.DefaultModuleComponentIdenti
 @CompileStatic
 abstract class LocalDependencyHelper {
 
+    static void init() {}
+
     private static final boolean DECORATE_DEPENDENCIES = true
 
     private static final Field targetComponentId_FIELD

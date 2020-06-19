@@ -17,6 +17,8 @@ import com.android.build.gradle.internal.res.Aapt2MavenUtils
 @CompileStatic
 abstract class Aapt2MavenUtilsHelper {
 
+    static void init() {}
+
     public static final String AAPT2_CONFIG_NAME
 
     static {

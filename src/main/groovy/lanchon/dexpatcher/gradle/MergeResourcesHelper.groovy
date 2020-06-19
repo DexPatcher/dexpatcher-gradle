@@ -18,6 +18,8 @@ import com.android.build.gradle.tasks.MergeResources
 @CompileStatic
 abstract class MergeResourcesHelper {
 
+    static void init() {}
+
     private static final Field validateEnabled_FIELD
 
     static {

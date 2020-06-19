@@ -24,6 +24,8 @@ import com.android.build.gradle.internal.variant.LibraryVariantData
 @CompileStatic
 abstract class VariantHelper {
 
+    static void init() {}
+
     private static final Method getVariantData_METHOD
 
     static {
