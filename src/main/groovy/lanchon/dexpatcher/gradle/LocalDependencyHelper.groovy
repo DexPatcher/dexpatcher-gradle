@@ -27,20 +27,19 @@ abstract class LocalDependencyHelper {
 
     private static final boolean DECORATE_DEPENDENCIES = true
 
-    private static final Field targetComponentIdField
-    private static final Exception targetComponentIdException
+    private static final Field targetComponentId_FIELD
+    private static final Exception targetComponentId_EXCEPTION
 
     static {
-        Field field
         try {
-            field = DefaultSelfResolvingDependency.getDeclaredField('targetComponentId')
+            def field = DefaultSelfResolvingDependency.getDeclaredField('targetComponentId')
             field.accessible = true
-            targetComponentIdException = null
+            targetComponentId_FIELD = field
+            targetComponentId_EXCEPTION = null
         } catch (Exception e) {
-            field = null
-            targetComponentIdException = e
+            targetComponentId_FIELD = null
+            targetComponentId_EXCEPTION = e
         }
-        targetComponentIdField = field
     }
 
     static void addDexpatcherAnnotations(Project project, def files, boolean decorate) {
@@ -69,12 +68,12 @@ abstract class LocalDependencyHelper {
         def dependency = project.dependencies.create(localDependencyNotation)
         if (DECORATE_DEPENDENCIES && decorate) {
             try {
-                if (targetComponentIdException) throw targetComponentIdException
-                targetComponentIdField.set dependency,
+                if (targetComponentId_EXCEPTION) throw targetComponentId_EXCEPTION
+                targetComponentId_FIELD.set dependency,
                         new DefaultModuleComponentIdentifier(DefaultModuleIdentifier.newId(group, name), version)
             } catch (Exception e) {
                 def wrapper = new RuntimeException(
-                        "Cannot access field 'DefaultSelfResolvingDependency.targetComponentId'", e)
+                        "Cannot set field 'DefaultSelfResolvingDependency.targetComponentId'", e)
                 project.logger.warn "Cannot decorate local dependency '$name': $wrapper.message"
                 if (project.logger.debugEnabled) {
                     project.logger.debug "Cannot decorate local dependency '$name'", wrapper

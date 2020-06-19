@@ -33,26 +33,25 @@ abstract class VariantHelper {
 
     // Access internal variant data
 
-    private static final Method getVariantDataMethod
-    private static final Exception getVariantDataException
+    private static final Method getVariantData_METHOD
+    private static final Exception getVariantData_EXCEPTION
 
     static {
-        Method method
         try {
-            method = BaseVariantImpl.class.getDeclaredMethod('getVariantData')
+            def method = BaseVariantImpl.class.getDeclaredMethod('getVariantData')
             method.accessible = true
-            getVariantDataException = null
+            getVariantData_METHOD = method
+            getVariantData_EXCEPTION = null
         } catch (Exception e) {
-            method = null
-            getVariantDataException = e
+            getVariantData_METHOD = null
+            getVariantData_EXCEPTION = e
         }
-        getVariantDataMethod = method
     }
 
     static BaseVariantData getData(BaseVariant variant) {
         try {
-            if (getVariantDataException) throw getVariantDataException
-            return getVariantDataMethod.invoke(variant) as BaseVariantData
+            if (getVariantData_EXCEPTION) throw getVariantData_EXCEPTION
+            return getVariantData_METHOD.invoke(variant) as BaseVariantData
         } catch (Exception e) {
             throw new RuntimeException("Cannot invoke method 'BaseVariantImpl.getVariantData'", e)
         }

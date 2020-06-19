@@ -18,37 +18,36 @@ import com.android.build.gradle.tasks.MergeResources
 @CompileStatic
 abstract class MergeResourcesHelper {
 
-    private static final Field validateEnabledField
-    private static final Exception validateEnabledException
+    private static final Field validateEnabled_FIELD
+    private static final Exception validateEnabled_EXCEPTION
 
     static {
-        Field field
         try {
-            field = MergeResources.class.getDeclaredField('validateEnabled')
+            def field = MergeResources.class.getDeclaredField('validateEnabled')
             field.accessible = true
-            validateEnabledException = null
+            validateEnabled_FIELD = field
+            validateEnabled_EXCEPTION = null
         } catch (Exception e) {
-            field = null
-            validateEnabledException = e
+            validateEnabled_FIELD = null
+            validateEnabled_EXCEPTION = e
         }
-        validateEnabledField = field
     }
 
     static boolean getValidateEnabled(MergeResources mergeResources) {
         try {
-            if (validateEnabledException) throw validateEnabledException
-            return validateEnabledField.get(mergeResources) as boolean
+            if (validateEnabled_EXCEPTION) throw validateEnabled_EXCEPTION
+            return validateEnabled_FIELD.get(mergeResources) as boolean
         } catch (Exception e) {
-            throw new RuntimeException("Cannot access field 'MergeResources.validateEnabled'", e)
+            throw new RuntimeException("Cannot get field 'MergeResources.validateEnabled'", e)
         }
     }
 
     static void setValidateEnabled(MergeResources mergeResources, boolean value) {
         try {
-            if (validateEnabledException) throw validateEnabledException
-            validateEnabledField.set(mergeResources, value)
+            if (validateEnabled_EXCEPTION) throw validateEnabled_EXCEPTION
+            validateEnabled_FIELD.set(mergeResources, value)
         } catch (Exception e) {
-            throw new RuntimeException("Cannot access field 'MergeResources.validateEnabled'", e)
+            throw new RuntimeException("Cannot set field 'MergeResources.validateEnabled'", e)
         }
     }
 
