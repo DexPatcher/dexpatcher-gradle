@@ -112,8 +112,9 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                     if (pack.inInstantRunMode) {
                         throw new RuntimeException("Instant Run is not supported: please disable it")
                     }
-                    if (pack.featureDexFolder) {
-                        throw new RuntimeException("Feature dex is not supported")
+                    def featureDex = pack.featureDexFolder
+                    if (featureDex && !featureDex.empty) {
+                        throw new RuntimeException("Feature splits are not supported")
                     }
                 }
                 return
