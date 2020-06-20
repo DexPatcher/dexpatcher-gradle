@@ -13,8 +13,9 @@ package lanchon.dexpatcher.gradle.plugins
 import groovy.transform.CompileStatic
 
 import lanchon.dexpatcher.gradle.Aapt2MavenUtilsHelper
+import lanchon.dexpatcher.gradle.DependencyResourcesComputerHelper
 import lanchon.dexpatcher.gradle.LocalDependencyHelper
-import lanchon.dexpatcher.gradle.MergeResourcesHelper
+import lanchon.dexpatcher.gradle.ResourceAwareTaskHelper
 import lanchon.dexpatcher.gradle.VariantHelper
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
@@ -340,7 +341,8 @@ abstract class AbstractPatcherPlugin<
             project.afterEvaluate {
                 if ((extension as AbstractPatcherExtension).disableResourceValidation.get()) {
                     mergeResources.configure {
-                        MergeResourcesHelper.setValidateEnabled it, false
+                        def resourcesComputer = ResourceAwareTaskHelper.getResourcesComputer(it)
+                        DependencyResourcesComputerHelper.setValidateEnabled resourcesComputer, false
                         return
                     }
                 }
