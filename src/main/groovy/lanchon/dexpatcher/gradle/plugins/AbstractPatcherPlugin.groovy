@@ -25,7 +25,8 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.BaseVariantOutput
 import com.android.build.gradle.internal.dependency.IdentityTransform
-import com.android.builder.core.AndroidBuilder
+import com.android.build.gradle.options.SyncOptions
+import com.android.build.gradle.options.SyncOptions.ErrorFormatMode
 import com.android.ide.common.resources.FileResourceNameValidator
 import com.android.resources.ResourceFolderType
 import com.android.utils.StringHelper
@@ -306,9 +307,12 @@ abstract class AbstractPatcherPlugin<
                 it.aapt2FromMaven.from {
                     mergeResources.get().aapt2FromMaven
                 }
-                it.androidBuilder.set project.<AndroidBuilder>provider {
-                    //getAndroidBuilder(mergeResources.get())
-                    VariantHelper.getData(variant).scope.globalScope.androidBuilder
+                it.aapt2Version.set project.<String>provider {
+                    mergeResources.get().aapt2Version
+                }
+                it.errorFormatMode.set project.<ErrorFormatMode>provider {
+                    //getErrorFormatMode(mergeResources.get())
+                    SyncOptions.getErrorFormatMode(VariantHelper.getData(variant).scope.globalScope.projectOptions)
                 }
                 it.processResources.set project.<Boolean>provider {
                     mergeResources.get().processResources
