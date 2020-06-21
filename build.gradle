@@ -15,7 +15,7 @@ plugins {
 }
 
 group = 'com.github.lanchon.dexpatcher'
-version = '2.1.0'
+version = '2.1.1'
 
 ext.mainArtifact = 'dexpatcher-gradle'
 ext.artifactName = 'DexPatcher-gradle'
