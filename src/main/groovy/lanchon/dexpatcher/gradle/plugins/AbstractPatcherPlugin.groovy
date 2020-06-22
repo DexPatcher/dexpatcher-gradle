@@ -126,12 +126,11 @@ abstract class AbstractPatcherPlugin<
                 // FIXME: If possible, directly set dependency attributes instead of relying on an identity transform.
                 provideDecodedApp.configure {
                     it.doLast {
-                        project.dependencies.registerTransform { transform ->
+                        project.dependencies.registerTransform(IdentityTransform) { transform ->
                             transform.from.attribute ArtifactAttributes.ARTIFACT_FORMAT,
                                     ArtifactTypeDefinition.DIRECTORY_TYPE
                             transform.to.attribute ArtifactAttributes.ARTIFACT_FORMAT,
                                     Aapt2MavenUtilsHelper.TYPE_EXTRACTED_AAPT2_BINARY
-                            transform.artifactTransform(IdentityTransform)
                         }
                     }
                     return
