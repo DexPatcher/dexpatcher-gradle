@@ -32,6 +32,7 @@ import com.android.ide.common.resources.FileResourceNameValidator
 import com.android.resources.ResourceFolderType
 import com.android.utils.StringHelper
 import org.gradle.api.DomainObjectSet
+import org.gradle.api.artifacts.type.ArtifactTypeDefinition
 import org.gradle.api.file.CopySpec
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DuplicatesStrategy
@@ -120,23 +121,17 @@ abstract class AbstractPatcherPlugin<
                 aapt2DirCfg.canBeResolved = true
                 aapt2DirCfg.canBeConsumed = false
                 aapt2DirCfg.description = 'The directory containing the AAPT2 binary to use for this project.'
-                //aapt2DirCfg.attributes.attribute ArtifactAttributes.ARTIFACT_FORMAT, TYPE_EXTRACTED_AAPT2_BINARY
                 aapt2DirCfg.dependencies.add project.dependencies.create(project.files(aapt2Dir))
 
                 // FIXME: If possible, directly set dependency attributes instead of relying on an identity transform.
                 provideDecodedApp.configure {
                     it.doLast {
-                        def results = aapt2DirCfg.incoming.artifacts.artifacts
-                        if (!results.empty) {
-                            def type = results[0].variant.attributes.getAttribute(ArtifactAttributes.ARTIFACT_FORMAT)
-                            if (!type.is(null)) {
-                                project.dependencies.registerTransform { transform ->
-                                    transform.from.attribute ArtifactAttributes.ARTIFACT_FORMAT, type
-                                    transform.to.attribute ArtifactAttributes.ARTIFACT_FORMAT,
-                                            Aapt2MavenUtilsHelper.TYPE_EXTRACTED_AAPT2_BINARY
-                                    transform.artifactTransform(IdentityTransform.class)
-                                }
-                            }
+                        project.dependencies.registerTransform { transform ->
+                            transform.from.attribute ArtifactAttributes.ARTIFACT_FORMAT,
+                                    ArtifactTypeDefinition.DIRECTORY_TYPE
+                            transform.to.attribute ArtifactAttributes.ARTIFACT_FORMAT,
+                                    Aapt2MavenUtilsHelper.TYPE_EXTRACTED_AAPT2_BINARY
+                            transform.artifactTransform(IdentityTransform)
                         }
                     }
                     return
