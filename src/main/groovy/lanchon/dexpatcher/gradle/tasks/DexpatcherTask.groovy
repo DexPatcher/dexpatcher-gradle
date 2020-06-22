@@ -69,9 +69,7 @@ class DexpatcherTask extends AbstractJavaExecTask {
     @Optional @InputFiles final Property<FileSystemLocation> patch = project.objects.property(FileSystemLocation)
     @PathSensitive(PathSensitivity.NONE)
     @Optional @InputFiles final ListProperty<FileSystemLocation> patches = project.objects.listProperty(FileSystemLocation)
-    @PathSensitive(PathSensitivity.NONE)
     @Optional @OutputFile final RegularFileProperty outputFile = project.objects.fileProperty()
-    @PathSensitive(PathSensitivity.NONE)
     @Optional @OutputDirectory final DirectoryProperty outputDir = project.objects.directoryProperty()
 
     @Input final Property<Integer> apiLevel = project.objects.property(Integer).value(0)

@@ -49,7 +49,6 @@ class DecodeApkTask extends AbstractApktoolTask {
 
     @PathSensitive(PathSensitivity.NAME_ONLY)
     @InputFile final RegularFileProperty apkFile = project.objects.fileProperty()
-    @PathSensitive(PathSensitivity.NONE)
     @OutputDirectory final DirectoryProperty outputDir = project.objects.directoryProperty()
 
     @Optional @Input final Property<String> frameworkTag = project.objects.property(String)

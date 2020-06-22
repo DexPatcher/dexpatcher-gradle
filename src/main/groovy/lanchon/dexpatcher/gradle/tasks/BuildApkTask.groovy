@@ -43,7 +43,6 @@ class BuildApkTask extends AbstractApktoolTask {
 
     @PathSensitive(PathSensitivity.NONE)
     @InputDirectory final DirectoryProperty inputDir = project.objects.directoryProperty()
-    @PathSensitive(PathSensitivity.NONE)
     @OutputFile final RegularFileProperty apkFile = project.objects.fileProperty()
 
     @PathSensitive(PathSensitivity.NONE)

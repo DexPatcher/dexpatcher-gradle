@@ -46,7 +46,6 @@ class ProcessIdMappingsTask extends DefaultTask {
 
     @PathSensitive(PathSensitivity.RELATIVE)
     @InputFile final RegularFileProperty publicXmlFile = project.objects.fileProperty()
-    @PathSensitive(PathSensitivity.NONE)
     @OutputDirectory final DirectoryProperty outputDir = project.objects.directoryProperty()
 
     @PathSensitive(PathSensitivity.RELATIVE)

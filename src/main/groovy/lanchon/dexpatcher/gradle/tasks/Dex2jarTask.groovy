@@ -53,11 +53,8 @@ class Dex2jarTask extends AbstractDex2jarTask {
 
     @PathSensitive(PathSensitivity.NAME_ONLY)
     @InputFiles final ConfigurableFileCollection dexFiles = project.files()
-    @PathSensitive(PathSensitivity.NONE)
     @Optional @OutputFile final RegularFileProperty outputFile = project.objects.fileProperty()
-    @PathSensitive(PathSensitivity.NONE)
     @Optional @OutputDirectory final DirectoryProperty outputDir = project.objects.directoryProperty()
-    @PathSensitive(PathSensitivity.NONE)
     @Optional @OutputFile final RegularFileProperty exceptionFile = project.objects.fileProperty()
 
     @Input final Property<Boolean> translateCode = project.objects.property(Boolean).value(true)

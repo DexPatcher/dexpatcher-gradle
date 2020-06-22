@@ -84,8 +84,6 @@ For smali/baksmali info, see: https://github.com/JesusFreke/smali
 
     @PathSensitive(PathSensitivity.RELATIVE)
     @Optional @InputDirectory final DirectoryProperty frameworkInDir = project.objects.directoryProperty()
-
-    @PathSensitive(PathSensitivity.RELATIVE)
     @OutputDirectory final DirectoryProperty frameworkOutDir = project.objects.directoryProperty()
 
     AbstractApktoolTask(String command) {
