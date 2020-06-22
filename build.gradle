@@ -27,7 +27,7 @@ repositories {
 
 dependencies {
     implementation localGroovy()
-    compileOnly 'com.android.tools.build:gradle:3.5.0'
+    compileOnly 'com.android.tools.build:gradle:3.6.0'
 }
 
 compileGroovy {
