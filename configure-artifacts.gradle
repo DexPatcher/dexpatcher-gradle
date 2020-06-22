@@ -25,7 +25,7 @@ def sharedManifest = manifest {
 }
 
 tasks.withType(Jar).configureEach {
-    baseName = mainArtifact
+    archiveBaseName.set mainArtifact
     manifest.from sharedManifest
     reproducibleFileOrder = true
     preserveFileTimestamps = false

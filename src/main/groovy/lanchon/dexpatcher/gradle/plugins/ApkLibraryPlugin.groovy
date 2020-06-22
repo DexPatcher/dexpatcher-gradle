@@ -88,12 +88,12 @@ class ApkLibraryPlugin extends AbstractDecoderPlugin<ApkLibraryExtension> {
         def apkLibrary = project.tasks.register(taskName, Zip) {
             it.description = 'Packs the decoded source application as a DexPatcher APK library.'
             it.group = taskGroup
-            it.extension = FileNames.EXT_APK_LIBRARY.substring(1)
             it.zip64 = true
             it.reproducibleFileOrder = true
             it.preserveFileTimestamps = false
             it.duplicatesStrategy = DuplicatesStrategy.FAIL
             it.from provideDecodedApp
+            it.archiveExtension.set FileNames.EXT_APK_LIBRARY.substring(1)
             it.archiveFileName.set apkLibFileName
             it.destinationDirectory.set apkLibDirectory
         }
