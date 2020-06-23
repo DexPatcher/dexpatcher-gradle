@@ -55,27 +55,36 @@ class ProcessIdMappingsTask extends DefaultTask {
     @Internal final Property<ErrorFormatMode> errorFormatMode = project.objects.property(ErrorFormatMode)
     @Input final Property<Boolean> processResources = project.objects.property(Boolean).value(false)
 
-    private final WorkerExecutorFacade workerExecutorFacade
+    private final WorkerExecutor workerExecutor
 
     @Inject
     ProcessIdMappingsTask(WorkerExecutor workerExecutor) {
-        workerExecutorFacade = Workers.INSTANCE.getWorkerForAapt2(project.name, path, workerExecutor);
+        this.workerExecutor = workerExecutor
     }
 
     @TaskAction
     void exec() {
         def outDir = outputDir.get().asFile
         FileUtils.cleanOutputDir(outDir)
-        ResourceCompilationService resourceCompiler = getResourceCompiler()
+        WorkerExecutorFacade workerExecutorFacade = getAapt2WorkerFacade()
         try {
-            resourceCompiler.submitCompile(new CompileResourceRequest(publicXmlFile.get().asFile,
-                    outDir, ResourceFolderType.VALUES.getName()))
+            ResourceCompilationService resourceCompiler = getResourceCompiler(workerExecutorFacade)
+            try {
+                resourceCompiler.submitCompile(new CompileResourceRequest(publicXmlFile.get().asFile,
+                        outDir, ResourceFolderType.VALUES.getName()))
+            } finally {
+                resourceCompiler.close()
+            }
         } finally {
-            resourceCompiler.close()
+            workerExecutorFacade.close()
         }
     }
 
-    private ResourceCompilationService getResourceCompiler() {
+    private WorkerExecutorFacade getAapt2WorkerFacade() {
+        return Workers.INSTANCE.getWorkerForAapt2(project.name, path, workerExecutor)
+    }
+
+    private ResourceCompilationService getResourceCompiler(WorkerExecutorFacade workerExecutorFacade) {
         if (processResources.get()) {
             // Compile the file.
             def aapt2ServiceKey = Aapt2DaemonManagerService.registerAaptService(
