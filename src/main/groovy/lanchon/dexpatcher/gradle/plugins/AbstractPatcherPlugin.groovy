@@ -12,6 +12,7 @@ package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
+import lanchon.dexpatcher.gradle.helpers.LinkApplicationAndroidResourcesTaskHelper
 import lanchon.dexpatcher.gradle.helpers.Aapt2MavenUtilsHelper
 import lanchon.dexpatcher.gradle.helpers.DependencyResourcesComputerHelper
 import lanchon.dexpatcher.gradle.helpers.LocalDependencyHelper
@@ -26,6 +27,7 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.BaseVariantOutput
 import com.android.build.gradle.internal.dependency.IdentityTransform
+import com.android.build.gradle.internal.res.LinkApplicationAndroidResourcesTask
 import com.android.build.gradle.options.SyncOptions
 import com.android.build.gradle.options.SyncOptions.ErrorFormatMode
 import com.android.ide.common.resources.FileResourceNameValidator
@@ -36,6 +38,7 @@ import org.gradle.api.artifacts.type.ArtifactTypeDefinition
 import org.gradle.api.file.CopySpec
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DuplicatesStrategy
+import org.gradle.api.file.FileCollection
 import org.gradle.api.file.FileCopyDetails
 import org.gradle.api.internal.artifacts.ArtifactAttributes
 import org.gradle.api.provider.Provider
@@ -343,12 +346,24 @@ abstract class AbstractPatcherPlugin<
             }
         }
 
-        // Remove empty 'R.java' files generated from the source app component library.
+        // Remove empty 'symbol list with package name' files generated from the source app component library.
         androidVariants.all { BaseVariant variant ->
             variant.outputs.all { BaseVariantOutput output ->
                 output.processResourcesProvider.configure {
-                    it.doLast { task ->
-                        removeEmptyRFiles it.sourceOutputDir
+                    FileCollection[] rFilesBackup = new FileCollection[1]
+                    if (it instanceof LinkApplicationAndroidResourcesTask) {
+                        it.doFirst { LinkApplicationAndroidResourcesTask task ->
+                            if (!task.sourceOutputDir.is(null)) {
+                                throw new RuntimeException("Unexpected 'sourceOutputDir' value")
+                            }
+                            def rFiles = LinkApplicationAndroidResourcesTaskHelper.getDependenciesFileCollection(task)
+                            rFilesBackup[0] = rFiles
+                            def filteredRFiles = project.files(rFiles.files.findAll { !isEmptyRFile(it) })
+                            LinkApplicationAndroidResourcesTaskHelper.setDependenciesFileCollection task, filteredRFiles
+                        }
+                        it.doLast { LinkApplicationAndroidResourcesTask task ->
+                            LinkApplicationAndroidResourcesTaskHelper.setDependenciesFileCollection task, rFilesBackup[0]
+                        }
                     }
                 }
             }
@@ -356,37 +371,18 @@ abstract class AbstractPatcherPlugin<
 
     }
 
-    private void removeEmptyRFiles(File sourceTreeDir) {
-        def rFiles = project.fileTree(sourceTreeDir)
-        rFiles.include '**/R.java'
-        for (def rFile : rFiles) {
-            if (isEmptyRFile(rFile)) {
-                if (project.logger.debugEnabled) {
-                    project.logger.debug "Removing empty R file '$rFile' containing:\n" + rFile.text
-                }
-                project.delete rFile
-            }
-        }
-    }
-
-    private boolean isEmptyRFile(File rFile) {
+    // Determine whether the passed 'symbol list with package name' file has no symbols.
+    private static boolean isEmptyRFile(File rFile) {
         def reader = new BufferedReader(new FileReader(rFile))
         try {
-            for (;;) {
-                def line = reader.readLine()
-                if (line.is(null)) break
-                line = line.trim()
-                def prefix = 'public static '
-                if (line.startsWith(prefix)) {
-                    String rest = line.substring(prefix.length())
-                    if (rest.startsWith('class ') || rest.startsWith('final class ')) continue
-                    return false
-                }
-            }
+            def packageName = reader.readLine()
+            if (packageName.is(null)) return false
+            def line1 = reader.readLine()
+            if (line1.is(null)) return true
+            return false
         } finally {
             reader.close()
         }
-        return true
     }
 
 }

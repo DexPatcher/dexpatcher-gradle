@@ -15,6 +15,7 @@ class AndroidPluginHelperInitializer {
     static void init() {
         Aapt2MavenUtilsHelper.init()
         DependencyResourcesComputerHelper.init()
+        LinkApplicationAndroidResourcesTaskHelper.init()
         LocalDependencyHelper.init()
         ResourceAwareTaskHelper.init()
         VariantHelper.init()
