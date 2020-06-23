@@ -23,8 +23,8 @@ class AbstractPlugin implements Plugin<Project> {
     static final String GRADLE_VERSION_MIN = '6.1.1'
     static final String GRADLE_VERSION_MAX = null
 
-    static final String ANDROID_PLUGIN_VERSION_MIN = '3.6'
-    static final String ANDROID_PLUGIN_VERSION_MAX = '4.0'
+    static final String ANDROID_PLUGIN_VERSION_MIN = '4.0'
+    static final String ANDROID_PLUGIN_VERSION_MAX = null
 
     protected Project project
     protected DexpatcherBasePlugin basePlugin
