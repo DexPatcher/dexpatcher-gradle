@@ -308,9 +308,15 @@ abstract class AbstractPatcherPlugin<
                 it.aapt2Version.set project.<String>provider {
                     mergeResources.get().aapt2Version
                 }
+                it.enableGradleWorkers.set project.<Boolean>provider {
+                    mergeResources.get().enableGradleWorkers.get()
+                }
                 it.errorFormatMode.set project.<ErrorFormatMode>provider {
                     //getErrorFormatMode(mergeResources.get())
                     SyncOptions.getErrorFormatMode(VariantHelper.getData(variant).scope.globalScope.projectOptions)
+                }
+                it.useJvmResourceCompiler.set project.<Boolean>provider {
+                    mergeResources.get().jvmResourceCompilerEnabled
                 }
                 it.processResources.set project.<Boolean>provider {
                     mergeResources.get().processResources
