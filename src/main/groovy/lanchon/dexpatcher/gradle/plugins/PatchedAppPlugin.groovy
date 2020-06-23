@@ -169,7 +169,7 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
                     }
 
                     // Warn if multi-dex is enabled and target requires legacy multi-dex.
-                    if (patch.multiDex.get() && (pack.minSdkVersion < NATIVE_MULTI_DEX_MIN_API_LEVEL ||
+                    if (patch.multiDex.get() && (pack.minSdkVersion.get() < NATIVE_MULTI_DEX_MIN_API_LEVEL ||
                             dexingType == DexingType.LEGACY_MULTIDEX)) {
                         project.logger.warn "Variant '${variant.name}': " + legacyMultiDexMessage + '\n' +
                                 '(The application being built will not run on Android versions prior to 5.0)'
