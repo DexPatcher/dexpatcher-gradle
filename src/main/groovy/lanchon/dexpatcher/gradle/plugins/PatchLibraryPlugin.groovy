@@ -12,7 +12,7 @@ package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.AndroidPluginHelperInitializer
+import lanchon.dexpatcher.gradle.helpers.AndroidPluginHelperInitializer
 import lanchon.dexpatcher.gradle.extensions.PatchLibraryExtension
 
 import com.android.build.gradle.LibraryExtension

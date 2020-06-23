@@ -8,7 +8,7 @@
  * or (at your option) any later version.
  */
 
-package lanchon.dexpatcher.gradle
+package lanchon.dexpatcher.gradle.helpers
 
 import java.lang.reflect.Field
 import groovy.transform.CompileStatic
