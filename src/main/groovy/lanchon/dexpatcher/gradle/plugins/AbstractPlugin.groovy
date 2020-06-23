@@ -20,7 +20,7 @@ import org.gradle.util.GradleVersion
 @CompileStatic
 class AbstractPlugin implements Plugin<Project> {
 
-    static final String GRADLE_VERSION_MIN = '5.6.4'
+    static final String GRADLE_VERSION_MIN = '6.1.1'
     static final String GRADLE_VERSION_MAX = null
 
     static final String ANDROID_PLUGIN_VERSION_MIN = '3.6'
