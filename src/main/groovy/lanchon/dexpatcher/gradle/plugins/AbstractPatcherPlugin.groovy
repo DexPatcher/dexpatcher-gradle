@@ -72,6 +72,9 @@ abstract class AbstractPatcherPlugin<
 
         super.afterApply()
 
+        // Workaround for compiler bug.
+        def project = this.project
+
         def decorateDependencies = basePlugin.dexpatcherConfig.properties.decorateDependencies
 
         // Add the DexPatcher annotations as a compile-only dependency.

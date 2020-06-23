@@ -54,6 +54,9 @@ class PatchedAppPlugin extends AbstractPatcherPlugin<PatchedAppExtension, AppExt
 
         super.afterApply()
 
+        // Workaround for compiler bug.
+        def project = this.project
+
         // Patch the bytecode of the source application.
         androidVariants.all { ApplicationVariant variant ->
             def packageApplication = variant.packageApplicationProvider
