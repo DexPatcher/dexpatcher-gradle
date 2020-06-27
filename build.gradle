@@ -74,8 +74,8 @@ gradlePlugin {
 
 pluginBundle {
 
-    def descriptionPrefix = 'DexPatcher is a toolchain for modifying Android APK files at source-level using Java, ' +
-            'graphical resource editors, and the full power of Android Studio in all major platforms. '
+    def descriptionPrefix = 'DexPatcher is a toolchain for modifying Android applications at source-level using Java ' +
+            'and the full power of Android Studio. '
     def descriptionSuffix = 'DexPatcher is free software. (GPLv3+)'
 
     website = 'https://dexpatcher.github.io/'
@@ -83,7 +83,8 @@ pluginBundle {
 
     description = descriptionPrefix + descriptionSuffix
 
-    tags = ['android', 'application', 'apk', 'dexpatcher', 'apktool', 'dex2jar', 'patch', 'modify', 'reverse']
+    tags = ['dexpatcher', 'apktool', 'dex2jar', 'patch', 'modify', 'mod', 'reverse', 'engineer', 'reengineer',
+            'android', 'application', 'apk', 'dalvik', 'bytecode']
 
     plugins {
 
