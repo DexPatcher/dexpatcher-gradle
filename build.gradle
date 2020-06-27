@@ -14,7 +14,7 @@ plugins {
     id 'com.gradle.plugin-publish' version '0.12.0'
 }
 
-group = 'com.github.lanchon.dexpatcher'
+group = 'io.github.dexpatcher.dexpatcher-gradle'
 version = '2.0.0'
 
 ext.mainArtifact = 'dexpatcher-gradle'
@@ -43,7 +43,7 @@ afterEvaluate {
 
 gradlePlugin {
 
-    def idPrefix = 'com.github.lanchon.dexpatcher.'
+    def idPrefix = 'io.github.dexpatcher.'
     def classPrefix = 'lanchon.dexpatcher.gradle.plugins.'
 
     plugins {
