@@ -41,6 +41,34 @@ afterEvaluate {
     archivesArtifacts.removeAll archivesArtifacts.findAll { it.classifier in ['javadoc', 'groovydoc'] }
 }
 
+gradlePlugin {
+
+    plugins {
+
+        basePlugin {
+            id = 'com.github.lanchon.dexpatcher.base'
+            implementationClass = 'lanchon.dexpatcher.gradle.plugins.DexpatcherBasePlugin'
+        }
+
+        apkLibraryPlugin {
+            id = 'com.github.lanchon.dexpatcher.apk-library'
+            implementationClass = 'lanchon.dexpatcher.gradle.plugins.ApkLibraryPlugin'
+        }
+
+        patchedAppPlugin {
+            id = 'com.github.lanchon.dexpatcher.patched-application'
+            implementationClass = 'lanchon.dexpatcher.gradle.plugins.PatchedAppPlugin'
+        }
+
+        patchLibraryPlugin {
+            id = 'com.github.lanchon.dexpatcher.patch-library'
+            implementationClass = 'lanchon.dexpatcher.gradle.plugins.PatchLibraryPlugin'
+        }
+
+    }
+
+}
+
 pluginBundle {
 
     website = 'https://dexpatcher.github.io/'
@@ -51,28 +79,15 @@ pluginBundle {
 
     tags = ['android', 'application', 'apk', 'dexpatcher', 'apktool', 'dex2jar', 'patch', 'modify', 'reverse']
 
-    mavenCoordinates {
-        groupId = group
-        artifactId = mainArtifact
-    }
-
-}
-
-gradlePlugin {
-
     plugins {
 
         basePlugin {
-            id = 'com.github.lanchon.dexpatcher.base'
-            implementationClass = 'lanchon.dexpatcher.gradle.plugins.DexpatcherBasePlugin'
             displayName = 'DexPatcher Base'
             description = 'The DexPatcher Base plugin provides basic DexPatcher, Apktool and dex2jar tasks. ' +
                     'DexPatcher is free software. (GPLv3+)'
         }
 
         apkLibraryPlugin {
-            id = 'com.github.lanchon.dexpatcher.apk-library'
-            implementationClass = 'lanchon.dexpatcher.gradle.plugins.ApkLibraryPlugin'
             displayName = 'DexPatcher APK Library'
             description = 'The DexPatcher APK Library plugin processes a source application provided as an Android APK ' +
                     'and produces a DexPatcher APK library. The library is used to create modified versions of the ' +
@@ -81,8 +96,6 @@ gradlePlugin {
         }
 
         patchedAppPlugin {
-            id = 'com.github.lanchon.dexpatcher.patched-application'
-            implementationClass = 'lanchon.dexpatcher.gradle.plugins.PatchedAppPlugin'
             displayName = 'DexPatcher Patched Application'
             description = 'The DexPatcher Patched Application plugin produces a modified Android application by applying ' +
                     'changes to code, manifest and resources of a source application provided as an Android APK or ' +
@@ -90,8 +103,6 @@ gradlePlugin {
         }
 
         patchLibraryPlugin {
-            id = 'com.github.lanchon.dexpatcher.patch-library'
-            implementationClass = 'lanchon.dexpatcher.gradle.plugins.PatchLibraryPlugin'
             displayName = 'DexPatcher Patch Library'
             description = 'The DexPatcher Patch Library plugin produces a DexPatcher patch library that bundles compiled ' +
                     'changes to code, manifest and resources of a source application without bundling any part of the '  +
@@ -102,6 +113,11 @@ gradlePlugin {
                     'application can be serialized and chained. DexPatcher is free software. (GPLv3+)'
         }
 
+    }
+
+    mavenCoordinates {
+        groupId = group
+        artifactId = mainArtifact
     }
 
 }
