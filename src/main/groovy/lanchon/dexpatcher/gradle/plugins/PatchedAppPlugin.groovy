@@ -12,9 +12,9 @@ package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.AndroidPluginHelperInitializer
-import lanchon.dexpatcher.gradle.VariantHelper
 import lanchon.dexpatcher.gradle.extensions.PatchedAppExtension
+import lanchon.dexpatcher.gradle.helpers.AndroidPluginHelperInitializer
+import lanchon.dexpatcher.gradle.helpers.VariantHelper
 import lanchon.dexpatcher.gradle.tasks.CollectDexTask
 import lanchon.dexpatcher.gradle.tasks.DexpatcherTask
 

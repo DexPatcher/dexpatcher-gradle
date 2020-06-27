@@ -12,11 +12,11 @@ package lanchon.dexpatcher.gradle.plugins
 
 import groovy.transform.CompileStatic
 
-import lanchon.dexpatcher.gradle.Aapt2MavenUtilsHelper
-import lanchon.dexpatcher.gradle.LocalDependencyHelper
-import lanchon.dexpatcher.gradle.MergeResourcesHelper
-import lanchon.dexpatcher.gradle.VariantHelper
 import lanchon.dexpatcher.gradle.extensions.AbstractPatcherExtension
+import lanchon.dexpatcher.gradle.helpers.Aapt2MavenUtilsHelper
+import lanchon.dexpatcher.gradle.helpers.LocalDependencyHelper
+import lanchon.dexpatcher.gradle.helpers.MergeResourcesHelper
+import lanchon.dexpatcher.gradle.helpers.VariantHelper
 import lanchon.dexpatcher.gradle.tasks.Dex2jarTask
 import lanchon.dexpatcher.gradle.tasks.ProcessIdMappingsTask
 
